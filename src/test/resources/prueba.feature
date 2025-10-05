@@ -5,3 +5,5 @@
       Cuando hago algo
       Y ese algo desencadena algo
       Entonces sucede algo
+
+  Característica
