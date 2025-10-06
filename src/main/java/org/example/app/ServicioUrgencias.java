@@ -61,7 +61,7 @@ public class ServicioUrgencias {
 
         campos.forEach((nombreCampo, valor) -> {
             if (
-                    valor == null || valor instanceof Float f && f.floatValue() == 0 || valor instanceof String s && s.isBlank()
+                    valor == null || valor instanceof String s && s.isBlank()
             ) throw new  IllegalArgumentException(mensajeExcepcionDatoFaltante + nombreCampo);
         });
 

@@ -32,13 +32,13 @@ Característica: Modulo de emergencias
     Cuando llega el paciente:
       |Cuil         |Apellido|Nombre |Informe                           |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
       |27-55667788-9|Torres  |Martina|Dolor abdominal intenso y vomitos |Urgencia           |38.2       |110                |24                     |130                 |85                   |
-    Entonces paciente "27-55667788-9" estara registrado:
+    Entonces el paciente "27-55667788-9" estara registrado:
     Y la cola de espera con cuils, ordenada por criticidad y hora de llegada, se ordena de la siguiente manera:
       |27-55667788-9|
 
 
   Escenario: Ingreso de un paciente de bajo nivel de emergencia, y luego un paciente con mayor nivel de emergencia
-    Cuando llega el paciente:
+    Cuando llegan los pacientes:
       |Cuil         |Apellido|Nombre  |Informe                               |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
       |27-55667788-9|Torres  |Martina |Dolor abdominal intenso y vomitos     |Urgencia           |38.2       |110                |24                     |130                 |85                   |
       |27-34567890-7|Romero  |Benjamin|Trauma severo por accidente de trafico|Critica            |39.5       |135                |28                     |180                 |110                  |
@@ -48,7 +48,7 @@ Característica: Modulo de emergencias
 
 
   Escenario: Ingreso de cuatro pacientes, dos con un nivel de emergencia y dos con otro nivel de emergencia
-    Cuando llega el paciente:
+    Cuando llegan los pacientes:
       |Cuil         |Apellido|Nombre  |Informe                           |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
       |20-42345678-9|Sanchez |Agustina |Dolor toracico intenso           |Critica            |39.2       |140                |30                     |180                 |110                  |
       |27-40123456-0|Diaz    |Joaquin  |Fractura de pierna tras accidente|Urgencia           |37.8       |95                 |20                     |125                 |80                   |
