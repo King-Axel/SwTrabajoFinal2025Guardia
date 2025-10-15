@@ -1,11 +1,7 @@
 name: Cucumber Tests (CI)
 
 on:
-  push:
-    branches: [ "test" ]
-  pull_request:
-    branches: [ "test" ]
-  workflow_dispatch:
+  workflow_dispatch:  # Manual trigger
 
 jobs:
   test:
@@ -15,26 +11,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21 (Amazon Corretto)
+      - name: Set up JDK 22.0.1 (Amazon Corretto)
         uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
-          java-version: '21'
+          java-version: '22'
 
-      - name: Show java
-        run: java -version
-
-      - name: Run Cucumber tests (Maven)
-        run: mvn -B clean test -DskipTests=false
-
-      - name: Upload test reports (always)
-        if: always()
-        uses: actions/upload-artifact@v4
+      - name: Cache Maven dependencies
+        uses: actions/cache@v4
         with:
-          name: test-reports
-          path: |
-            target/surefire-reports
-            target/failsafe-reports
-            target/cucumber.json
-            target/cucumber-reports
-            target/cucumber-report-html
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Run Cucumber tests
+        run: mvn clean test
