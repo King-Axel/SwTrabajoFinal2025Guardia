@@ -1,4 +1,5 @@
 import io.cucumber.java.PendingException;
+import io.cucumber.java.en.Given;
 import io.cucumber.java.es.*;
 import mock.DBPruebaEnMemoria;
 import org.example.app.ServicioUrgencias;
