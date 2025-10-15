@@ -8,12 +8,17 @@ public class Ingreso {
     private final Enfermera enfermera;
     private final String informe;
     private final NivelEmergencia nivelEmergencia;
-    private final String estado;
+
+    private EstadoIngreso estado;
+
     private final Float temperatura;
     private final Float frecuenciaCardiaca;
     private final Float frecuenciaRespiratoria;
     private final Float frecuenciaSistolica;
     private final Float frecuenciaDiastolica;
+
+    // médico asignado cuando se reclama el ingreso
+    private Medico medico;
 
     public Ingreso(
             Paciente paciente,
@@ -26,12 +31,12 @@ public class Ingreso {
             Float frecuenciaSistolica,
             Float frecuenciaDiastolica
     ) {
-        fechaIngreso = LocalDateTime.now();
+        this.fechaIngreso = LocalDateTime.now();
         this.paciente = paciente;
         this.enfermera = enfermera;
         this.informe = informe;
         this.nivelEmergencia = nivelEmergencia;
-        estado = "Pendiente";
+        this.estado = EstadoIngreso.PENDIENTE; // antes era String "Pendiente"
         this.temperatura = temperatura;
         this.frecuenciaCardiaca = frecuenciaCardiaca;
         this.frecuenciaRespiratoria = frecuenciaRespiratoria;
@@ -39,15 +44,21 @@ public class Ingreso {
         this.frecuenciaDiastolica = frecuenciaDiastolica;
     }
 
-    public String getCuilPaciente() {
-        return this.paciente.getCuil();
+    public String getCuilPaciente() { return this.paciente.getCuil(); }
+    public int getPrioridadNivelEmergencia() { return this.nivelEmergencia.getPrioridad(); }
+    public LocalDateTime getFechaIngreso() { return this.fechaIngreso; }
+
+    public EstadoIngreso getEstado() {
+        return estado;
+    }
+    public void setEstado(EstadoIngreso estado) {
+        this.estado = estado;
     }
 
-    public int getPrioridadNivelEmergencia() {
-        return this.nivelEmergencia.getPrioridad();
+    public Medico getMedico() {
+        return medico;
     }
-
-    public LocalDateTime getFechaIngreso() {
-        return this.fechaIngreso;
+    public void setMedico(Medico medico) {
+        this.medico = medico;
     }
 }

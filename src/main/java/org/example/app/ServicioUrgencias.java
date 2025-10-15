@@ -1,16 +1,17 @@
 package org.example.app;
 
 import org.example.app.interfaces.RepositorioPacientes;
-import org.example.domain.Enfermera;
-import org.example.domain.Ingreso;
-import org.example.domain.NivelEmergencia;
-import org.example.domain.Paciente;
+import org.example.domain.*;
 
 import java.util.*;
 
 public class ServicioUrgencias {
     private RepositorioPacientes dbPacientes;
     private List<Ingreso> listaEspera;
+
+    // NUEVO: almacenamiento simple de ingresos "en proceso"
+    private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
+
 
     public ServicioUrgencias(RepositorioPacientes repositorioPacientes) {
         this.dbPacientes =  repositorioPacientes;
@@ -96,5 +97,30 @@ public class ServicioUrgencias {
 
     public List<Ingreso> getListaEspera() {
         return this.listaEspera;
+    }
+
+    // =========================
+    // NUEVO: Reclamar paciente
+    // =========================
+    public Ingreso reclamarProximoPaciente(Medico medico) {
+        if (listaEspera.isEmpty()) {
+            throw new IllegalStateException("No hay ingresos en lista de espera");
+        }
+
+        // sale de la cola (ya viene ordenada por criticidad y hora)
+        Ingreso proximo = listaEspera.remove(0);
+
+        // cambia estado y se asigna el médico
+        proximo.setEstado(EstadoIngreso.EN_PROCESO);
+        proximo.setMedico(medico);
+
+        // persistimos en la estructura de "en proceso"
+        ingresosEnProceso.put(proximo.getCuilPaciente(), proximo);
+
+        return proximo;
+    }
+
+    public Optional<Ingreso> obtenerIngresoEnProcesoPorCuil(String cuil) {
+        return Optional.ofNullable(ingresosEnProceso.get(cuil));
     }
 }

@@ -1,12 +1,22 @@
 package mock;
 
 import org.example.app.interfaces.RepositorioPacientes;
+import org.example.domain.Ingreso;
 import org.example.domain.Paciente;
 
 import java.util.*;
 
 public class DBPruebaEnMemoria implements RepositorioPacientes {
     private Map<String, Paciente> pacientes;
+    private final Map<String, Ingreso> enProceso = new HashMap<>();
+
+    public void registrarEnProceso(Ingreso ingreso) {
+        enProceso.put(ingreso.getCuilPaciente(), ingreso);
+    }
+
+    public Optional<Ingreso> obtenerEnProcesoPorCuil(String cuil) {
+        return Optional.ofNullable(enProceso.get(cuil));
+    }
 
     public DBPruebaEnMemoria() {
         pacientes = new HashMap<>();
