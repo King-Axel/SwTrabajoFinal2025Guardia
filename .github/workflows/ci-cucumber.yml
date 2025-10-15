@@ -1,6 +1,8 @@
 name: Cucumber Tests (CI)
 
 on:
+  push:
+    branches: [ "test" ]
   workflow_dispatch:  # Manual trigger
 
 jobs:
@@ -33,4 +35,4 @@ jobs:
         with:
           name: test-results
           path: target/surefire-reports/
-          retention-days: 30
+          retention-days: 31
