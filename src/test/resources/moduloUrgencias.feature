@@ -66,14 +66,14 @@ s
         |Cuil         |Apellido|Nombre|Informe               |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
         |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |-80                |15                     |180                 |110                  |
       Entonces se emite el siguiente mensaje:
-        |Error: La frecuencia frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos|
+        |Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos|
 
     Escenario: Ingreso de un paciente valores de frecuencia respiratoria negativos
       Cuando llega el paciente:
         |Cuil         |Apellido|Nombre|Informe               |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
         |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 |-15                    |180                 |110                  |
       Entonces se emite el siguiente mensaje:
-        |Error: La frecuencia frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos|
+        |Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos|
 
     Esquema del escenario: Ingreso de un paciente con datos incompletos
       Cuando llega el paciente:

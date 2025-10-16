@@ -73,7 +73,7 @@ public class ServicioUrgencias {
         Float frecDiast = Float.parseFloat(frecuenciaDiastolica);
 
         if(frecCard < 0 || frecResp < 0) throw new  IllegalArgumentException(
-                "Error: La frecuencia frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos"
+                "Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos"
         );
 
         Ingreso ingreso = new Ingreso(
