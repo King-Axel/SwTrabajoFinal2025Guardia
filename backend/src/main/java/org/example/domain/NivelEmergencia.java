@@ -8,7 +8,7 @@ public enum NivelEmergencia {
     SIN_URGENCIA("Sin Urgencia", 5),;
 
     final String nombre;
-    int prioridad;
+    final int prioridad;
 
     NivelEmergencia(String nombre, int prioridad) {
         this.nombre = nombre;

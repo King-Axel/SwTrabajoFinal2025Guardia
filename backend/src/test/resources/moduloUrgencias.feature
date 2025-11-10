@@ -27,7 +27,6 @@ Característica: Modulo de emergencias
     Entonces la cola de espera con cuils, ordenada por criticidad y hora de llegada, se ordena de la siguiente manera:
       |27-34567890-7|
 
-s
   Escenario: Ingreso de un paciente no registrado, cuando la cola de atencion esta vacia
     Cuando llega el paciente:
       |Cuil         |Apellido|Nombre |Informe                           |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|

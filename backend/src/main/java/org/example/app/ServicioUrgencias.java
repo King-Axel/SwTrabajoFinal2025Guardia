@@ -12,7 +12,6 @@ public class ServicioUrgencias {
     // NUEVO: almacenamiento simple de ingresos "en proceso"
     private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
 
-
     public ServicioUrgencias(RepositorioPacientes repositorioPacientes) {
         this.dbPacientes =  repositorioPacientes;
         this.listaEspera =  new ArrayList<>();
