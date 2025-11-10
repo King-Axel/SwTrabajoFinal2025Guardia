@@ -14,4 +14,12 @@ public class Paciente {
     public String getCuil() {
         return this.cuil;
     }
+
+    public String getApellido() {
+        return this.apellido;
+    }
+
+    public String getNombre() {
+        return this.nombre;
+    }
 }
