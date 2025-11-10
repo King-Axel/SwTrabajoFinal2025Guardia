@@ -27,6 +27,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Run Cucumber tests
+        working-directory: backend
         run: mvn clean test
 
       - name: Upload test results

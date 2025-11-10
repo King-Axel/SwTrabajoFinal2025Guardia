@@ -1,5 +1,3 @@
-package mock;
-
 import io.cucumber.java.es.*;
 import org.example.app.ServicioUrgencias;
 import org.example.domain.*;
