@@ -113,6 +113,6 @@ public class ModuloReclamoPacientesStepDefinition {
     @Entonces("se emite el siguiente mensaje de reclamo:")
     public void seEmiteElSiguienteMensajeDeReclamo(List<String> mensaje){
         assertThat(ultimaExcepcion).isNotNull();
-        assertThat(ultimaExcepcion.getMessage()).isEqualTo(mensaje.getFirst());
+        assertThat(ultimaExcepcion.getMessage()).isEqualTo(mensaje.get(0));
     }
 }
