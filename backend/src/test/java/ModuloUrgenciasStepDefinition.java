@@ -48,7 +48,7 @@ public class ModuloUrgenciasStepDefinition {
 
     @Cuando("llega el paciente:")
     public void llegaElPaciente(List<Map<String, String>> dataTable) {
-        Map<String, String> fila = dataTable.getFirst();
+        Map<String, String> fila = dataTable.get(0);
 
         String cuil = fila.get("Cuil");
         String apellido = fila.get("Apellido");
@@ -104,7 +104,7 @@ public class ModuloUrgenciasStepDefinition {
 
     @Entonces("se emite el siguiente mensaje:")
     public void seEmiteElSiguienteMensaje(List<String> dataTable) {
-        assertThat(ultimaExcepcion.getMessage()).isNotNull().isEqualTo(dataTable.getFirst());
+        assertThat(ultimaExcepcion.getMessage()).isNotNull().isEqualTo(dataTable.get(0));
     }
 
     @Cuando("llegan los pacientes:")
