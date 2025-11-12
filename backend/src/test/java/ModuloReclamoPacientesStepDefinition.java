@@ -68,7 +68,7 @@ public class ModuloReclamoPacientesStepDefinition {
 
     @Y("el siguiente médico está autenticado:")
     public void elSiguienteMedicoEstaAutenticado(Map<String,String> row){
-        medico = new Medico(row.get("Apellido"), row.get("Nombre"));
+        medico = new Medico(row.get("Apellido"), row.get("Nombre"), "ASD22");
     }
 
     // --------- Acción principal ---------

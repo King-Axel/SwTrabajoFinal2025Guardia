@@ -1,14 +1,11 @@
 package org.example.domain;
 
-public class Paciente {
+public class Paciente extends Persona {
     private String cuil;
-    private String apellido;
-    private String nombre;
 
     public Paciente(String cuil, String apellido, String nombre) {
+        super(apellido, nombre);
         this.cuil = cuil;
-        this.apellido = apellido;
-        this.nombre = nombre;
     }
 
     public String getCuil() {
@@ -16,10 +13,10 @@ public class Paciente {
     }
 
     public String getApellido() {
-        return this.apellido;
+        return super.getApellido();
     }
 
     public String getNombre() {
-        return this.nombre;
+        return this.getNombre();
     }
 }
