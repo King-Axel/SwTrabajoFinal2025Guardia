@@ -1,11 +1,10 @@
 package org.example.domain;
 
-public class Enfermera {
+public class Enfermera extends Persona {
     private String apellido;
     private String nombre;
 
     public Enfermera(String apellido, String nombre) {
-        this.apellido = apellido;
-        this.nombre = nombre;
+        super(apellido, nombre);
     }
 }

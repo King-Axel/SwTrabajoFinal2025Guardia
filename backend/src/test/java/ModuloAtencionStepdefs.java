@@ -13,7 +13,7 @@ public class ModuloAtencionStepdefs {
     @Given("que la siguiente medica esta autenticada y registrada")
     public void queLaSiguienteMedicaEstaAutenticadaYRegistrada(List<Map<String, String>> tabla) {
         String matricula = tabla.get(0).get("matricula");
-        medico = new Medico(matricula);
+        medico = new Medico("Perez", "Juan Rodolfo", matricula);
         throw new PendingException();
     }
 
