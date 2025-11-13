@@ -1,5 +1,7 @@
 package org.example.app.interfaces;
 
+import org.example.domain.Domicilio;
+import org.example.domain.ObraSocial;
 import org.example.domain.Paciente;
 
 import java.util.Optional;
@@ -12,4 +14,6 @@ public interface RepositorioPacientes {
     public Paciente obtenerORegistrarPaciente(String cuil, String apellido, String nombre);
 
     public Paciente registrarPaciente(String cuil, Paciente paciente);
+
+    public Paciente ingresarPaciente(String cuil, String apellido, String nombre, Domicilio domicilio, ObraSocial obraSocial);
 }

@@ -1,4 +1,4 @@
-package org.example.app;
+package org.example.app.servicio;
 
 import org.example.app.interfaces.RepositorioPacientes;
 import org.example.domain.Enfermera;

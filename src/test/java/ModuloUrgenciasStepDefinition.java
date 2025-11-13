@@ -1,15 +1,12 @@
-import io.cucumber.java.PendingException;
 import io.cucumber.java.es.*;
 import mock.DBPruebaEnMemoria;
-import org.example.app.ServicioUrgencias;
+import org.example.app.servicio.ServicioUrgencias;
 import org.example.domain.Enfermera;
 import org.example.domain.Ingreso;
-import org.example.domain.NivelEmergencia;
 import org.example.domain.Paciente;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
