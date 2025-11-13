@@ -1,4 +1,4 @@
-package org.example.domain;
+package com.grupocinco.domain;
 
 public enum NivelEmergencia {
     CRITICA("Critica", 1),

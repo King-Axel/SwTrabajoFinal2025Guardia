@@ -1,4 +1,4 @@
-package org.example.domain;
+package com.grupocinco.domain;
 
 public class Medico extends Persona {
     private String matricula;

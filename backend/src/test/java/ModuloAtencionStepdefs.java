@@ -1,8 +1,7 @@
 import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
-import org.example.domain.Ingreso;
-import org.example.domain.Medico;
+import com.grupocinco.domain.Medico;
 
 import java.util.List;
 import java.util.Map;

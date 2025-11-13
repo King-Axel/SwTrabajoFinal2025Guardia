@@ -1,7 +1,10 @@
+import com.grupocinco.domain.Enfermera;
+import com.grupocinco.domain.Ingreso;
+import com.grupocinco.domain.Medico;
+import com.grupocinco.domain.Paciente;
 import io.cucumber.java.es.*;
-import org.example.app.ServicioUrgencias;
-import org.example.domain.*;
-import org.example.app.interfaces.RepositorioPacientes;
+import com.grupocinco.app.ServicioUrgencias;
+import com.grupocinco.app.interfaces.RepositorioPacientes;
 
 import static org.assertj.core.api.Assertions.*;
 

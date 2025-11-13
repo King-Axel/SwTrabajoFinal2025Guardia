@@ -1,4 +1,4 @@
-package org.example.domain;
+package com.grupocinco.domain;
 
 public abstract class Persona {
     private  String apellido;

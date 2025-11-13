@@ -1,4 +1,4 @@
-package org.example.domain;
+package com.grupocinco.domain;
 
 public class Paciente extends Persona {
     private String cuil;

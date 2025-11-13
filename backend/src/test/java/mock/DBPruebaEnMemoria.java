@@ -1,8 +1,8 @@
 package mock;
 
-import org.example.app.interfaces.RepositorioPacientes;
-import org.example.domain.Ingreso;
-import org.example.domain.Paciente;
+import com.grupocinco.app.interfaces.RepositorioPacientes;
+import com.grupocinco.domain.Ingreso;
+import com.grupocinco.domain.Paciente;
 
 import java.util.*;
 

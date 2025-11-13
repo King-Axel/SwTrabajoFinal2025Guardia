@@ -1,6 +1,6 @@
-package org.example.app.interfaces;
+package com.grupocinco.app.interfaces;
 
-import org.example.domain.Paciente;
+import com.grupocinco.domain.Paciente;
 
 import java.util.Optional;
 

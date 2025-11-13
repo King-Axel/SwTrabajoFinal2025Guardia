@@ -1,6 +1,7 @@
-package org.example.app;
+package com.grupocinco.app;
 
-import org.example.app.interfaces.RepositorioPacientes;
+import com.grupocinco.app.interfaces.RepositorioPacientes;
+import com.grupocinco.domain.*;
 import org.example.domain.*;
 
 import java.util.*;

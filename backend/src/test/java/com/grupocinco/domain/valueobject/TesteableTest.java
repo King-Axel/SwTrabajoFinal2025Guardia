@@ -1,4 +1,4 @@
-package org.example.domain.valueobject;
+package com.grupocinco.domain.valueobject;
 
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
