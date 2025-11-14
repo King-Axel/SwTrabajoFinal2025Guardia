@@ -2,7 +2,7 @@ package com.grupocinco.app;
 
 import com.grupocinco.app.interfaces.RepositorioPacientes;
 import com.grupocinco.domain.*;
-import org.example.domain.*;
+import com.grupocinco.domain.*;
 
 import java.util.*;
 

@@ -9,5 +9,5 @@ public class Medico extends Persona {
     }
 
     public String getApellido() { return super.getApellido(); }
-    public String getNombre() { return getNombre(); }
+    public String getNombre() { return super.getNombre(); }
 }

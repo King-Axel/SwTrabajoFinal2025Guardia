@@ -27,6 +27,28 @@
         <spring.boot.version>3.5.7</spring.boot.version>
     </properties>
 
+    <dependencyManagement>
+        <dependencies>
+            <!-- JUnit BOM (elige la versión adecuada; ejemplo 5.13.3 => Plataform 1.13.3) -->
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>5.13.3</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- (Opcional) Cucumber BOM -->
+            <dependency>
+                <groupId>io.cucumber</groupId>
+                <artifactId>cucumber-bom</artifactId>
+                <version>7.24.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
         <!-- Spring Security -->
         <dependency>
@@ -37,6 +59,13 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Requerida por Argon2PasswordEncoder -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.82</version>
         </dependency>
 
         <dependency>
@@ -50,12 +79,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!--
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-suite</artifactId>
             <version>1.10.2</version>
             <scope>test</scope>
         </dependency>
+        -->
 
         <!-- jdbc para mysql -->
         <dependency>
