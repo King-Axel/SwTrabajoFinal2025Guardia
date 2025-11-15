@@ -1,5 +1,6 @@
 package org.example.app.interfaces;
 
+import org.example.domain.AfiliacionObraSocial;
 import org.example.domain.Domicilio;
 import org.example.domain.ObraSocial;
 import org.example.domain.Paciente;
@@ -15,5 +16,5 @@ public interface RepositorioPacientes {
 
     public Paciente registrarPaciente(String cuil, Paciente paciente);
 
-    public Paciente ingresarPaciente(String cuil, String apellido, String nombre, Domicilio domicilio, ObraSocial obraSocial);
+    public Paciente ingresarPaciente(String cuil, String apellido, String nombre, Domicilio domicilio, AfiliacionObraSocial afiliacionObraSocial);
 }
