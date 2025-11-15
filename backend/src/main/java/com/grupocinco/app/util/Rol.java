@@ -1,6 +1,12 @@
 package com.grupocinco.app.util;
 
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.EnumSet;
+import java.util.List;
 
 public enum Rol {
     ENFERMERA(EnumSet.of(
@@ -20,5 +26,16 @@ public enum Rol {
 
     public EnumSet<Permiso> getPermisos() {
         return permisos;
+    }
+
+    // Para validar acceso a funcionalidad segun rol
+    public Collection<GrantedAuthority> getGrantedAuthorities() {
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+
+        for (Permiso p : permisos) {
+            grantedAuthorities.add(new SimpleGrantedAuthority("PERM_" + p.name()));
+        }
+
+        return grantedAuthorities;
     }
 }

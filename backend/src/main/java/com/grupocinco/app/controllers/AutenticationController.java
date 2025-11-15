@@ -1,10 +1,8 @@
-package com.grupocinco.app.Controllers;
+package com.grupocinco.app.controllers;
 
 import com.grupocinco.app.ServicioAutenticacion;
 import com.grupocinco.app.dtos.CuentaDTO;
 import com.grupocinco.app.dtos.LoginDTO;
-import com.grupocinco.domain.Cuenta;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,15 +24,14 @@ public class AutenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginDTO login) {
-        /*boolean ok = servicio.iniciarSesion(login);
+        boolean ok = servicio.iniciarSesion(login);
 
         if (ok) {
             return ResponseEntity.ok().build();
         }
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("mensaje", "Usuario o contraseña inválidos"));*/
-        return ResponseEntity.ok().build();
+                .body(Map.of("mensaje", "Usuario o contraseña inválidos"));
     }
 
     @PostMapping("/register")
