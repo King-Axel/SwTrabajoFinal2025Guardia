@@ -65,3 +65,11 @@
   font-display: swap;
   src: url("./assets/fonts/Elms_Sans/static/ElmsSans-Regular.ttf");
 }
+
+.botonRegistrar {
+  padding: 10px;
+}
+
+.personalAsociado {
+  padding: 15px;
+}
