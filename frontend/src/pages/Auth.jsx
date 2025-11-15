@@ -7,8 +7,8 @@ const Auth = () => {
   const isLogin = location.pathname.includes('/login');
 
   return (
-    <div className='xl:h-[600px] lg:flex lg:flex-row lg:shadow-2xs lg:max-w-[1300px] lg:min-h-[464px] lg:max-h-[700px] lg:items-between lg:white lg:h-auto lg:p-10 lg:mx-10 lg:rounded-xl w-full h-screen bg-gray-50 tex-white flex flex-col justify-center'>
-      <div className='lg:w-1/2 lg:flex flex-col hidden'>
+    <div className={` ${isLogin? "xl:h-[600px]" : ""} lg:flex lg:flex-row lg:shadow-2xs lg:max-w-[1300px] lg:min-h-[464px] lg:max-h-[700px] lg:items-between lg:white lg:h-auto lg:p-10 lg:mx-10 lg:rounded-xl w-full h-screen bg-gray-50 tex-white flex flex-col justify-center`}>
+      <div className={`${isLogin? "" : "lg:justify-center"} lg:w-1/2 lg:flex flex-col hidden`}>
         <div className='flex gap-4 items-center'>
           <i className="bi bi-plus-square text-[28px] text-blue-600" aria-hidden="true" />
           <h2 className='font-bold text-[24px]'>Sistema de guardia</h2>
@@ -18,7 +18,7 @@ const Auth = () => {
         />
         <div>
           <h2 className='font-extrabold text-[24px]'>Gestión de Guardia Hospitalaria</h2>
-          <p className='text-gray-500'>Bienvenido, ingrese a su cuenta para comenzar</p>
+          <p className='text-gray-500'>Bienvenido, {isLogin? "ingrese a su cuenta" : "rellene los campos"} para comenzar</p>
         </div>
       </div>
 

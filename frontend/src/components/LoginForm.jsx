@@ -39,7 +39,7 @@ const LoginForm = ({ onSubmit } = {}) => {
   return (
     <>
       <form
-        className="form w-full max-w-md mx-auto p-5 xl:flex xl:flex-col lg:p-0 space-y-4"
+        className="form w-full p-5 xl:flex xl:flex-col lg:p-0 space-y-4"
         onSubmit={handleSubmit}
       >
         <div className="form-block">
