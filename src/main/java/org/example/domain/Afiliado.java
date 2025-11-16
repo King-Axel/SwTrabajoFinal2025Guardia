@@ -1,5 +1,9 @@
 package org.example.domain;
 
+import org.example.app.exceptions.DomainException;
+
+import java.util.Objects;
+
 public class Afiliado {
     private ObraSocial obraSocial;
     private String numeroAfiliado;
@@ -16,6 +20,7 @@ public class Afiliado {
     public String getNumeroAfiliado() {
         return numeroAfiliado;
     }
+
 }
 
 

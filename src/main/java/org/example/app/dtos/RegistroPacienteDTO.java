@@ -1,5 +1,7 @@
 package org.example.app.dtos;
 
+import java.util.UUID;
+
 public class RegistroPacienteDTO {
 
     private String cuil;
@@ -10,8 +12,8 @@ public class RegistroPacienteDTO {
     private Integer numero;
     private String localidad;
 
-    private Long idObraSocial;      // opcional
-    private String numeroAfiliado;  // opcional (pero requerido si hay obra social)
+    private UUID idObraSocial;
+    private String numeroAfiliado;
 
     public String getCuil() {
         return cuil;
@@ -61,11 +63,11 @@ public class RegistroPacienteDTO {
         this.localidad = localidad;
     }
 
-    public Long getIdObraSocial() {
+    public UUID getIdObraSocial() {
         return idObraSocial;
     }
 
-    public void setIdObraSocial(Long idObraSocial) {
+    public void setIdObraSocial(UUID idObraSocial) {
         this.idObraSocial = idObraSocial;
     }
 

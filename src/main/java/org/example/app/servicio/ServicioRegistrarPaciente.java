@@ -16,7 +16,6 @@ public class ServicioRegistrarPaciente {
 
     public Paciente registrarPaciente(RegistroPacienteDTO dto) {
         validarDatosMandatorios(dto);
-        validarFormatoCuil(dto.getCuil());
         Afiliado afiliado = null;
 
         if (dto.getIdObraSocial() != null) {
@@ -83,16 +82,5 @@ public class ServicioRegistrarPaciente {
 
     private boolean esNuloOVacio(String valor) {
         return valor == null || valor.isBlank();
-    }
-
-    private void validarFormatoCuil(String cuil) {
-        if (cuil == null) {
-            throw new CuilInvalidoException("Cuil invalido (es null)");
-        }
-
-        String regex = "\\d{2}-\\d{8}-\\d";
-        if (!cuil.matches(regex)) {
-            throw new CuilInvalidoException("Cuil invalido (formato esperado: XX-XXXXXXXX-X)");
-        }
     }
 }

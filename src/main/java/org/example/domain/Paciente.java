@@ -1,35 +1,25 @@
 package org.example.domain;
 
-public class Paciente {
-    private String cuil;
-    private String apellido;
-    private String nombre;
+import org.example.app.exceptions.DomainException;
+
+import java.util.Objects;
+
+public class Paciente extends Persona{
     private Domicilio domicilio;
-    private Afiliado afiliacion;
+    private Afiliado afiliado;
 
     public Paciente(String cuil, String apellido, String nombre) {
-        this.cuil = cuil;
-        this.apellido = apellido;
-        this.nombre = nombre;
+        super(cuil, apellido, nombre);
     }
 
-    public Paciente(String cuil, String apellido, String nombre, Domicilio domicilio, Afiliado afiliacion ) {
-        this.cuil = cuil;
-        this.apellido = apellido;
-        this.nombre = nombre;
-        this.afiliacion = afiliacion;
+    public Paciente(String cuil, String apellido, String nombre, Domicilio domicilio, Afiliado afiliado) {
+        super(cuil, apellido, nombre);
+        this.afiliado = afiliado;
         this.domicilio = domicilio;
     }
 
-    public String getApellido() { return this.apellido; }
-
-    public String getNombre() { return this.nombre; }
-
     public Domicilio getDomicilio() { return this.domicilio; }
 
-    public Afiliado getAfiliacion() { return this.afiliacion; }
+    public Afiliado getAfiliado() { return this.afiliado; }
 
-    public String getCuil() {
-        return this.cuil;
-    }
 }
