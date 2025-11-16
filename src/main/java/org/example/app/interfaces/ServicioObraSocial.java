@@ -1,10 +1,10 @@
 package org.example.app.interfaces;
 
-import org.example.domain.AfiliacionObraSocial;
+import org.example.domain.Afiliado;
 
 public interface ServicioObraSocial {
 
-    AfiliacionObraSocial obtenerObraSocialPorCodigo(Long idObraSocial);
+    Afiliado obtenerObraSocialPorId(Long idObraSocial);
 
-    boolean estaAfiliado(AfiliacionObraSocial obraSocial, String numeroAfiliado);
+    boolean estaAfiliado(Afiliado obraSocial);
 }

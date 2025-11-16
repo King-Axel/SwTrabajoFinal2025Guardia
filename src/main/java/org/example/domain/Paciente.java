@@ -5,7 +5,7 @@ public class Paciente {
     private String apellido;
     private String nombre;
     private Domicilio domicilio;
-    private AfiliacionObraSocial afiliacion;
+    private Afiliado afiliacion;
 
     public Paciente(String cuil, String apellido, String nombre) {
         this.cuil = cuil;
@@ -13,7 +13,7 @@ public class Paciente {
         this.nombre = nombre;
     }
 
-    public Paciente(String cuil, String apellido, String nombre, Domicilio domicilio, AfiliacionObraSocial afiliacion ) {
+    public Paciente(String cuil, String apellido, String nombre, Domicilio domicilio, Afiliado afiliacion ) {
         this.cuil = cuil;
         this.apellido = apellido;
         this.nombre = nombre;
@@ -27,7 +27,7 @@ public class Paciente {
 
     public Domicilio getDomicilio() { return this.domicilio; }
 
-    public AfiliacionObraSocial getAfiliacion() { return this.afiliacion; }
+    public Afiliado getAfiliacion() { return this.afiliacion; }
 
     public String getCuil() {
         return this.cuil;

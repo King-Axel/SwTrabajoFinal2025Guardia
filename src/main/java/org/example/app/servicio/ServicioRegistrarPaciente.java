@@ -17,22 +17,22 @@ public class ServicioRegistrarPaciente {
     public Paciente registrarPaciente(RegistroPacienteDTO dto) {
         validarDatosMandatorios(dto);
         validarFormatoCuil(dto.getCuil());
-        AfiliacionObraSocial afiliacionObraSocial = null;
+        Afiliado afiliado = null;
 
         if (dto.getIdObraSocial() != null) {
             if (dto.getNumeroAfiliado() == null || dto.getNumeroAfiliado().isBlank()) {
                 throw new DatoMandatorioOmitidoException(
-                        "El numero de afiliado es obligatorio cuando se informa una obra social"
+                        "El numero de afiliado es obligatorio cuando se registra una obra social"
                 );
             }
 
-            afiliacionObraSocial = servicioObraSocial.obtenerObraSocialPorCodigo(dto.getIdObraSocial());
-            if (afiliacionObraSocial == null) {
+            afiliado = servicioObraSocial.obtenerObraSocialPorId(dto.getIdObraSocial());
+            if (afiliado == null) {
                 throw new ObraSocialInexistenteException("Obra social inexistente");
             }
 
-            boolean afiliado = servicioObraSocial.estaAfiliado(afiliacionObraSocial, dto.getNumeroAfiliado());
-            if (!afiliado) {
+            boolean afiliacion = servicioObraSocial.estaAfiliado(afiliado);
+            if (!afiliacion) {
                 throw new PacienteNoAfiliadoException("El paciente no esta afiliado a la obra social");
             }
         }
@@ -48,7 +48,7 @@ public class ServicioRegistrarPaciente {
                 dto.getApellido(),
                 dto.getNombre(),
                 domicilio,
-                afiliacionObraSocial
+                afiliado
         );
 
         repositorioPacientes.registrarPaciente(dto.getCuil(), paciente);

@@ -1,6 +1,7 @@
 package mock;
 
 import org.example.app.interfaces.RepositorioPacientes;
+import org.example.domain.Afiliado;
 import org.example.domain.Domicilio;
 import org.example.domain.ObraSocial;
 import org.example.domain.Paciente;
@@ -38,9 +39,9 @@ public class DBPruebaEnMemoria implements RepositorioPacientes {
     }
 
     @Override
-    public Paciente ingresarPaciente(String cuil, String apellido, String nombre, Domicilio domicilio, ObraSocial obraSocial) {
+    public Paciente ingresarPaciente(String cuil, String apellido, String nombre, Domicilio domicilio, Afiliado afiliado) {
         //Ver si el paciente existe o no en la db
-        Paciente paciente = new Paciente(cuil, apellido, nombre, domicilio, obraSocial);
+        Paciente paciente = new Paciente(cuil, apellido, nombre, domicilio, afiliado);
         pacientes.put(cuil, paciente);
         return paciente;
     }
