@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "../utils/auth";
 
 const RegisterForm = ({ onSubmit } = {}) => {
   const [email, setEmail] = useState("");
@@ -10,19 +11,41 @@ const RegisterForm = ({ onSubmit } = {}) => {
   const [buscar, setBuscar] = useState("");
   const [errors, setErrors] = useState({});
   const [abierto, setAbierto] = useState(false);
+  const [opciones, setOpciones] = useState([]);
   const containerRef = useRef(null);
   const navigate = useNavigate();
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const filtrados = useMemo(() => {
-    const opciones = [
-      { rol: "ENFERMERA", nombre: "Lopez, Jacinta Maria" },
-      { rol: "ENFERMERA", nombre: "Pérez, Ana Lucía" },
-      { rol: "MEDICO", nombre: "Gomez, Carlos Alberto" },
-      { rol: "MEDICO", nombre: "Rivas, Julia" },
-    ];
+  useEffect(() => {
+    const token = getToken();
 
+    fetch('http://localhost:8081/api/personal', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Error al cargar personal');
+        return res.json();
+      })
+      .then((data) => {
+        setOpciones(
+          data.map((p) => ({
+            rol: p.rol,
+            nombre: p.apellido + ", " + p.nombre,
+          }))
+        );
+      })
+      .catch((err) => {
+        console.error('No se pudieron cargar las opciones de personal:', err);
+        setOpciones([]);
+      });
+  }, [rol]);;
+
+  const filtrados = useMemo(() => {
     if (!rol) return [];
 
     const q = buscar.trim().toLowerCase();
@@ -30,7 +53,7 @@ const RegisterForm = ({ onSubmit } = {}) => {
     return opciones
       .filter((p) => p.rol === rol)
       .filter((p) => (q === "" ? true : p.nombre.toLowerCase().includes(q)));
-  }, [rol, buscar]);
+  }, [rol, buscar, opciones]);
 
   useEffect(() => {
     function handlePointerDown(e) {
@@ -124,9 +147,8 @@ const RegisterForm = ({ onSubmit } = {}) => {
           <label htmlFor="contrasena">Contraseña</label>
           <div className="relative">
             <i
-              className={`bi form-icon ${
-                mostrarContra ? "bi-unlock" : "bi-lock"
-              } absolute left-2`}
+              className={`bi form-icon ${mostrarContra ? "bi-unlock" : "bi-lock"
+                } absolute left-2`}
             ></i>
             <input
               type={mostrarContra ? "text" : "password"}
@@ -145,9 +167,8 @@ const RegisterForm = ({ onSubmit } = {}) => {
               className="absolute right-2 top-1/2 -translate-y-3"
             >
               <i
-                className={`bi form-icon ${
-                  mostrarContra ? "bi-eye-slash" : "bi-eye"
-                }`}
+                className={`bi form-icon ${mostrarContra ? "bi-eye-slash" : "bi-eye"
+                  }`}
               ></i>
             </button>
           </div>
@@ -217,9 +238,8 @@ const RegisterForm = ({ onSubmit } = {}) => {
           </div>
 
           <ul
-            className={`${
-              abierto ? "" : "hidden"
-            } absolute top-full left-0 mt-1 bg-white overflow-y-scroll border border-gray-300 max-h-[200px] w-full no-scrollbar z-20 rounded-md shadow-lg`}
+            className={`${abierto ? "" : "hidden"
+              } absolute top-full left-0 mt-1 bg-white overflow-y-scroll border border-gray-300 max-h-[200px] w-full no-scrollbar z-20 rounded-md shadow-lg`}
           >
             {filtrados.length === 0 ? (
               <li className="px-4 py-2 text-gray-500 border-t border-gray-300">

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { saveToken } from "../utils/auth";
 
 const LoginForm = ({ onSubmit } = {}) => {
   const [email, setEmail] = useState("");
@@ -10,7 +11,7 @@ const LoginForm = ({ onSubmit } = {}) => {
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -30,10 +31,38 @@ const LoginForm = ({ onSubmit } = {}) => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
+      const payload = { mode: "login", email, contrasena };
+      if (onSubmit) onSubmit(payload);
 
-    const payload = { mode: "login", email, contrasena };
-    if (onSubmit) onSubmit(payload);
-    navigate("/");
+    try {
+      const response = await fetch('http://localhost:8081/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim(), contrasena })
+      });
+
+      if (!response.ok) {
+        const err  = await response.json().catch(() => ({ mensaje: 'Error en login' }));
+        setErrors({ server: err.mensaje || 'Error en login' });
+        return;
+      }
+
+      const body = await response.json();
+      const token = body.token;
+      
+      if (!token) {
+        setErrors({ server: 'Token no recibido' });
+        return;
+      }
+
+      saveToken(token);
+      console.log(token);
+      navigate('/');
+    } catch (error) {
+      setErrors({ server: 'Error de red' });
+      console.error("el error es: " + error);
+    }
+
   };
 
   return (

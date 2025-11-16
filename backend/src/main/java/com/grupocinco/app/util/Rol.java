@@ -1,12 +1,10 @@
 package com.grupocinco.app.util;
 
+import com.grupocinco.app.exceptions.RolInvalidoException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 
 public enum Rol {
     ENFERMERA(EnumSet.of(
@@ -29,13 +27,29 @@ public enum Rol {
     }
 
     // Para validar acceso a funcionalidad segun rol
-    public Collection<GrantedAuthority> getGrantedAuthorities() {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+    public List<SimpleGrantedAuthority> getGrantedAuthorities() {
+        List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
 
         for (Permiso p : permisos) {
             grantedAuthorities.add(new SimpleGrantedAuthority("PERM_" + p.name()));
         }
 
         return grantedAuthorities;
+    }
+
+    public static Rol desdeString(String rol) {
+        if (rol == null) throw new RolInvalidoException("Se debe ingresar un rol para crear una cuenta");
+
+        return Arrays.stream(Rol.values())
+                .filter(r -> r.esValido(rol))
+                .findFirst()
+                .orElseThrow(
+                        () -> new RolInvalidoException("El rol " + rol + " no existe")
+                );
+    }
+
+    public boolean esValido(String nombre) {
+        if (nombre == null) return false;
+        return nombre.equalsIgnoreCase(this.name());
     }
 }

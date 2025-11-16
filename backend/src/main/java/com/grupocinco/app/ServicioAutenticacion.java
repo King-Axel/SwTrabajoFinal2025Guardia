@@ -9,10 +9,18 @@ import com.grupocinco.app.interfaces.RepositorioCuentas;
 import com.grupocinco.app.security.PasswordHasher;
 import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Cuenta;
+import com.grupocinco.domain.Enfermera;
+import com.grupocinco.domain.Medico;
 import com.grupocinco.domain.Persona;
 import com.grupocinco.domain.valueobject.Contrasena;
 import com.grupocinco.domain.valueobject.Email;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Service
 public class ServicioAutenticacion {
     private RepositorioCuentas dbCuentas;
 
@@ -21,33 +29,18 @@ public class ServicioAutenticacion {
         this.dbCuentas = dbCuentas;
     }
 
-    /*
-    * PARA CUANDO SE IMPLEMENTE CON VISTA Y CONTROLADOR
-    *
-    public boolean registrar(CuentaDTO cuentaDTO) {
-        PersonaDTO personaDTO = cuentaDTO.getPersona();
-        Persona persona =
+    // Para uso real
+    public boolean registrarDTO(CuentaDTO dto) {
+        Cuenta cuenta = dto.aClase();
 
-        Cuenta cuenta =
-                new Cuenta(
-                        Email.of(cuentaDTO.getEmail()),
-                        Contrasena.fromRaw(cuentaDTO.getContrasena()),
-                        cuentaDTO.getRol(),
-                        cuentaDTO.getPersona());
-
-        return dbCuentas.guardar(cuenta);
+        if(dbCuentas.buscar(cuenta.getEmail()).isPresent()) {
+            throw new CuentaExistenteException();
+        } else {
+            return dbCuentas.guardar(cuenta);
+        }
     }
 
-    public boolean iniciarSesion(LoginDTO loginDTO) {
-        return dbCuentas.buscar(loginDTO.getEmail())
-                .map(
-                        cuenta -> PasswordHasher.matches(loginDTO.getContrasena(), cuenta.getContrasena().get())
-                )
-                .orElse(false);
-                //.orElseThrow(new CredencialesInvalidasException("Usuario o contraseña inválidos"));
-    }
-     */
-
+    // Para pruebas
     public boolean registrar(Cuenta cuenta) {
         Cuenta existencia = dbCuentas.buscar(cuenta.getEmail()).orElse(null);
 
@@ -56,11 +49,27 @@ public class ServicioAutenticacion {
         return dbCuentas.guardar(cuenta);
     }
 
+    // Para uso real
+    public Cuenta iniciarSesionDTO(LoginDTO dto) {
+        Email email = Email.of(dto.getEmail());
+        Contrasena contrasena = Contrasena.fromRaw(dto.getContrasena());
+
+        Cuenta existencia = dbCuentas.buscar(dto.getEmail()).orElse(null);
+
+        if (
+                existencia == null ||
+                !PasswordHasher.matches(dto.getContrasena(), existencia.getContrasena())
+        ) throw new CredencialesInvalidasException();
+
+        return existencia;
+    }
+
+    // Para pruebas
     public boolean iniciarSesion(String email, String contrasenaRaw) {
         Cuenta cuenta = dbCuentas.buscar(email)
                 .orElse(null);
 
-        if (cuenta == null || !PasswordHasher.matches(contrasenaRaw, cuenta.getContrasena().get())) {
+        if (cuenta == null || !PasswordHasher.matches(contrasenaRaw, cuenta.getContrasena())) {
             throw new CredencialesInvalidasException();
         }
 

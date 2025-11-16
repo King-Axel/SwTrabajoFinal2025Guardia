@@ -27,8 +27,12 @@ public class Cuenta {
         return rol;
     }
 
-    public Contrasena getContrasena() {
-        return contrasenaHash;
+    public String getContrasena() {
+        return contrasenaHash.get();
+    }
+
+    public Persona getPersona() {
+        return persona;
     }
 
     public void validarRolYPersonalAsociado(Rol rol, Persona persona) {
