@@ -6,7 +6,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import org.example.app.dtos.RegistroPacienteDTO;
-import org.example.app.exceptions.CuilInvalidoException;
 import org.example.app.exceptions.DatoMandatorioOmitidoException;
 import org.example.app.exceptions.ObraSocialInexistenteException;
 import org.example.app.exceptions.PacienteNoAfiliadoException;
@@ -39,7 +38,7 @@ class ServicioRegistrarPacienteTest {
         dto.setCalle("Urquiza");
         dto.setNumero(123);
         dto.setLocalidad("Alderetes");
-        dto.setIdObraSocial(null); //sin obra social por defecot
+        dto.setNombreObraSocial(null); //sin obra social por defecot
         dto.setNumeroAfiliado(null);
         return dto;
     }
@@ -49,14 +48,16 @@ class ServicioRegistrarPacienteTest {
         //Preparacion
         RegistroPacienteDTO dto = crearDTO();
         UUID idObraSocial = UUID.randomUUID();
-        dto.setIdObraSocial(idObraSocial);
+        dto.setNombreObraSocial("Boreal");
         dto.setNumeroAfiliado("123456789");
 
         ObraSocial obraSocial = new ObraSocial(idObraSocial,"Boreal");
+
+        when(servicioObraSocial.obtenerObraSocialPorNombre(dto.getNombreObraSocial())).thenReturn(obraSocial);
+
         Afiliado afiliado = new Afiliado(obraSocial,"123456789");
 
-        when(servicioObraSocial.obtenerObraSocialPorId(idObraSocial)).thenReturn(afiliado);
-        when(servicioObraSocial.estaAfiliado(afiliado)).thenReturn(true);
+        when(servicioObraSocial.estaAfiliado(any(Afiliado.class))).thenReturn(true);
         when(repositorioPacientes.registrarPaciente(eq(dto.getCuil()), any(Paciente.class)))
                 .thenAnswer(invocation -> invocation.getArgument(1));
 
@@ -72,12 +73,14 @@ class ServicioRegistrarPacienteTest {
         assertEquals(dto.getCalle(),paciente.getDomicilio().getCalle());
         assertEquals(dto.getNumero(),paciente.getDomicilio().getNumero());
         assertEquals(dto.getLocalidad(),paciente.getDomicilio().getLocalidad());
-        assertEquals(afiliado,paciente.getAfiliado());
+        assertNotNull(paciente.getAfiliado());
+        assertEquals(obraSocial,paciente.getAfiliado().getObraSocial());
+        assertEquals(dto.getNumeroAfiliado(),paciente.getAfiliado().getNumeroAfiliado());
 
         verify(servicioObraSocial, times(1))
-                .obtenerObraSocialPorId(idObraSocial);
+                .obtenerObraSocialPorNombre(dto.getNombreObraSocial());
         verify(servicioObraSocial, times(1))
-                .estaAfiliado(afiliado);
+                .estaAfiliado(any(Afiliado.class));
         verify(repositorioPacientes, times(1))
                 .registrarPaciente(eq(dto.getCuil()), any(Paciente.class));
     }
@@ -86,7 +89,7 @@ class ServicioRegistrarPacienteTest {
     public void registroCorrectoSinObraSocial() {
         //Preparacion
         RegistroPacienteDTO dto = crearDTO();
-        dto.setIdObraSocial(null);
+        dto.setNombreObraSocial(null);
         dto.setNumeroAfiliado(null);
 
         when(repositorioPacientes.registrarPaciente(eq(dto.getCuil()), any(Paciente.class)))
@@ -116,10 +119,10 @@ class ServicioRegistrarPacienteTest {
         //Preparacion
         RegistroPacienteDTO dto = crearDTO();
         UUID idObraSocial = UUID.randomUUID();
-        dto.setIdObraSocial(idObraSocial);
+        dto.setNombreObraSocial("hola");
         dto.setNumeroAfiliado("123456789");
 
-        when(servicioObraSocial.obtenerObraSocialPorId(idObraSocial)).thenReturn(null);
+        when(servicioObraSocial.obtenerObraSocialPorNombre(dto.getNombreObraSocial())).thenReturn(null);
 
         //Ejecucion y Validacion
         ObraSocialInexistenteException thrown = assertThrows(ObraSocialInexistenteException.class, () -> {
@@ -128,7 +131,7 @@ class ServicioRegistrarPacienteTest {
         assertEquals("Obra social inexistente", thrown.getMessage());
 
         verify(servicioObraSocial, times(1))
-                .obtenerObraSocialPorId(idObraSocial);
+                .obtenerObraSocialPorNombre(dto.getNombreObraSocial());
         verify(servicioObraSocial, never())
                 .estaAfiliado(any());
         verifyNoInteractions(repositorioPacientes);
@@ -139,13 +142,13 @@ class ServicioRegistrarPacienteTest {
         //Preparacion
         RegistroPacienteDTO dto = crearDTO();
         UUID idObraSocial = UUID.randomUUID();
-        dto.setIdObraSocial(idObraSocial);
+        dto.setNombreObraSocial("PAMI");
         dto.setNumeroAfiliado("123456780");
 
         ObraSocial obraSocial = new ObraSocial(idObraSocial, "PAMI");
         Afiliado afiliado = new Afiliado(obraSocial,"123456780");
 
-        when(servicioObraSocial.obtenerObraSocialPorId(idObraSocial)).thenReturn(afiliado);
+        when(servicioObraSocial.obtenerObraSocialPorNombre("PAMI")).thenReturn(obraSocial);
         when(servicioObraSocial.estaAfiliado(afiliado)).thenReturn(false);
 
         //Ejecucion y Validacion
@@ -155,9 +158,9 @@ class ServicioRegistrarPacienteTest {
         assertEquals("El paciente no esta afiliado a la obra social", thrown.getMessage());
 
         verify(servicioObraSocial, times(1))
-                .obtenerObraSocialPorId(idObraSocial);
+                .obtenerObraSocialPorNombre(dto.getNombreObraSocial());
         verify(servicioObraSocial, times(1))
-                .estaAfiliado(afiliado);
+                .estaAfiliado(any(Afiliado.class));
         verifyNoInteractions(repositorioPacientes);
     }
 

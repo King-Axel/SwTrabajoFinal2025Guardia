@@ -12,7 +12,7 @@ public class RegistroPacienteDTO {
     private Integer numero;
     private String localidad;
 
-    private UUID idObraSocial;
+    private String nombreObraSocial;
     private String numeroAfiliado;
 
     public String getCuil() {
@@ -63,12 +63,12 @@ public class RegistroPacienteDTO {
         this.localidad = localidad;
     }
 
-    public UUID getIdObraSocial() {
-        return idObraSocial;
+    public String getNombreObraSocial() {
+        return nombreObraSocial;
     }
 
-    public void setIdObraSocial(UUID idObraSocial) {
-        this.idObraSocial = idObraSocial;
+    public void setNombreObraSocial(String nombreObraSocial) {
+        this.nombreObraSocial = nombreObraSocial;
     }
 
     public String getNumeroAfiliado() {

@@ -18,18 +18,19 @@ public class ServicioRegistrarPaciente {
         validarDatosMandatorios(dto);
         Afiliado afiliado = null;
 
-        if (dto.getIdObraSocial() != null) {
+        if (dto.getNombreObraSocial() != null) {
             if (dto.getNumeroAfiliado() == null || dto.getNumeroAfiliado().isBlank()) {
                 throw new DatoMandatorioOmitidoException(
                         "El numero de afiliado es obligatorio cuando se registra una obra social"
                 );
             }
 
-            afiliado = servicioObraSocial.obtenerObraSocialPorId(dto.getIdObraSocial());
-            if (afiliado == null) {
+            ObraSocial obraSocial = servicioObraSocial.obtenerObraSocialPorNombre(dto.getNombreObraSocial());
+            if (obraSocial == null) {
                 throw new ObraSocialInexistenteException("Obra social inexistente");
             }
 
+            afiliado = new Afiliado(obraSocial,dto.getNumeroAfiliado());
             boolean afiliacion = servicioObraSocial.estaAfiliado(afiliado);
             if (!afiliacion) {
                 throw new PacienteNoAfiliadoException("El paciente no esta afiliado a la obra social");

@@ -1,11 +1,11 @@
 package org.example.app.interfaces;
 
 import org.example.domain.Afiliado;
-import java.util.UUID;
+import org.example.domain.ObraSocial;
 
 public interface ServicioObraSocial {
 
-    Afiliado obtenerObraSocialPorId(UUID idObraSocial);
+    ObraSocial obtenerObraSocialPorNombre(String nombreObraSocial);
 
-    boolean estaAfiliado(Afiliado obraSocial);
+    boolean estaAfiliado(Afiliado afiliado);
 }
