@@ -29,10 +29,9 @@ public class CorsConfig {
         return source;
     }
 
-    // Un CorsFilter con alta prioridad evita que otros filtros (ej. Security) bloqueen preflights
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     public CorsFilter corsFilter() {
-        return new CorsFilter((UrlBasedCorsConfigurationSource) corsConfigurationSource());
+        return new CorsFilter(corsConfigurationSource());
     }
 }

@@ -4,15 +4,17 @@ package com.grupocinco.domain.valueobject;
 import java.util.regex.Pattern;
 
 public class Email {
-    private String email;
-    private final Pattern PATRON_EMAIL = Pattern.compile(
-            "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
-            Pattern.CASE_INSENSITIVE
-    );
+    private final String email;
 
     private Email(String email) {
         if (email == null || email.isBlank())
             throw new IllegalArgumentException("El email es obligatorio");
+
+        Pattern PATRON_EMAIL = Pattern.compile(
+                "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$",
+                Pattern.CASE_INSENSITIVE
+        );
+
         if (!PATRON_EMAIL.matcher(email).matches())
             throw new IllegalArgumentException("El email ingresado no es valido");
         this.email = email;
@@ -22,7 +24,7 @@ public class Email {
         return new Email(email);
     }
 
-    public String getEmail() {
+    public String get() {
         return email;
     }
 }

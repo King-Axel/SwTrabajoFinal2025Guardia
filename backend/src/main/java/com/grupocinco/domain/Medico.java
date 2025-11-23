@@ -1,14 +1,16 @@
 package com.grupocinco.domain;
 
+import lombok.Getter;
+
+@Getter
 public class Medico extends Persona {
-    private String matricula;
+    private final String matricula;
 
     public Medico(String apellido, String nombre, String matricula) {
         super(apellido, nombre);
+
+        if (matricula == null || matricula.isBlank()) throw new IllegalArgumentException("La matricula no puede estar vacía");
+
         this.matricula = matricula;
     }
-
-    public String getApellido() { return super.getApellido(); }
-    public String getNombre() { return super.getNombre(); }
-    public String getMatricula() { return matricula; }
 }

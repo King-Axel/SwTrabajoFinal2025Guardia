@@ -14,9 +14,14 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 
 public class JwtAuthFilter extends OncePerRequestFilter {
+    private final JwtUtil jwtUtil;
+
+    public JwtAuthFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain)
             throws ServletException, IOException {
@@ -24,16 +29,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (header != null && header.startsWith("Bearer ")) {
             String token = header.substring(7);
 
-            if (JwtUtil.isTokenValid(token)) {
-                String subject = JwtUtil.extractSubject(token);
-                String rolTk = JwtUtil.extractClaim(token, claims -> (String) claims.get("rol"));
+            if (jwtUtil.isTokenValid(token)) {
+                String subject = jwtUtil.extractSubject(token);
+                String rolTk = jwtUtil.extractClaim(token, claims -> (String) claims.get("rol"));
 
                 Rol rol = Rol.desdeString(rolTk);
 
                 var authorities = new ArrayList<GrantedAuthority>();
 
                 authorities.add(new SimpleGrantedAuthority("ROLE_" + rol.name()));
-
                 authorities.addAll(rol.getGrantedAuthorities());
 
                 var auth =  new UsernamePasswordAuthenticationToken(subject, null, authorities);

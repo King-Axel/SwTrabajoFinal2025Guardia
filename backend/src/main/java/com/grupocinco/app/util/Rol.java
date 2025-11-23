@@ -1,11 +1,12 @@
 package com.grupocinco.app.util;
 
 import com.grupocinco.app.exceptions.RolInvalidoException;
-import org.springframework.security.core.GrantedAuthority;
+import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.*;
 
+@Getter
 public enum Rol {
     ENFERMERA(EnumSet.of(
             Permiso.IS202501_REGISTRO_ADMISION,
@@ -16,17 +17,12 @@ public enum Rol {
             Permiso.IS202504_REGISTRO_ATENCION
     ));
 
-    private EnumSet<Permiso> permisos;
+    private final EnumSet<Permiso> permisos;
 
     Rol(EnumSet<Permiso> permisos){
         this.permisos = permisos;
     }
 
-    public EnumSet<Permiso> getPermisos() {
-        return permisos;
-    }
-
-    // Para validar acceso a funcionalidad segun rol
     public List<SimpleGrantedAuthority> getGrantedAuthorities() {
         List<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
 
@@ -38,7 +34,7 @@ public enum Rol {
     }
 
     public static Rol desdeString(String rol) {
-        if (rol == null) throw new RolInvalidoException("Se debe ingresar un rol para crear una cuenta");
+        if (rol == null || rol.isBlank()) throw new RolInvalidoException("Se debe ingresar un rol para crear una cuenta");
 
         return Arrays.stream(Rol.values())
                 .filter(r -> r.esValido(rol))
@@ -48,8 +44,7 @@ public enum Rol {
                 );
     }
 
-    public boolean esValido(String nombre) {
-        if (nombre == null) return false;
+    private boolean esValido(String nombre) {
         return nombre.equalsIgnoreCase(this.name());
     }
 }

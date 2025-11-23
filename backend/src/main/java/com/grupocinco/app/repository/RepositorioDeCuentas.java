@@ -14,14 +14,12 @@ public class RepositorioDeCuentas implements RepositorioCuentas {
     private final Map<String, Cuenta> dbCuenta = new HashMap<>();
 
     @Override
-    public Optional<Cuenta> buscar(String email) {
+    public Optional<Cuenta> buscarPorEmail(String email) {
         return Optional.ofNullable(dbCuenta.get(email));
     }
 
     @Override
-    public boolean guardar(Cuenta cuenta) {
-        if (dbCuenta.containsKey(cuenta.getEmail())) return false;
+    public void guardar(Cuenta cuenta) {
         dbCuenta.put(cuenta.getEmail(), cuenta);
-        return true;
     }
 }

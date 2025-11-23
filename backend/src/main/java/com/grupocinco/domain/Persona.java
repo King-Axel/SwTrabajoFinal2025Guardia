@@ -1,18 +1,16 @@
 package com.grupocinco.domain;
 
+import lombok.Getter;
+
+@Getter
 public abstract class Persona {
-    private  String apellido;
-    private String nombre;
+    private final String apellido;
+    private final String nombre;
 
-    public String getApellido() {
-        return apellido;
-    }
+    protected Persona(String apellido, String nombre) {
+        if (apellido == null || apellido.isBlank()) throw new IllegalArgumentException("El apellido no puede estar vacío");
+        if (nombre == null || nombre.isBlank()) throw new IllegalArgumentException("El nombre no puede estar vacío");
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public Persona(String apellido, String nombre) {
         this.apellido = apellido;
         this.nombre = nombre;
     }

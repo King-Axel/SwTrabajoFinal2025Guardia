@@ -1,77 +1,61 @@
 package com.grupocinco.domain.valueobject;
 
-import com.grupocinco.app.security.PasswordHasher;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import static org.assertj.core.api.Assertions.*;
 
 public class ContrasenaTest {
+    private final PasswordEncoder encoder =
+            new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
+
     @Test
-    public void cuandoLaContrasenaEsValidaEstaDeberiaSerHasheadaCorrectamente() {
-        // Preparacion
+    public void cuandoLaContrasenaEsValidaDebePasarValidacionesDelValueObject() {
         String contrasena = "zapallitorelleno34";
 
-        // Ejecucion
-        Contrasena contrasenaObj = Contrasena.fromRaw(contrasena);
-
-        // Validacion
-        assertThat(contrasenaObj).isNotNull()
-                .isInstanceOf(Contrasena.class);
-        assertThat(contrasenaObj.get()).isNotEqualTo(contrasena);
-        assertThat(PasswordHasher.matches(contrasena, contrasenaObj.get())).isTrue();
-
-        assertThat(PasswordHasher.hash(contrasena)).isNotEqualTo(contrasena);
+        assertThatCode(
+                () -> Contrasena.validarRaw(contrasena)
+        ).doesNotThrowAnyException();
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = { "        ", " " })
-    public void cuandoContrasenaEstaAusenteSeDeberiaLanzarExcepcionIndicandoObligatoriedad(String contrasenaRec) {
-        // Preparacion
-        String contrasena = contrasenaRec;
-
-        // Ejecucion y Validacion
-        assertThatThrownBy(() -> Contrasena.fromRaw(contrasena))
+    public void cuandoContrasenaEstaAusenteSeDeberiaLanzarExcepcionIndicandoObligatoriedad(String contrasenaReq) {
+        assertThatThrownBy(() -> Contrasena.validarRaw(contrasenaReq))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
-                .hasMessage("La contrasena es obligatoria");
+                .hasMessage("La contraseña es obligatoria");
     }
 
     @Test
     public void cuandoLaContrasenaEsCortaDeberiaLanzarseUnaExcepcionIndicandoLaLongitudMinima() {
-        // Preparacion
         String contrasena = "contra";
 
-        // Ejecucion y Validacion
-        assertThatThrownBy(() -> Contrasena.fromRaw(contrasena))
+        assertThatThrownBy(() -> Contrasena.validarRaw(contrasena))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
-                .hasMessage("La contrasena debe tener al menos 8 caracteres");
+                .hasMessage("La contraseña debe tener al menos 8 caracteres");
     }
 
     @Test
     public void reconstruccionCorrectaDeContrasenaDesdeHash() {
-        // Preparacion
-        Contrasena contrasenaHash = Contrasena.fromRaw("PanConJamon");
+        String contrasenaHash = encoder.encode("PanConJamon");
 
-        // Ejecucion
-        Contrasena contrasena = Contrasena.fromHashed(contrasenaHash.get());
+        Contrasena contrasena = Contrasena.of(contrasenaHash);
 
-        // Validacion
-        assertThat(contrasenaHash.get()).isEqualTo(contrasena.get());
+        assertThat(contrasena).isNotNull();
+        assertThat(contrasena.get()).isEqualTo(contrasenaHash);
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = { "        ", " " })
-    public void tratarDeReconstruirUnaContrasenaAusenteDeberiaLanzarUnaExcepcionIndicandoObligatoriedad(String contrasenaRec) {
-        // Preparacion
-        String contrasena = contrasenaRec;
-
-        // Ejecucion y Validacion
-        assertThatThrownBy(() -> Contrasena.fromHashed(contrasena))
+    public void tratarDeReconstruirUnaContrasenaDesdeHashAusenteDeberiaLanzarUnaExcepcion(String contrasenaHashReq) {
+        assertThatThrownBy(() -> Contrasena.of(contrasenaHashReq))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
-                .hasMessage("La contrasena ingresada no es valida");
+                .hasMessage("El hash no puede estar vacío");
     }
 }

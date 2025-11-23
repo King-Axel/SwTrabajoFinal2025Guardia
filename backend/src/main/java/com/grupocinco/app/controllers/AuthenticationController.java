@@ -1,10 +1,7 @@
 package com.grupocinco.app.controllers;
 
 import com.grupocinco.app.ServicioAutenticacion;
-import com.grupocinco.app.dtos.CuentaDTO;
-import com.grupocinco.app.dtos.LoginDTO;
 import com.grupocinco.app.dtos.PersonaDTO;
-import com.grupocinco.app.repository.RepositorioDePersonal;
 import com.grupocinco.app.services.ServicioPersonal;
 import com.grupocinco.app.util.JwtUtil;
 import com.grupocinco.domain.Cuenta;
@@ -19,26 +16,30 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api")
 public class AuthenticationController {
-    private final ServicioAutenticacion servicio;
+    private final ServicioAutenticacion servicioAutenticacion;
     private final ServicioPersonal servicioPersonal;
+    private final JwtUtil jwtUtil;
 
-    // Inyeccion de dependencia
-    public AuthenticationController(ServicioAutenticacion servicio, ServicioPersonal servicioPersonal) {
-        this.servicio = servicio;
+    public AuthenticationController(ServicioAutenticacion servicioAutenticacion, ServicioPersonal servicioPersonal, JwtUtil jwtUtil) {
+        this.servicioAutenticacion = servicioAutenticacion;
         this.servicioPersonal = servicioPersonal;
+        this.jwtUtil = jwtUtil;
     }
 
+    public record LoginRequest(String email, String password) {}
+    public record RegisterRequest(String email, String password, String rol, PersonaDTO persona) {}
+
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginDTO dto) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest credentials) {
         Map<String, Object> respuesta = new HashMap<>();
 
         try {
-            Cuenta cuenta = servicio.iniciarSesionDTO(dto);
+            Cuenta cuenta = servicioAutenticacion.iniciarSesion(credentials.email(), credentials.password());
 
             Map<String, Object> claims = new HashMap<>();
             claims.put("rol", cuenta.getRol());
             claims.put("persona", cuenta.getPersona());
-            String token = JwtUtil.generateToken(cuenta.getEmail(), claims);
+            String token = jwtUtil.generateToken(cuenta.getEmail(), claims);
             respuesta.put("token", token);
             respuesta.put("mensaje", "Inicio de sesión exitoso");
             return ResponseEntity.ok(respuesta);
@@ -49,12 +50,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String, Object>> register(@RequestBody CuentaDTO dto) {
+    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
         Map<String, Object> respuesta = new HashMap<>();
 
         try {
-            servicio.registrarDTO(dto);
+            servicioAutenticacion.registrar(registerRequest.email(), registerRequest.password(), registerRequest.rol(), registerRequest.persona());
             respuesta.put("mensaje", "Registrado exitosamente");
+
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);
         } catch (Exception e) {
             respuesta.put("mensaje", e.getMessage());
