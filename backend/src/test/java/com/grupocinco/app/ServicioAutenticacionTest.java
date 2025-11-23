@@ -41,7 +41,7 @@ public class ServicioAutenticacionTest {
                 Email.of(email),
                 Contrasena.of(encoder.encode(contrasena)),
                 Rol.ENFERMERA,
-                new Enfermera("Lopez","Juana")
+                new Enfermera("Lopez","Juana", "27-41234567-6")
         );
 
         when(repositorio.buscarPorEmail(email)).thenReturn(Optional.of(cuenta));
@@ -72,7 +72,7 @@ public class ServicioAutenticacionTest {
                 Email.of(email),
                 Contrasena.of(encoder.encode("contrasena")),
                 Rol.ENFERMERA,
-                new Enfermera("Lopez","Juana")
+                new Enfermera("Lopez","Juana", "27-41234567-6")
         );
 
         when(repositorio.buscarPorEmail(email)).thenReturn(Optional.of(cuenta));
@@ -93,6 +93,7 @@ public class ServicioAutenticacionTest {
         persona.setApellido("Rivas");
         persona.setNombre("Julia");
         persona.setMatricula("9898989898");
+        persona.setCuil("27-41235567-6");
 
         when(repositorio.buscarPorEmail(email)).thenReturn(Optional.empty());
 
@@ -127,7 +128,7 @@ public class ServicioAutenticacionTest {
                         Email.of(email),
                         Contrasena.of(encoder.encode("contrasena")),
                         Rol.ENFERMERA,
-                        new Enfermera("Lopez","Juana")
+                        new Enfermera("Lopez","Juana", "27-41234567-6")
                 )
         ));
 

@@ -10,8 +10,8 @@ Característica: Modulo de emergencias
 
   Antecedentes:
     Dado que la siguiente enfermera esta registrada y autenticada:
-      |Apellido|Nombre|
-      |Fernandez|Lucia|
+      |Apellido|Nombre|Cuil         |
+      |Fernandez|Lucia|27-41234567-6|
     Y los siguientes pacientes estan registrados:
       |Cuil         |Apellido |Nombre   |
       |20-34567891-3|Gonzalez |Sofia    |

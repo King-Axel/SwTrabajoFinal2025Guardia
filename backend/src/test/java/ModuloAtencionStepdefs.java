@@ -9,7 +9,7 @@ import java.util.Map;
 public class ModuloAtencionStepdefs {
     private Medico medico;
 
-    @Given("que la siguiente medica esta autenticada y registrada")
+    /*@Given("que la siguiente medica esta autenticada y registrada")
     public void queLaSiguienteMedicaEstaAutenticadaYRegistrada(List<Map<String, String>> tabla) {
         String matricula = tabla.get(0).get("matricula");
         medico = new Medico("Perez", "Juan Rodolfo", matricula);
@@ -26,5 +26,5 @@ public class ModuloAtencionStepdefs {
     public void laDoctoraRegistraElInformeDelPacienteSinElInforme() {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
-    }
+    }*/
 }

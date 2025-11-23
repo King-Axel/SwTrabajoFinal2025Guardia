@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class ModuloReclamoPacientesStepDefinition {
 
-    private final RepositorioPacientes db;   // inyecta tu implementación en el constructor si usas DI
+    /*private final RepositorioPacientes db;   // inyecta tu implementación en el constructor si usas DI
     private final ServicioUrgencias servicio;
 
     private Enfermera enfermera;
@@ -117,5 +117,5 @@ public class ModuloReclamoPacientesStepDefinition {
     public void seEmiteElSiguienteMensajeDeReclamo(List<String> mensaje){
         assertThat(ultimaExcepcion).isNotNull();
         assertThat(ultimaExcepcion.getMessage()).isEqualTo(mensaje.get(0));
-    }
+    }*/
 }

@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class ModuloUrgenciasStepDefinition {
     private Enfermera enfermera;
-    private DBPruebaEnMemoria dbPruebaEnMemoria;
-    private ServicioUrgencias servicioUrgencias;
+    private final DBPruebaEnMemoria dbPruebaEnMemoria;
+    private final ServicioUrgencias servicioUrgencias;
     private Exception ultimaExcepcion;
 
     public ModuloUrgenciasStepDefinition() {
@@ -25,8 +25,9 @@ public class ModuloUrgenciasStepDefinition {
     public void queLaSiguienteEnfermeraEstaRegistradaYAutenticada(Map<String, String> dataTable) {
         String apellido = dataTable.get("apellido");
         String nombre = dataTable.get("nombre");
+        String cuil = dataTable.get("cuil");
 
-        enfermera = new Enfermera(apellido, nombre);
+        enfermera = new Enfermera(apellido, nombre, cuil);
     }
 
     @Y("los siguientes pacientes estan registrados:")

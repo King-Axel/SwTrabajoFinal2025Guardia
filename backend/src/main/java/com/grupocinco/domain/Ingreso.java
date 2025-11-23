@@ -11,11 +11,11 @@ public class Ingreso {
 
     private EstadoIngreso estado;
 
-    private final Float temperatura;
-    private final Float frecuenciaCardiaca;
-    private final Float frecuenciaRespiratoria;
-    private final Float frecuenciaSistolica;
-    private final Float frecuenciaDiastolica;
+    private final Double temperatura;
+    private final Double frecuenciaCardiaca;
+    private final Double frecuenciaRespiratoria;
+    private final Double frecuenciaSistolica;
+    private final Double frecuenciaDiastolica;
 
     // médico asignado cuando se reclama el ingreso
     private Medico medico;
@@ -25,11 +25,11 @@ public class Ingreso {
             Enfermera enfermera,
             String informe,
             NivelEmergencia nivelEmergencia,
-            Float temperatura,
-            Float frecuenciaCardiaca,
-            Float frecuenciaRespiratoria,
-            Float frecuenciaSistolica,
-            Float frecuenciaDiastolica
+            Double temperatura,
+            Double frecuenciaCardiaca,
+            Double frecuenciaRespiratoria,
+            Double frecuenciaSistolica,
+            Double frecuenciaDiastolica
     ) {
         this.fechaIngreso = LocalDateTime.now();
         this.paciente = paciente;

@@ -3,14 +3,15 @@ package com.grupocinco.app;
 import com.grupocinco.app.interfaces.RepositorioPacientes;
 import com.grupocinco.domain.*;
 import com.grupocinco.domain.*;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service
 public class ServicioUrgencias {
     private RepositorioPacientes dbPacientes;
     private List<Ingreso> listaEspera;
 
-    // NUEVO: almacenamiento simple de ingresos "en proceso"
     private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
 
     public ServicioUrgencias(RepositorioPacientes repositorioPacientes) {
@@ -66,11 +67,11 @@ public class ServicioUrgencias {
             ) throw new  IllegalArgumentException(mensajeExcepcionDatoFaltante + nombreCampo);
         });
 
-        Float temp = Float.parseFloat(temperatura);
-        Float frecCard = Float.parseFloat(frecuenciaCardiaca);
-        Float frecResp = Float.parseFloat(frecuenciaRespiratoria);
-        Float frecSist = Float.parseFloat(frecuenciaSistolica);
-        Float frecDiast = Float.parseFloat(frecuenciaDiastolica);
+        Double temp = Double.parseDouble(temperatura);
+        Double frecCard = Double.parseDouble(frecuenciaCardiaca);
+        Double frecResp = Double.parseDouble(frecuenciaRespiratoria);
+        Double frecSist = Double.parseDouble(frecuenciaSistolica);
+        Double frecDiast = Double.parseDouble(frecuenciaDiastolica);
 
         if(frecCard < 0 || frecResp < 0) throw new  IllegalArgumentException(
                 "Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos"

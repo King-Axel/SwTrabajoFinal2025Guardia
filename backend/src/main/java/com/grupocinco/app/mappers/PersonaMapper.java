@@ -11,6 +11,7 @@ public class PersonaMapper {
 
         dto.setApellido(persona.getApellido());
         dto.setNombre(persona.getNombre());
+        dto.setCuil(persona.getCuil());
 
         if (persona instanceof Medico) dto.setMatricula(((Medico)persona).getMatricula());
 
@@ -20,8 +21,8 @@ public class PersonaMapper {
     public static Persona desdeDTO(PersonaDTO dto) {
         Persona persona;
 
-        if (dto.getMatricula() != null) persona = new Medico(dto.getApellido(), dto.getNombre(), dto.getMatricula());
-        else persona = new Enfermera(dto.getApellido(), dto.getNombre());
+        if (dto.getMatricula() != null) persona = new Medico(dto.getApellido(), dto.getNombre(), dto.getMatricula(), dto.getCuil());
+        else persona = new Enfermera(dto.getApellido(), dto.getNombre(), dto.getCuil());
 
         return persona;
     }
