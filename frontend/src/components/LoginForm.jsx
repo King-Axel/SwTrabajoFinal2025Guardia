@@ -57,7 +57,7 @@ const LoginForm = ({ onSubmit } = {}) => {
 
       saveToken(token);
       console.log(token);
-      navigate('/');
+      navigate('/urgencias');
     } catch (error) {
       setErrors({ server: 'Error de red' });
       console.error("el error es: " + error);
