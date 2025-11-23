@@ -23,6 +23,12 @@ public class UrgenciasController {
         this.repoPersonal = repoPersonal;
     }
 
+    @GetMapping("/espera")
+    public ResponseEntity<List<Ingreso>> obtenerIngresosEnEspera() {
+        return ResponseEntity.ok(servicioUrgencias.obtenerIngresosEnEspera());
+    }
+
+
     @PostMapping("/ingresos")
     public ResponseEntity<?> registrarIngreso(@RequestBody IngresoUrgenciaRequest req) {
         try {

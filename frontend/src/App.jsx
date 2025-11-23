@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import RegisterForm from "./components/RegisterForm";
 import Urgencias from "./pages/Urgencias";
 import ProtectedRoute from "./components/ProtectedRoute";
+import UrgenciasLayout from "./pages/UrgenciasLayout";
 
 export default function App() {
   return (
@@ -22,11 +23,7 @@ export default function App() {
       {/* Ruta protegida del módulo de urgencias */}
       <Route
         path="/urgencias"
-        element={
-          <ProtectedRoute>
-            <Urgencias />
-          </ProtectedRoute>
-        }
+        element={<UrgenciasLayout />}
       />
 
       {/* Cualquier ruta desconocida → login */}

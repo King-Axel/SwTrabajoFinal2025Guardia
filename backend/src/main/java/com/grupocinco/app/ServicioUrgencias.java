@@ -124,4 +124,12 @@ public class ServicioUrgencias {
     public Optional<Ingreso> obtenerIngresoEnProcesoPorCuil(String cuil) {
         return Optional.ofNullable(ingresosEnProceso.get(cuil));
     }
+
+    public List<Ingreso> obtenerIngresosEnEspera() {
+        return listaEspera
+        .stream()
+        .sorted(Comparator.comparing(Ingreso::getNivelEmergencia).reversed())
+        .toList();
+    }
+
 }
