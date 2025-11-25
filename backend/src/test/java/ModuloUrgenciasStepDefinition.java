@@ -1,141 +1,109 @@
-import io.cucumber.java.es.*;
-import mock.DBPruebaEnMemoria;
 import com.grupocinco.app.ServicioUrgencias;
+import com.grupocinco.app.exceptions.PacienteInexistenteException;
 import com.grupocinco.domain.Enfermera;
-import com.grupocinco.domain.Ingreso;
 import com.grupocinco.domain.Paciente;
-
-import static org.assertj.core.api.Assertions.*;
+import io.cucumber.java.PendingException;
+import io.cucumber.java.es.Cuando;
+import io.cucumber.java.es.Dado;
+import io.cucumber.java.es.Entonces;
+import io.cucumber.java.es.Y;
+import mock.DBPruebaEnMemoria;
 
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.*;
+
 public class ModuloUrgenciasStepDefinition {
-    private Enfermera enfermera;
-    private final DBPruebaEnMemoria dbPruebaEnMemoria;
-    private final ServicioUrgencias servicioUrgencias;
+    private final ServicioUrgencias servicio;
+    private final DBPruebaEnMemoria db;
     private Exception ultimaExcepcion;
+    private Enfermera enfermera;
 
     public ModuloUrgenciasStepDefinition() {
-        dbPruebaEnMemoria = new DBPruebaEnMemoria();
-        servicioUrgencias = new ServicioUrgencias(dbPruebaEnMemoria);
+        db = new DBPruebaEnMemoria();
+        servicio = new ServicioUrgencias(db);
     }
 
     @Dado("que la siguiente enfermera esta registrada y autenticada:")
-    public void queLaSiguienteEnfermeraEstaRegistradaYAutenticada(Map<String, String> dataTable) {
-        String apellido = dataTable.get("apellido");
-        String nombre = dataTable.get("nombre");
-        String cuil = dataTable.get("cuil");
+    public void queLaSiguienteEnfermeraEstaRegistradaYAutenticada(List<Map<String, String>> datosEnfermera) {
+        var datos = datosEnfermera.get(0);
+
+        String apellido = datos.get("Apellido");
+        String nombre = datos.get("Nombre");
+        String cuil = datos.get("Cuil");
 
         enfermera = new Enfermera(apellido, nombre, cuil);
     }
 
     @Y("los siguientes pacientes estan registrados:")
-    public void losSiguientesPacientesEstanRegistrados(List<Map<String, String>> dataTable) {
-        for (Map<String, String> fila : dataTable) {
-            String cuil = fila.get("Cuil");
+    public void losSiguientesPacientesEstanRegistrados(List<Map<String, String>> datosPacientes) {
+        for (var fila : datosPacientes) {
             String apellido = fila.get("Apellido");
             String nombre = fila.get("Nombre");
+            String cuil = fila.get("Cuil");
 
-            Paciente paciente = new Paciente(cuil, apellido, nombre);
+            Paciente paciente = new Paciente(apellido, nombre, cuil);
 
-            dbPruebaEnMemoria.guardarPaciente(cuil, paciente);
+            db.guardarPaciente(paciente);
         }
     }
 
     @Cuando("llega el paciente:")
-    public void llegaElPaciente(List<Map<String, String>> dataTable) {
-        Map<String, String> fila = dataTable.get(0);
+    public void llegaElPaciente(List<Map<String, String>> datosPaciente) {
+        registrarIngresos(datosPaciente);
+    }
 
-        String cuil = fila.get("Cuil");
-        String apellido = fila.get("Apellido");
-        String nombre = fila.get("Nombre");
-        String informe = fila.get("Informe");
-        String nivelEmergencia = fila.get("Nivel de Emergencia");
-        String temperatura = fila.get("Temperatura");
-        String frecuenciaCardiaca = fila.get("Frecuencia Cardiaca");
-        String frecuenciaRespiratoria = fila.get("Frecuencia Respiratoria");
-        String frecuenciaSistolica = fila.get("Frecuencia Sistolica");
-        String frecuenciaDiastolica = fila.get("Frecuencia Diastolica");
+    @Cuando("llegan los pacientes:")
+    public void lleganLosPacientes(List<Map<String, String>> datosPacientes) {
+        registrarIngresos(datosPacientes);
+    }
 
-        try {
-            servicioUrgencias.registrarIngreso(
-                    cuil,
-                    apellido,
-                    nombre,
-                    enfermera,
-                    informe,
-                    nivelEmergencia,
-                    temperatura,
-                    frecuenciaCardiaca,
-                    frecuenciaRespiratoria,
-                    frecuenciaSistolica,
-                    frecuenciaDiastolica
-            );
-        } catch(IllegalArgumentException e) {
-            ultimaExcepcion = e;
+    private void registrarIngresos(List<Map<String, String>> datosPacientes) {
+        for(var datos : datosPacientes) {
+            String apellido = datos.get("Apellido");
+            String nombre = datos.get("Nombre");
+            String cuil = datos.get("Cuil");
+
+            String informe = datos.get("Informe");
+            String nivelEmergencia = datos.get("Nivel de Emergencia");
+            String temperatura = datos.get("Temperatura");
+            String frecuenciaCardiaca = datos.get("Frecuencia Cardiaca");
+            String frecuenciaResp = datos.get("Frecuencia Respiratoria");
+            String frecuenciaSistolica = datos.get("Frecuencia Sistolica");
+            String frecuenciaDiastolica = datos.get("Frecuencia Diastolica");
+
+            try {
+                servicio.registrarIngreso(
+                        cuil, apellido, nombre, enfermera, informe,
+                        nivelEmergencia, temperatura, frecuenciaCardiaca,
+                        frecuenciaResp, frecuenciaSistolica, frecuenciaDiastolica
+                );
+            } catch (Exception e) {
+                ultimaExcepcion = e;
+            }
         }
     }
 
     @Entonces("la cola de espera con cuils, ordenada por criticidad y hora de llegada, se ordena de la siguiente manera:")
-    public void laColaDeEsperaConCuilsOrdenadaPorCriticidadYHoraDeLlegadaSeOrdenaDeLaSiguienteManera(List<String> cuilsEsperando) {
-        List<String> cuilsPendientes =
-                servicioUrgencias
-                        .getListaEspera()
-                        .stream()
-                        .map(Ingreso::getCuilPaciente)
-                        .toList();
+    public void laColaDeEsperaConCuilsOrdenadaPorCriticidadYHoraDeLlegadaSeOrdenaDeLaSiguienteManera(List<String> colaEsperada) {
+        List<String> colaReal = servicio.getListaEspera().stream().map(i -> i.getPaciente().getCuil()).toList();
 
-        assertThat(cuilsPendientes)
-                .hasSize(cuilsEsperando.size())
-                .isEqualTo(cuilsEsperando);
+        assertThat(colaReal).hasSize(colaEsperada.size()).isEqualTo(colaEsperada);
     }
 
     @Entonces("el paciente {string} estara registrado:")
-    public void elPacienteEstaraRegistrado(String cuil) {
-        Paciente paciente = dbPruebaEnMemoria.obtenerPaciente(cuil)
-                .orElseThrow(() -> new RuntimeException("Paciente no encontrado"));
+    public void elPacienteEstaraRegistrado(String cuilPaciente) {
+        Paciente paciente = db.obtenerPaciente(cuilPaciente).orElseThrow(
+                () -> new PacienteInexistenteException("El paciente con el cuil " + cuilPaciente + " no existe")
+        );
 
         assertThat(paciente).isNotEqualTo(null);
     }
 
     @Entonces("se emite el siguiente mensaje:")
-    public void seEmiteElSiguienteMensaje(List<String> dataTable) {
-        assertThat(ultimaExcepcion.getMessage()).isNotNull().isEqualTo(dataTable.get(0));
-    }
-
-    @Cuando("llegan los pacientes:")
-    public void lleganLosPacientes(List<Map<String, String>> dataTable) {
-        for (Map<String, String> fila : dataTable) {
-            String cuil = fila.get("Cuil");
-            String apellido = fila.get("Apellido");
-            String nombre = fila.get("Nombre");
-            String informe = fila.get("Informe");
-            String nivelEmergencia = fila.get("Nivel de Emergencia");
-            String temperatura = fila.get("Temperatura");
-            String frecuenciaCardiaca = fila.get("Frecuencia Cardiaca");
-            String frecuenciaRespiratoria = fila.get("Frecuencia Respiratoria");
-            String frecuenciaSistolica = fila.get("Frecuencia Sistolica");
-            String frecuenciaDiastolica = fila.get("Frecuencia Diastolica");
-
-            try {
-                servicioUrgencias.registrarIngreso(
-                        cuil,
-                        apellido,
-                        nombre,
-                        enfermera,
-                        informe,
-                        nivelEmergencia,
-                        temperatura,
-                        frecuenciaCardiaca,
-                        frecuenciaRespiratoria,
-                        frecuenciaSistolica,
-                        frecuenciaDiastolica
-                );
-            } catch(IllegalArgumentException e) {
-                ultimaExcepcion = e;
-            }
-
-        }
+    public void seEmiteElSiguienteMensaje(List<String> mensaje) {
+        assertThat(ultimaExcepcion).isNotNull();
+        assertThat(ultimaExcepcion.getMessage()).isEqualTo(mensaje.get(0));
     }
 }

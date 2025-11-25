@@ -4,19 +4,20 @@ import com.grupocinco.app.dtos.IngresoUrgenciaRequest;
 import com.grupocinco.app.interfaces.RepositorioPersonal;
 import com.grupocinco.app.ServicioUrgencias;
 import com.grupocinco.domain.Enfermera;
-import com.grupocinco.domain.Persona;
+import com.grupocinco.domain.Ingreso;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/urgencias")
 public class UrgenciasController {
-    private ServicioUrgencias servicioUrgencias;
-    private RepositorioPersonal repoPersonal;
+    private final ServicioUrgencias servicioUrgencias;
+    private final RepositorioPersonal repoPersonal;
 
     public UrgenciasController(ServicioUrgencias servicioUrgencias, RepositorioPersonal repoPersonal) {
         this.servicioUrgencias = servicioUrgencias;

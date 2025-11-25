@@ -3,20 +3,26 @@ package com.grupocinco.app;
 import com.grupocinco.app.interfaces.RepositorioPacientes;
 import com.grupocinco.domain.*;
 import com.grupocinco.domain.*;
+import com.grupocinco.domain.valueobject.FrecuenciaArterial;
+import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
+import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
+import com.grupocinco.domain.valueobject.Temperatura;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class ServicioUrgencias {
-    private RepositorioPacientes dbPacientes;
-    private List<Ingreso> listaEspera;
+    private final RepositorioPacientes dbPacientes;
+    @Getter
+    private final List<Ingreso> listaEspera;
 
-    private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
+    // private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
 
     public ServicioUrgencias(RepositorioPacientes repositorioPacientes) {
-        this.dbPacientes =  repositorioPacientes;
-        this.listaEspera =  new ArrayList<>();
+        this.dbPacientes = repositorioPacientes;
+        this.listaEspera = new ArrayList<>();
     }
 
     public void registrarIngreso(
@@ -32,78 +38,33 @@ public class ServicioUrgencias {
         String frecuenciaSistolica,
         String frecuenciaDiastolica
     ) throws IllegalArgumentException {
-        String mensajeExcepcionDatoFaltante = "Error: falta el dato ";
+        Paciente paciente = dbPacientes.obtenerPaciente(cuil)
+                .orElse(null);
 
-        NivelEmergencia nivel =
-                (nivelEmergencia != null)
-                        ? Arrays.stream(NivelEmergencia.values())
-                            .filter(
-                                    nivelEm -> nivelEm.esValido(nivelEmergencia)
-                            )
-                            .findFirst()
-                            .orElseThrow (
-                                    () -> new RuntimeException("Nivel de emergencia invalido")
-                            )
-                        : null;
-
-        Paciente paciente =
-                dbPacientes.obtenerORegistrarPaciente(cuil, apellido, nombre);
-
-        Map<String, Object> campos = new HashMap<>();
-        campos.put("Cuil", cuil);
-        campos.put("Apellido", apellido);
-        campos.put("Nombre", nombre);
-        campos.put("Informe", informe);
-        campos.put("Nivel de Emergencia", nivelEmergencia);
-        campos.put("Temperatura", temperatura);
-        campos.put("Frecuencia Cardiaca", frecuenciaCardiaca);
-        campos.put("Frecuencia Respiratoria", frecuenciaRespiratoria);
-        campos.put("Frecuencia Sistolica", frecuenciaSistolica);
-        campos.put("Frecuencia Diastolica", frecuenciaDiastolica);
-
-        campos.forEach((nombreCampo, valor) -> {
-            if (
-                    valor == null || valor instanceof String s && s.isBlank()
-            ) throw new  IllegalArgumentException(mensajeExcepcionDatoFaltante + nombreCampo);
-        });
-
-        Double temp = Double.parseDouble(temperatura);
-        Double frecCard = Double.parseDouble(frecuenciaCardiaca);
-        Double frecResp = Double.parseDouble(frecuenciaRespiratoria);
-        Double frecSist = Double.parseDouble(frecuenciaSistolica);
-        Double frecDiast = Double.parseDouble(frecuenciaDiastolica);
-
-        if(frecCard < 0 || frecResp < 0) throw new  IllegalArgumentException(
-                "Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos"
-        );
+        if (paciente == null) {
+            paciente = new Paciente(apellido, nombre, cuil);
+            dbPacientes.registrarPaciente(paciente);
+        }
 
         Ingreso ingreso = new Ingreso(
                 paciente,
                 enfermera,
                 informe,
-                nivel,
-                temp,
-                frecCard,
-                frecResp,
-                frecSist,
-                frecDiast
+                NivelEmergencia.desdeString(nivelEmergencia),
+                Temperatura.of(temperatura),
+                FrecuenciaCardiaca.of(frecuenciaCardiaca),
+                FrecuenciaRespiratoria.of(frecuenciaRespiratoria),
+                FrecuenciaArterial.of(frecuenciaSistolica, frecuenciaDiastolica)
         );
 
         this.listaEspera.add(ingreso);
         this.listaEspera.sort(
-                Comparator.comparing(Ingreso::getPrioridadNivelEmergencia)
+                Comparator.comparing(Ingreso::getNivelEmergencia)
                         .thenComparing(Ingreso::getFechaIngreso)
         );
     }
 
-    public List<Ingreso> getListaEspera() {
-        return this.listaEspera;
-    }
-
-    // =========================
-    // NUEVO: Reclamar paciente
-    // =========================
-    public Ingreso reclamarProximoPaciente(Medico medico) {
+    /*public Ingreso reclamarProximoPaciente(Medico medico) {
         if (listaEspera.isEmpty()) {
             throw new IllegalStateException("No hay ingresos en lista de espera");
         }
@@ -123,7 +84,7 @@ public class ServicioUrgencias {
 
     public Optional<Ingreso> obtenerIngresoEnProcesoPorCuil(String cuil) {
         return Optional.ofNullable(ingresosEnProceso.get(cuil));
-    }
+    }*/
 
     public List<Ingreso> obtenerIngresosEnEspera() {
         return listaEspera
@@ -131,5 +92,4 @@ public class ServicioUrgencias {
         .sorted(Comparator.comparing(Ingreso::getNivelEmergencia).reversed())
         .toList();
     }
-
 }

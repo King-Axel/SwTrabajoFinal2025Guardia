@@ -1,7 +1,14 @@
 package com.grupocinco.domain;
 
+import com.grupocinco.domain.valueobject.FrecuenciaArterial;
+import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
+import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
+import com.grupocinco.domain.valueobject.Temperatura;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 
+@Getter
 public class Ingreso {
     private final LocalDateTime fechaIngreso;
     private final Paciente paciente;
@@ -9,13 +16,12 @@ public class Ingreso {
     private final String informe;
     private final NivelEmergencia nivelEmergencia;
 
-    private EstadoIngreso estado;
+    private final EstadoIngreso estado;
 
-    private final Double temperatura;
-    private final Double frecuenciaCardiaca;
-    private final Double frecuenciaRespiratoria;
-    private final Double frecuenciaSistolica;
-    private final Double frecuenciaDiastolica;
+    private final Temperatura temperatura;
+    private final FrecuenciaCardiaca frecuenciaCardiaca;
+    private final FrecuenciaRespiratoria frecuenciaRespiratoria;
+    private final FrecuenciaArterial frecuenciaArterial;
 
     // médico asignado cuando se reclama el ingreso
     private Medico medico;
@@ -25,40 +31,29 @@ public class Ingreso {
             Enfermera enfermera,
             String informe,
             NivelEmergencia nivelEmergencia,
-            Double temperatura,
-            Double frecuenciaCardiaca,
-            Double frecuenciaRespiratoria,
-            Double frecuenciaSistolica,
-            Double frecuenciaDiastolica
+            Temperatura temperatura,
+            FrecuenciaCardiaca frecuenciaCardiaca,
+            FrecuenciaRespiratoria frecuenciaRespiratoria,
+            FrecuenciaArterial frecuenciaArteial
     ) {
+        if (paciente == null) throw new IllegalArgumentException("Paciente nulo");
+        if (enfermera == null) throw new IllegalArgumentException("Enfermera nula");
+        if (informe == null || informe.isBlank()) throw new IllegalArgumentException("Falta el dato Informe");
+        if (temperatura == null) throw new IllegalArgumentException("Falta el dato Temperatura");
+
         this.fechaIngreso = LocalDateTime.now();
         this.paciente = paciente;
         this.enfermera = enfermera;
         this.informe = informe;
         this.nivelEmergencia = nivelEmergencia;
-        this.estado = EstadoIngreso.PENDIENTE; // antes era String "Pendiente"
+        this.estado = EstadoIngreso.PENDIENTE;
         this.temperatura = temperatura;
         this.frecuenciaCardiaca = frecuenciaCardiaca;
         this.frecuenciaRespiratoria = frecuenciaRespiratoria;
-        this.frecuenciaSistolica = frecuenciaSistolica;
-        this.frecuenciaDiastolica = frecuenciaDiastolica;
+        this.frecuenciaArterial = frecuenciaArteial;
     }
 
-    public String getCuilPaciente() { return this.paciente.getCuil(); }
-    public int getPrioridadNivelEmergencia() { return this.nivelEmergencia.getPrioridad(); }
-    public LocalDateTime getFechaIngreso() { return this.fechaIngreso; }
-
-    public EstadoIngreso getEstado() {
-        return estado;
-    }
-    public void setEstado(EstadoIngreso estado) {
-        this.estado = estado;
-    }
-
-    public Medico getMedico() {
-        return medico;
-    }
-    public void setMedico(Medico medico) {
+    /*public void setMedico(Medico medico) {
         this.medico = medico;
-    }
+    }*/
 }

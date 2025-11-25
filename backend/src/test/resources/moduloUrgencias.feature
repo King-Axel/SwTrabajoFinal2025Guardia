@@ -49,12 +49,12 @@ Característica: Modulo de emergencias
   Escenario: Ingreso de cuatro pacientes, dos con un nivel de emergencia y dos con otro nivel de emergencia
     Cuando llegan los pacientes:
       |Cuil         |Apellido|Nombre  |Informe                           |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
-      |20-42345678-9|Sanchez |Agustina |Dolor toracico intenso           |Critica            |39.2       |140                |30                     |180                 |110                  |
+      |27-42345678-9|Sanchez |Agustina |Dolor toracico intenso           |Critica            |39.2       |140                |30                     |180                 |110                  |
       |27-40123456-0|Diaz    |Joaquin  |Fractura de pierna tras accidente|Urgencia           |37.8       |95                 |20                     |125                 |80                   |
       |27-55667788-9|Torres  |Martina |Dolor abdominal intenso y vomitos |Critica            |38.2       |110                |24                     |130                 |85                   |
       |27-34567890-7|Romero  |Benjamin|Dolor abdominal intenso y vomitos |Urgencia           |38.2       |110                |24                     |130                 |85                   |
     Entonces la cola de espera con cuils, ordenada por criticidad y hora de llegada, se ordena de la siguiente manera:
-      |20-42345678-9|
+      |27-42345678-9|
       |27-55667788-9|
       |27-40123456-0|
       |27-34567890-7|
@@ -63,33 +63,33 @@ Característica: Modulo de emergencias
     Escenario: Ingreso de un paciente valores de frecuencia cardiaca negativos
       Cuando llega el paciente:
         |Cuil         |Apellido|Nombre|Informe               |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |-80                |15                     |180                 |110                  |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |-80                |15                     |180                 |110                  |
       Entonces se emite el siguiente mensaje:
-        |Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos|
+        |La frecuencia no puede ser negativa|
 
     Escenario: Ingreso de un paciente valores de frecuencia respiratoria negativos
       Cuando llega el paciente:
         |Cuil         |Apellido|Nombre|Informe               |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 |-15                    |180                 |110                  |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 |-15                    |180                 |110                  |
       Entonces se emite el siguiente mensaje:
-        |Error: La frecuencia cardiaca y la frecuencia respiratoria no pueden ser valores negativos|
+        |La frecuencia no puede ser negativa|
 
     Esquema del escenario: Ingreso de un paciente con datos incompletos
       Cuando llega el paciente:
         |Cuil         |Apellido  |Nombre  |Informe  |Nivel de Emergencia  |Temperatura  |Frecuencia Cardiaca  |Frecuencia Respiratoria  |Frecuencia Sistolica  |Frecuencia Diastolica  |
         |<Cuil>       |<Apellido>|<Nombre>|<Informe>|<Nivel de Emergencia>|<Temperatura>|<Frecuencia Cardiaca>|<Frecuencia Respiratoria>|<Frecuencia Sistolica>|<Frecuencia Diastolica>|
       Entonces se emite el siguiente mensaje:
-        |Error: falta el dato <Dato Faltante>|
+        |Falta el dato <Dato Faltante>|
       Ejemplos:
         |Cuil         |Apellido|Nombre|Informe               |Nivel de Emergencia|Temperatura|Frecuencia Cardiaca|Frecuencia Respiratoria|Frecuencia Sistolica|Frecuencia Diastolica|Dato Faltante          |
         |             |MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |110                  |Cuil                   |
-        |20-42345678-9|        |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |110                  |Apellido               |
-        |20-42345678-9|MeLavo  |      |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |110                  |Nombre                 |
-        |20-42345678-9|MeLavo  |Jony  |                      |Critica            |37         |80                 | 15                    |180                 |110                  |Informe                |
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|                   |37         |80                 | 15                    |180                 |110                  |Nivel de Emergencia    |
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |           |80                 | 15                    |180                 |110                  |Temperatura            |
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |                   | 15                    |180                 |110                  |Frecuencia Cardiaca    |
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 |                       |180                 |110                  |Frecuencia Respiratoria|
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |                    |110                  |Frecuencia Sistolica   |
-        |20-42345678-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |                     |Frecuencia Diastolica  |
+        |20-52344478-9|        |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |110                  |Apellido               |
+        |20-52344478-9|MeLavo  |      |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |110                  |Nombre                 |
+        |20-52344478-9|MeLavo  |Jony  |                      |Critica            |37         |80                 | 15                    |180                 |110                  |Informe                |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|                   |37         |80                 | 15                    |180                 |110                  |Nivel de Emergencia    |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |           |80                 | 15                    |180                 |110                  |Temperatura            |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |                   | 15                    |180                 |110                  |Frecuencia Cardiaca    |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 |                       |180                 |110                  |Frecuencia Respiratoria|
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |                    |110                  |Frecuencia Sistolica   |
+        |20-52344478-9|MeLavo  |Jony  |Dolor toracico intenso|Critica            |37         |80                 | 15                    |180                 |                     |Frecuencia Diastolica  |
 

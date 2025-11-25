@@ -15,8 +15,8 @@ public class RepositorioDePacientes implements RepositorioPacientes {
     public RepositorioDePacientes() {}
 
     @Override
-    public void guardarPaciente(String cuil, Paciente paciente) {
-
+    public void guardarPaciente(Paciente paciente) {
+        dbPacientes.add(paciente);
     }
 
     @Override
@@ -25,12 +25,6 @@ public class RepositorioDePacientes implements RepositorioPacientes {
     }
 
     @Override
-    public Paciente obtenerORegistrarPaciente(String cuil, String apellido, String nombre) {
-        return null;
-    }
-
-    @Override
-    public Paciente registrarPaciente(String cuil, Paciente paciente) {
-        return null;
+    public void registrarPaciente(Paciente paciente) {
     }
 }

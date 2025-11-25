@@ -1,14 +1,13 @@
 package mock;
 
 import com.grupocinco.app.interfaces.RepositorioPacientes;
-import com.grupocinco.domain.Ingreso;
 import com.grupocinco.domain.Paciente;
 
 import java.util.*;
 
 public class DBPruebaEnMemoria implements RepositorioPacientes {
-    private Map<String, Paciente> pacientes;
-    private final Map<String, Ingreso> enProceso = new HashMap<>();
+    private final Map<String, Paciente> pacientes;
+    /*private final Map<String, Ingreso> enProceso = new HashMap<>();
 
     public void registrarEnProceso(Ingreso ingreso) {
         enProceso.put(ingreso.getCuilPaciente(), ingreso);
@@ -16,15 +15,15 @@ public class DBPruebaEnMemoria implements RepositorioPacientes {
 
     public Optional<Ingreso> obtenerEnProcesoPorCuil(String cuil) {
         return Optional.ofNullable(enProceso.get(cuil));
-    }
+    }*/
 
     public DBPruebaEnMemoria() {
         pacientes = new HashMap<>();
     }
 
     @Override
-    public void guardarPaciente(String cuil, Paciente paciente) {
-        pacientes.put(cuil, paciente);
+    public void guardarPaciente(Paciente paciente) {
+        pacientes.put(paciente.getCuil(), paciente);
     }
 
     @Override
@@ -33,15 +32,7 @@ public class DBPruebaEnMemoria implements RepositorioPacientes {
     }
 
     @Override
-    public Paciente obtenerORegistrarPaciente(String cuil, String apellido, String nombre) {
-        return pacientes.computeIfAbsent(cuil,
-                key -> new Paciente(key, apellido, nombre));
-    }
-
-    @Override
-    public Paciente registrarPaciente(String cuil, Paciente paciente) {
-        pacientes.put(cuil, paciente);
-
-        return paciente;
+    public void registrarPaciente(Paciente paciente) {
+        pacientes.put(paciente.getCuil(), paciente);
     }
 }
