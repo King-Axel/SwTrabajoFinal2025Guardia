@@ -27,7 +27,7 @@ public class AuthenticationController {
     }
 
     public record LoginRequest(String email, String password) {}
-    public record RegisterRequest(String email, String password, String rol, PersonaDTO persona) {}
+    public record RegisterRequest(String email, String password, String rol, String cuil) {}
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest credentials) {
@@ -54,7 +54,7 @@ public class AuthenticationController {
         Map<String, Object> respuesta = new HashMap<>();
 
         try {
-            servicioAutenticacion.registrar(registerRequest.email(), registerRequest.password(), registerRequest.rol(), registerRequest.persona());
+            servicioAutenticacion.registrar(registerRequest.email(), registerRequest.password(), registerRequest.rol(), registerRequest.cuil());
             respuesta.put("mensaje", "Registrado exitosamente");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);

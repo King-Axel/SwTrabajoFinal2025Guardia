@@ -8,10 +8,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class RepositorioDePersonal implements RepositorioPersonal {
-    List<Persona> dbPersonal = new ArrayList<>();
+    private final List<Persona> dbPersonal = new ArrayList<>();
 
     public RepositorioDePersonal() {
         dbPersonal.add(new Enfermera("Lopez","Jacinta Maria", "27-23589461-0"));
@@ -23,5 +24,12 @@ public class RepositorioDePersonal implements RepositorioPersonal {
     @Override
     public List<Persona> findAll() {
         return dbPersonal;
+    }
+
+    @Override
+    public Optional<Persona> findByCuil(String cuil) {
+        return dbPersonal.stream()
+                .filter(p -> p.getCuil().equals(cuil))
+                .findFirst();
     }
 }
