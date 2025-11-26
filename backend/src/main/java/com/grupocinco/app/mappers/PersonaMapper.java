@@ -1,6 +1,7 @@
 package com.grupocinco.app.mappers;
 
 import com.grupocinco.app.dtos.PersonaDTO;
+import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Medico;
 import com.grupocinco.domain.Persona;
@@ -8,6 +9,11 @@ import com.grupocinco.domain.Persona;
 public class PersonaMapper {
     public static PersonaDTO aDTO(Persona persona) {
         PersonaDTO dto = new PersonaDTO();
+
+        switch (persona.getClass().getSimpleName()) {
+            case "Enfermera": dto.setRol(Rol.ENFERMERA.name()); break;
+            case "Medico": dto.setRol(Rol.MEDICO.name()); break;
+        }
 
         dto.setApellido(persona.getApellido());
         dto.setNombre(persona.getNombre());
