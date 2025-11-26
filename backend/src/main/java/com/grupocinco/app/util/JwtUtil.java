@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
@@ -17,8 +18,12 @@ import java.util.function.Function;
 public class JwtUtil {
     private final Key key;
 
-    public JwtUtil(@Value("${jwt.secret}") String secret) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
+    public JwtUtil() {
+        // CLAVE HARDCODEADA (Mínimo 32 caracteres para HS256)
+        // Esta clave cumple con los requisitos de seguridad de Spring Security
+        String secretString = "EstaClaveEsSuperSecretaYTieneLaLongitudSuficienteParaHMACSHA256_2025";
+        
+        this.key = Keys.hmacShaKeyFor(secretString.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(String subject, Map<String, Object> claims) {
