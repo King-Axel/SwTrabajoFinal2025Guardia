@@ -24,7 +24,7 @@ public class Ingreso {
     private final FrecuenciaArterial frecuenciaArterial;
 
     // médico asignado cuando se reclama el ingreso
-    private Medico medico;
+    // private Medico medico;
 
     public Ingreso(
             Paciente paciente,
