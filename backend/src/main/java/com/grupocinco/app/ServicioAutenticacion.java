@@ -26,7 +26,7 @@ public class ServicioAutenticacion {
     public Cuenta iniciarSesion(String emailReq, String contrasenaReq) {
         Email email = Email.of(emailReq);
 
-        Cuenta cuenta = repositorioCuentas.buscarPorEmail(email.get()).orElse(null);
+        Cuenta cuenta = repositorioCuentas.findByEmail(email.get()).orElse(null);
 
         if (
                 cuenta == null ||
@@ -39,7 +39,7 @@ public class ServicioAutenticacion {
     public void registrar(String emailReq, String contrasenaReq, String rolReq, PersonaDTO personaReq) {
         Email email = Email.of(emailReq);
 
-        if(repositorioCuentas.buscarPorEmail(email.get()).isPresent()) {
+        if(repositorioCuentas.findByEmail(email.get()).isPresent()) {
             throw new CuentaExistenteException();
         } else {
             Contrasena.validarRaw(contrasenaReq);
@@ -49,7 +49,7 @@ public class ServicioAutenticacion {
 
             Cuenta cuenta = new Cuenta(email, contrasena, rol, persona);
 
-            repositorioCuentas.guardar(cuenta);
+            repositorioCuentas.save(cuenta);
         }
     }
 }

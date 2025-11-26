@@ -1,8 +1,10 @@
 package com.grupocinco.app.controllers;
 
-import com.grupocinco.app.dtos.IngresoUrgenciaRequest;
+import com.grupocinco.app.dtos.IngresoDTO;
 import com.grupocinco.app.interfaces.RepositorioPersonal;
 import com.grupocinco.app.ServicioUrgencias;
+import com.grupocinco.app.services.ServicioCuentas;
+import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Ingreso;
 
@@ -18,10 +20,12 @@ import java.util.List;
 public class UrgenciasController {
     private final ServicioUrgencias servicioUrgencias;
     private final RepositorioPersonal repoPersonal;
+    private final ServicioCuentas servicioCuentas;
 
-    public UrgenciasController(ServicioUrgencias servicioUrgencias, RepositorioPersonal repoPersonal) {
+    public UrgenciasController(ServicioUrgencias servicioUrgencias, RepositorioPersonal repoPersonal, ServicioCuentas servicioCuentas) {
         this.servicioUrgencias = servicioUrgencias;
         this.repoPersonal = repoPersonal;
+        this.servicioCuentas = servicioCuentas;
     }
 
     @GetMapping("/espera")
@@ -29,12 +33,14 @@ public class UrgenciasController {
         return ResponseEntity.ok(servicioUrgencias.obtenerIngresosEnEspera());
     }
 
-
     @PostMapping("/ingresos")
-    public ResponseEntity<?> registrarIngreso(@RequestBody IngresoUrgenciaRequest req) {
+    public ResponseEntity<?> registrarIngreso(@RequestBody IngresoDTO req) {
         try {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-            String cuilUsuario = auth.getName();
+            String emaillUsuario = auth.getName();
+
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            String cuilUsuario = cuenta.getPersona().getCuil();
 
             Enfermera enfermera = repoPersonal.findAll().stream()
                     .filter(p -> p instanceof Enfermera)
@@ -44,9 +50,9 @@ public class UrgenciasController {
                     .orElseThrow(() -> new RuntimeException("No se encontró la enfermera logueada"));
 
             servicioUrgencias.registrarIngreso(
-                    req.getCuil(),
-                    req.getApellido(),
-                    req.getNombre(),
+                    req.getPaciente().getCuil(),
+                    req.getPaciente().getApellido(),
+                    req.getPaciente().getNombre(),
                     enfermera,
                     req.getInforme(),
                     req.getNivelEmergencia(),

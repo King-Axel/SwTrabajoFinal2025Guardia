@@ -15,16 +15,12 @@ public class RepositorioDePacientes implements RepositorioPacientes {
     public RepositorioDePacientes() {}
 
     @Override
-    public void guardarPaciente(Paciente paciente) {
+    public void save(Paciente paciente) {
         dbPacientes.add(paciente);
     }
 
     @Override
-    public Optional<Paciente> obtenerPaciente(String cuil) {
+    public Optional<Paciente> findByCuil(String cuil) {
         return Optional.empty();
-    }
-
-    @Override
-    public void registrarPaciente(Paciente paciente) {
     }
 }

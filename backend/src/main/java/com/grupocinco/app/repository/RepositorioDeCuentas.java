@@ -13,17 +13,13 @@ import java.util.Optional;
 public class RepositorioDeCuentas implements RepositorioCuentas {
     private final Map<String, Cuenta> dbCuenta = new HashMap<>();
 
-    public RepositorioDeCuentas() {
-
-    }
-
     @Override
-    public Optional<Cuenta> buscarPorEmail(String email) {
+    public Optional<Cuenta> findByEmail(String email) {
         return Optional.ofNullable(dbCuenta.get(email));
     }
 
     @Override
-    public void guardar(Cuenta cuenta) {
+    public void save(Cuenta cuenta) {
         dbCuenta.put(cuenta.getEmail(), cuenta);
     }
 }

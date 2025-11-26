@@ -2,7 +2,6 @@ import com.grupocinco.app.ServicioUrgencias;
 import com.grupocinco.app.exceptions.PacienteInexistenteException;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Paciente;
-import io.cucumber.java.PendingException;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;
@@ -45,7 +44,7 @@ public class ModuloUrgenciasStepDefinition {
 
             Paciente paciente = new Paciente(apellido, nombre, cuil);
 
-            db.guardarPaciente(paciente);
+            db.save(paciente);
         }
     }
 
@@ -94,7 +93,7 @@ public class ModuloUrgenciasStepDefinition {
 
     @Entonces("el paciente {string} estara registrado:")
     public void elPacienteEstaraRegistrado(String cuilPaciente) {
-        Paciente paciente = db.obtenerPaciente(cuilPaciente).orElseThrow(
+        Paciente paciente = db.findByCuil(cuilPaciente).orElseThrow(
                 () -> new PacienteInexistenteException("El paciente con el cuil " + cuilPaciente + " no existe")
         );
 

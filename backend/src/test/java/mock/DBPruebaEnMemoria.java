@@ -22,17 +22,12 @@ public class DBPruebaEnMemoria implements RepositorioPacientes {
     }
 
     @Override
-    public void guardarPaciente(Paciente paciente) {
+    public void save(Paciente paciente) {
         pacientes.put(paciente.getCuil(), paciente);
     }
 
     @Override
-    public Optional<Paciente> obtenerPaciente(String cuil) {
+    public Optional<Paciente> findByCuil(String cuil) {
         return Optional.ofNullable(pacientes.get(cuil));
-    }
-
-    @Override
-    public void registrarPaciente(Paciente paciente) {
-        pacientes.put(paciente.getCuil(), paciente);
     }
 }

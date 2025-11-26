@@ -44,10 +44,10 @@ public class ServicioAutenticacionTest {
                 new Enfermera("Lopez","Juana", "27-41234567-6")
         );
 
-        when(repositorio.buscarPorEmail(email)).thenReturn(Optional.of(cuenta));
+        when(repositorio.findByEmail(email)).thenReturn(Optional.of(cuenta));
 
         assertThat(servicio.iniciarSesion(email, contrasena)).isEqualTo(cuenta);
-        verify(repositorio, times(1)).buscarPorEmail(email);
+        verify(repositorio, times(1)).findByEmail(email);
     }
 
     @Test
@@ -55,12 +55,12 @@ public class ServicioAutenticacionTest {
         String email = "text@test.com";
         String contrasena = "contrasena";
 
-        when(repositorio.buscarPorEmail(email)).thenReturn(Optional.empty());
+        when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> servicio.iniciarSesion(email, contrasena))
         .isExactlyInstanceOf(CredencialesInvalidasException.class)
                 .hasMessage("Usuario o contraseña inválidos");
-        verify(repositorio, times(1)).buscarPorEmail(email);
+        verify(repositorio, times(1)).findByEmail(email);
     }
 
     @Test
@@ -75,12 +75,12 @@ public class ServicioAutenticacionTest {
                 new Enfermera("Lopez","Juana", "27-41234567-6")
         );
 
-        when(repositorio.buscarPorEmail(email)).thenReturn(Optional.of(cuenta));
+        when(repositorio.findByEmail(email)).thenReturn(Optional.of(cuenta));
 
         assertThatThrownBy(() -> servicio.iniciarSesion(email, contrasena))
                 .isExactlyInstanceOf(CredencialesInvalidasException.class)
                 .hasMessage("Usuario o contraseña inválidos");
-        verify(repositorio, times(1)).buscarPorEmail(email);
+        verify(repositorio, times(1)).findByEmail(email);
     }
 
     @Test
@@ -95,15 +95,15 @@ public class ServicioAutenticacionTest {
         persona.setMatricula("9898989898");
         persona.setCuil("27-41235567-6");
 
-        when(repositorio.buscarPorEmail(email)).thenReturn(Optional.empty());
+        when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
 
         assertThatCode(
                 () -> servicio.registrar(email, contrasena, rol, persona)
         ).doesNotThrowAnyException();
 
-        verify(repositorio, times(1)).buscarPorEmail(email);
+        verify(repositorio, times(1)).findByEmail(email);
         verify(repositorio, times(1))
-                .guardar(argThat(cuenta ->
+                .save(argThat(cuenta ->
                     cuenta.getEmail().equals(email)
                         && encoder.matches(contrasena, cuenta.getContrasena())
                         && cuenta.getRol() == Rol.MEDICO
@@ -123,7 +123,7 @@ public class ServicioAutenticacionTest {
         persona.setNombre("Roberto");
         persona.setMatricula("1212121212");
 
-        when(repositorio.buscarPorEmail(email)).thenReturn(Optional.of(
+        when(repositorio.findByEmail(email)).thenReturn(Optional.of(
                 new Cuenta(
                         Email.of(email),
                         Contrasena.of(encoder.encode("contrasena")),
@@ -135,6 +135,6 @@ public class ServicioAutenticacionTest {
         assertThatThrownBy(() -> servicio.registrar(email, contrasena, rol, persona))
                 .isExactlyInstanceOf(CuentaExistenteException.class)
                 .hasMessage("Ya existe una cuenta con el email ingresado");
-        verify(repositorio, times(1)).buscarPorEmail(email);
+        verify(repositorio, times(1)).findByEmail(email);
     }
 }

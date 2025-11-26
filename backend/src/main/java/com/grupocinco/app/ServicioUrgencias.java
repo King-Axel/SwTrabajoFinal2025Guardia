@@ -38,12 +38,12 @@ public class ServicioUrgencias {
         String frecuenciaSistolica,
         String frecuenciaDiastolica
     ) throws IllegalArgumentException {
-        Paciente paciente = dbPacientes.obtenerPaciente(cuil)
+        Paciente paciente = dbPacientes.findByCuil(cuil)
                 .orElse(null);
 
         if (paciente == null) {
             paciente = new Paciente(apellido, nombre, cuil);
-            dbPacientes.registrarPaciente(paciente);
+            dbPacientes.save(paciente);
         }
 
         Ingreso ingreso = new Ingreso(

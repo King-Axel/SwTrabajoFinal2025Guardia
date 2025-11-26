@@ -5,6 +5,6 @@ import com.grupocinco.domain.Cuenta;
 import java.util.Optional;
 
 public interface RepositorioCuentas {
-    Optional<Cuenta> buscarPorEmail(String email);
-    void guardar(Cuenta cuenta);
+    Optional<Cuenta> findByEmail(String email);
+    void save(Cuenta cuenta);
 }
