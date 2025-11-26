@@ -14,10 +14,10 @@ public class RepositorioDePersonal implements RepositorioPersonal {
     List<Persona> dbPersonal = new ArrayList<>();
 
     public RepositorioDePersonal() {
-        dbPersonal.add(new Enfermera("Lopez","Jacinta Maria", "27235894610"));
-        dbPersonal.add(new Enfermera("Pérez","Ana Lucía", "27245697410"));
-        dbPersonal.add(new Medico("Gomez", "Carlos Alberto", "1212212121", "20312233448"));
-        dbPersonal.add(new Medico("Rivas", "Julia", "9898989898", "27409912346"));
+        dbPersonal.add(new Enfermera("Lopez","Jacinta Maria", "27-23589461-0"));
+        dbPersonal.add(new Enfermera("Pérez","Ana Lucía", "27-24569741-0"));
+        dbPersonal.add(new Medico("Gomez", "Carlos Alberto", "1212212121", "20-31223344-8"));
+        dbPersonal.add(new Medico("Rivas", "Julia", "9898989898", "27-40991234-6"));
     }
 
     @Override
