@@ -31,32 +31,31 @@ const LoginForm = ({ onSubmit } = {}) => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length > 0) return;
-      const payload = { mode: "login", email, contrasena };
-      if (onSubmit) onSubmit(payload);
+    const payload = { mode: "login", email, contrasena };
+    if (onSubmit) onSubmit(payload);
 
     try {
       const response = await fetch('http://localhost:8081/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), contrasena })
+        body: JSON.stringify({ email: email.trim(), password: contrasena })
       });
 
       if (!response.ok) {
-        const err  = await response.json().catch(() => ({ mensaje: 'Error en login' }));
+        const err = await response.json().catch(() => ({ mensaje: 'Error en login' }));
         setErrors({ server: err.mensaje || 'Error en login' });
         return;
       }
 
       const body = await response.json();
       const token = body.token;
-      
+
       if (!token) {
         setErrors({ server: 'Token no recibido' });
         return;
       }
 
       saveToken(token);
-      console.log(token);
       navigate('/urgencias');
     } catch (error) {
       setErrors({ server: 'Error de red' });
@@ -101,9 +100,8 @@ const LoginForm = ({ onSubmit } = {}) => {
           </a>
           <div className="relative">
             <i
-              className={`bi form-icon ${
-                mostrarContra ? "bi-unlock" : "bi-lock"
-              } absolute left-2`}
+              className={`bi form-icon ${mostrarContra ? "bi-unlock" : "bi-lock"
+                } absolute left-2`}
             ></i>
             <input
               id="login-contrasena"
@@ -122,9 +120,8 @@ const LoginForm = ({ onSubmit } = {}) => {
               className="absolute right-2 top-1/2 -translate-y-3"
             >
               <i
-                className={`bi form-icon ${
-                  mostrarContra ? "bi-eye-slash" : "bi-eye"
-                }`}
+                className={`bi form-icon ${mostrarContra ? "bi-eye-slash" : "bi-eye"
+                  }`}
               ></i>
             </button>
           </div>

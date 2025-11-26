@@ -2,7 +2,7 @@ import React, { useState, useMemo, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../utils/auth";
 
-const RegisterForm = ({ onSubmit } = {}) => {
+const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [mostrarContra, setMostrarContra] = useState(false);
@@ -36,6 +36,7 @@ const RegisterForm = ({ onSubmit } = {}) => {
           data.map((p) => ({
             rol: p.rol,
             nombre: p.apellido + ", " + p.nombre,
+            cuil: p.cuil,
           }))
         );
       })
@@ -66,7 +67,7 @@ const RegisterForm = ({ onSubmit } = {}) => {
     return () => document.removeEventListener("pointerdown", handlePointerDown);
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newErrors = {};
@@ -92,13 +93,38 @@ const RegisterForm = ({ onSubmit } = {}) => {
 
     if (Object.keys(newErrors).length > 0) return;
 
-    const payload = { mode: "register", email, contrasena };
+    /*const payload = { mode: "register", email, contrasena };
     if (onSubmit) onSubmit(payload);
-    navigate("/");
+    navigate("/");*/
+
+    try {
+      const response = await fetch("http://localhost:8081/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          password: contrasena,
+          rol: rol,
+          cuil: personal.cuil
+        })
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setErrors({ server: result.mensaje || "Error al registrar" });
+        return;
+      }
+
+      navigate("/");
+    } catch (err) {
+      console.error("Error de red:", err);
+      setErrors({ server: "Error de red" });
+    }
   };
 
   const onSelectPersonal = (p) => {
-    setPersonal(p.nombre);
+    setPersonal(p);
     setRol(p.rol);
     setBuscar(p.nombre);
     setAbierto(false);
@@ -129,6 +155,7 @@ const RegisterForm = ({ onSubmit } = {}) => {
             <input
               type="email"
               id="email"
+              autoComplete="off"
               value={email}
               placeholder="usuario@ejemplo.com"
               onChange={(e) => {
@@ -223,7 +250,7 @@ const RegisterForm = ({ onSubmit } = {}) => {
                 rol ? "Buscar personal..." : "Primero seleccione un rol"
               }
               className="input"
-              value={personal}
+              value={buscar}
               onChange={(e) => {
                 setPersonal(e.target.value);
                 setBuscar(e.target.value);
