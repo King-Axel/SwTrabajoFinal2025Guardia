@@ -7,7 +7,7 @@ import App from './App.jsx'
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <div className="font-elms-sans w-full h-screen xl:justify-center lg:bg-gray-200 lg:flex lg:items-center">
+      <div className="font-elms-sans w-full min-h-screen xl:justify-center lg:bg-gray-200 lg:flex lg:items-center">
         <App />
       </div>
     </BrowserRouter>

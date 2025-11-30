@@ -32,14 +32,29 @@ public class ServicioRegistrarPaciente {
         if (repositorioPacientes.findByCuil(dto.getCuil()).isPresent())
             throw new IllegalArgumentException("El paciente ya existe");
 
-        Afiliado afiliado;
+        if (dto.getApellido() == null || dto.getApellido().isBlank())
+            throw new DatoMandatorioOmitidoException("Falta el dato Apellido");
+
+        if (dto.getNombre() == null || dto.getNombre().isBlank())
+            throw new DatoMandatorioOmitidoException("Falta el dato Nombre");
+
+        if (dto.getDomicilio() == null)
+            throw new DatoMandatorioOmitidoException("Falta el dato Domicilio");
+
+        if (dto.getDomicilio().getCalle() == null || dto.getDomicilio().getCalle().isBlank())
+            throw new DatoMandatorioOmitidoException("Falta el dato Calle");
+
+        if (dto.getDomicilio().getNumeroCalle() == null)
+            throw new DatoMandatorioOmitidoException("Falta el dato Número");
+
+        if (dto.getDomicilio().getLocalidad() == null || dto.getDomicilio().getLocalidad().isBlank())
+            throw new DatoMandatorioOmitidoException("Falta el dato Localidad");
 
         if (dto.getAfiliado() != null) {
-            ObraSocial obraSocial = repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId()).orElseThrow(
-                    () -> new ObraSocialInexistenteException("Obra social inexistente")
-            );
+            ObraSocial obraSocial = repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId())
+                    .orElseThrow(() -> new ObraSocialInexistenteException("Obra social inexistente"));
 
-            afiliado = new Afiliado(obraSocial, dto.getAfiliado().getNumeroAfiliado());
+            Afiliado afiliado = new Afiliado(obraSocial, dto.getAfiliado().getNumeroAfiliado());
             boolean afiliacion = repositorioObrasSociales.isAfiliated(afiliado);
 
             if (!afiliacion) {

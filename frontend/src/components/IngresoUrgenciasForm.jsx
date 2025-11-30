@@ -12,8 +12,6 @@ const nivelEmergenciaOptions = [
 export default function IngresoUrgenciasForm() {
   const [formData, setFormData] = useState({
     cuil: "",
-    apellido: "",
-    nombre: "",
     informe: "",
     nivelEmergencia: "",
     temperatura: "",
@@ -27,18 +25,30 @@ export default function IngresoUrgenciasForm() {
   const [apiError, setApiError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [pacienteEncontrado, setPacienteEncontrado] = useState(null); 
+  const [buscandoPaciente, setBuscandoPaciente] = useState(false);
+  const [errorPaciente, setErrorPaciente] = useState("");
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "cuil") {
+      setPacienteEncontrado(null);
+      setErrorPaciente("");
+      setApiError("");
+      setSuccessMessage("");
+    }
   };
+
 
   const validar = () => {
     const newErrors = {};
 
     if (!formData.cuil.trim()) newErrors.cuil = "El CUIL es obligatorio";
-    if (!formData.apellido.trim()) newErrors.apellido = "El apellido es obligatorio";
-    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es obligatorio";
+    if (!pacienteEncontrado) newErrors.cuil = "Debe ingresar un CUIL de un paciente existente";
     if (!formData.informe.trim()) newErrors.informe = "El informe es obligatorio";
     if (!formData.nivelEmergencia) newErrors.nivelEmergencia = "Seleccione un nivel";
 
@@ -56,6 +66,40 @@ export default function IngresoUrgenciasForm() {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+
+  const buscarPaciente = async (cuilValue) => {
+    const c = (cuilValue ?? "").trim();
+
+    setPacienteEncontrado(null);
+    setErrorPaciente("");
+
+    if (!c) return;
+
+    setBuscandoPaciente(true);
+    try {
+      const res = await fetch(`http://localhost:8081/api/pacientes/${encodeURIComponent(c)}`, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (res.status === 404) {
+        setErrorPaciente("El paciente no existe. Debe registrarlo antes de proceder al ingreso.");
+        return;
+      }
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        setErrorPaciente(data?.mensaje || "No se pudo buscar el paciente.");
+        return;
+      }
+
+      setPacienteEncontrado(data);
+    } catch (e) {
+      setErrorPaciente("Error de red al buscar el paciente.");
+    } finally {
+      setBuscandoPaciente(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -83,8 +127,6 @@ export default function IngresoUrgenciasForm() {
         body: JSON.stringify({
           paciente: {
             cuil: formData.cuil.trim(),
-            apellido: formData.apellido.trim(),
-            nombre: formData.nombre.trim(),
           },
           informe: formData.informe,
           nivelEmergencia: formData.nivelEmergencia,
@@ -107,8 +149,6 @@ export default function IngresoUrgenciasForm() {
 
       setFormData({
         cuil: "",
-        apellido: "",
-        nombre: "",
         informe: "",
         nivelEmergencia: "",
         temperatura: "",
@@ -117,6 +157,8 @@ export default function IngresoUrgenciasForm() {
         frecuenciaSistolica: "",
         frecuenciaDiastolica: "",
       });
+      setPacienteEncontrado(null);
+      setErrorPaciente("");
 
       setErrors({});
     } catch {
@@ -127,51 +169,46 @@ export default function IngresoUrgenciasForm() {
   };
 
   return (
-    <form className="form bg-white shadow rounded-xl p-6" onSubmit={handleSubmit}>
+    <form className="form bg-white shadow rounded-xl p-6 max-w-3xl mx-auto" onSubmit={handleSubmit}>
       <h3 className="text-xl font-semibold mb-4">Registrar ingreso a urgencias</h3>
 
       {/* Identificación */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {/* CUIL */}
-        <div className="form-block">
-          <label>CUIL</label>
-          <div className="relative">
-            <i className="bi bi-person form-icon absolute left-2"></i>
-            <input
-              name="cuil"
-              value={formData.cuil}
-              onChange={handleChange}
-              className="input"
-              placeholder="20-00000000-0"
-            />
-          </div>
-          {errors.cuil && <p className="text-red-600 text-sm">{errors.cuil}</p>}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      {/* CUIL */}
+      <div className="form-block">
+        <label>CUIL</label>
+        <div className="relative">
+          <i className="bi bi-person form-icon absolute left-2"></i>
+          <input
+            name="cuil"
+            value={formData.cuil}
+            onChange={handleChange}
+            onBlur={() => buscarPaciente(formData.cuil)}
+            className="input"
+            placeholder="20-00000000-0"
+          />
         </div>
 
-        {/* Apellido */}
-        <div className="form-block">
-          <label>Apellido</label>
-          <input
-            name="apellido"
-            value={formData.apellido}
-            onChange={handleChange}
-            className="input"
-          />
-          {errors.apellido && <p className="text-red-600 text-sm">{errors.apellido}</p>}
-        </div>
+        {buscandoPaciente && (
+          <p className="text-gray-500 text-sm mt-1">Buscando paciente...</p>
+        )}
 
-        {/* Nombre */}
-        <div className="form-block">
-          <label>Nombre</label>
-          <input
-            name="nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            className="input"
-          />
-          {errors.nombre && <p className="text-red-600 text-sm">{errors.nombre}</p>}
-        </div>
+        {pacienteEncontrado && (
+          <p className="text-green-700 bg-green-50 border border-green-200 rounded p-2 mt-2 text-sm">
+            Paciente encontrado: <b>{pacienteEncontrado.apellido}</b>, {pacienteEncontrado.nombre}
+          </p>
+        )}
+
+        {errorPaciente && (
+          <p className="text-red-700 bg-red-50 border border-red-200 rounded p-2 mt-2 text-sm">
+            {errorPaciente}
+          </p>
+        )}
+
+        {errors.cuil && <p className="text-red-600 text-sm">{errors.cuil}</p>}
       </div>
+    </div>
+
 
       {/* Informe */}
       <div className="form-block">
@@ -180,7 +217,7 @@ export default function IngresoUrgenciasForm() {
           name="informe"
           value={formData.informe}
           onChange={handleChange}
-          className="input min-h-[90px] resize-y"
+          className="input min-h-[120px] resize-y"
         />
         {errors.informe && <p className="text-red-600 text-sm">{errors.informe}</p>}
       </div>
@@ -209,13 +246,13 @@ export default function IngresoUrgenciasForm() {
       {/* Signos vitales */}
       <h4 className="font-semibold mt-6 mb-2">Signos vitales</h4>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <InputNumber label="Temperatura (°C)" name="temperatura" formData={formData} onChange={handleChange} error={errors.temperatura}/>
         <InputNumber label="Frecuencia cardíaca (lpm)" name="frecuenciaCardiaca" formData={formData} onChange={handleChange} error={errors.frecuenciaCardiaca}/>
         <InputNumber label="Frecuencia respiratoria (rpm)" name="frecuenciaRespiratoria" formData={formData} onChange={handleChange} error={errors.frecuenciaRespiratoria}/>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <InputNumber label="Presión sistólica (mmHg)" name="frecuenciaSistolica" formData={formData} onChange={handleChange} error={errors.frecuenciaSistolica}/>
         <InputNumber label="Presión diastólica (mmHg)" name="frecuenciaDiastolica" formData={formData} onChange={handleChange} error={errors.frecuenciaDiastolica}/>
       </div>
@@ -230,7 +267,7 @@ export default function IngresoUrgenciasForm() {
         </p>
       )}
 
-      <button type="submit" className="button mt-5">
+      <button type="submit" className="button mt-5" disabled={loading || buscandoPaciente || !pacienteEncontrado}>
         {loading ? "Guardando..." : "Registrar ingreso"}
       </button>
     </form>

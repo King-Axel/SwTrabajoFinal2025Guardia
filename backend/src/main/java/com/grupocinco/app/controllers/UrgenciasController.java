@@ -2,11 +2,13 @@ package com.grupocinco.app.controllers;
 
 import com.grupocinco.app.dtos.IngresoDTO;
 import com.grupocinco.app.interfaces.RepositorioPersonal;
+import com.grupocinco.app.ServicioRegistrarPaciente;
 import com.grupocinco.app.ServicioUrgencias;
 import com.grupocinco.app.services.ServicioCuentas;
 import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Ingreso;
+import com.grupocinco.domain.Paciente;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,23 @@ public class UrgenciasController {
     @PostMapping("/ingresos")
     public ResponseEntity<?> registrarIngreso(@RequestBody IngresoDTO req) {
         try {
+            if (req == null) return ResponseEntity.badRequest().body(new Mensaje("Faltan los datos del ingreso"));
+            if (req.getPaciente() == null) return ResponseEntity.badRequest().body(new Mensaje("Faltan los datos del paciente"));
+            if (req.getPaciente().getCuil() == null || req.getPaciente().getCuil().isBlank())
+                return ResponseEntity.badRequest().body(new Mensaje("Falta el dato CUIL"));
+
+            if (req.getInforme() == null || req.getInforme().isBlank())
+                throw new IllegalArgumentException("Falta el dato Informe");
+            if (req.getNivelEmergencia() == null || req.getNivelEmergencia().isBlank())
+                throw new IllegalArgumentException("Falta el dato Nivel de emergencia");
+
+            // Mandatorios numéricos (evita el famoso "null")
+            if (req.getTemperatura() == null) throw new IllegalArgumentException("Falta el dato Temperatura");
+            if (req.getFrecuenciaCardiaca() == null) throw new IllegalArgumentException("Falta el dato Frecuencia cardiaca");
+            if (req.getFrecuenciaRespiratoria() == null) throw new IllegalArgumentException("Falta el dato Frecuencia respiratoria");
+            if (req.getFrecuenciaSistolica() == null) throw new IllegalArgumentException("Falta el dato Presion sistolica");
+            if (req.getFrecuenciaDiastolica() == null) throw new IllegalArgumentException("Falta el dato Presion diastolica");
+
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emaillUsuario = auth.getName();
 
@@ -51,8 +70,8 @@ public class UrgenciasController {
 
             servicioUrgencias.registrarIngreso(
                     req.getPaciente().getCuil(),
-                    req.getPaciente().getApellido(),
-                    req.getPaciente().getNombre(),
+                    //req.getPaciente().getApellido(),
+                    //req.getPaciente().getNombre(),
                     enfermera,
                     req.getInforme(),
                     req.getNivelEmergencia(),
@@ -66,7 +85,8 @@ public class UrgenciasController {
             return ResponseEntity.ok(new Mensaje("Ingreso registrado correctamente"));
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new Mensaje(e.getMessage()));
+            String msg = (e.getMessage() == null || e.getMessage().isBlank()) ? "Error al registrar ingreso" : e.getMessage();
+            return ResponseEntity.badRequest().body(new Mensaje(msg));
         }
     }
 

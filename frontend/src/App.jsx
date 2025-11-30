@@ -8,6 +8,8 @@ import Urgencias from "./pages/Urgencias";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import UrgenciasLayout from "./pages/UrgenciasLayout";
+import RegistrarPaciente from "./pages/RegistrarPaciente";
+
 
 export default function App() {
   return (
@@ -51,6 +53,15 @@ export default function App() {
         element={
           <ProtectedRoute>
             <UrgenciasLayout />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/pacientes"
+        element={
+          <ProtectedRoute>
+            <RegistrarPaciente />
           </ProtectedRoute>
         }
       />
