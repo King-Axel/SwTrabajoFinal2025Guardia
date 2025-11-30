@@ -11,7 +11,9 @@ import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
 import com.grupocinco.domain.Paciente;
 import java.util.Optional;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ServicioRegistrarPaciente {
     private final RepositorioPacientes repositorioPacientes;
     private final RepositorioObrasSociales repositorioObrasSociales;

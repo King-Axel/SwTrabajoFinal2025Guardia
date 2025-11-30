@@ -30,10 +30,15 @@ public class PacienteController {
 
     @GetMapping("/{cuil}")
     public ResponseEntity<?> buscarPorCuil(@PathVariable String cuil) {
-        return servicioRegistrarPaciente.buscarPorCuil(cuil)
-                .<ResponseEntity<?>>map(p -> ResponseEntity.ok(p))
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .body(Map.of("mensaje", "Paciente no existe")));
+        try {
+            return servicioRegistrarPaciente.buscarPorCuil(cuil)
+                    .<ResponseEntity<?>>map(p -> ResponseEntity.ok(p))
+                    .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(Map.of("mensaje", "Paciente no existe")));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
+        }
     }
+
 }
 
