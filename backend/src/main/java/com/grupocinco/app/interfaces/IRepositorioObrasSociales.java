@@ -5,7 +5,7 @@ import com.grupocinco.domain.ObraSocial;
 
 import java.util.Optional;
 
-public interface RepositorioObrasSociales {
+public interface IRepositorioObrasSociales {
     Optional<ObraSocial> findById(Long id);
 
     @Deprecated

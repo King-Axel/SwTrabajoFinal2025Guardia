@@ -2,8 +2,10 @@ package com.grupocinco.app.controllers;
 
 import com.grupocinco.app.dtos.PacienteDTO;
 import com.grupocinco.app.ServicioRegistrarPaciente;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,8 +20,9 @@ public class PacienteController {
         this.servicioRegistrarPaciente = servicioRegistrarPaciente;
     }
 
+    @PreAuthorize("hasAuthority('PERM_IS202502_REGISTRO_PACIENTE')")
     @PostMapping
-    public ResponseEntity<?> crear(@RequestBody PacienteDTO dto) {
+    public ResponseEntity<?> crear(@Valid @RequestBody PacienteDTO dto) {
         try {
             servicioRegistrarPaciente.registrarPaciente(dto); // <- ajustamos firma abajo
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("mensaje", "Paciente creado"));
@@ -28,6 +31,7 @@ public class PacienteController {
         }
     }
 
+    @PreAuthorize("hasAuthority('PERM_IS202502_REGISTRO_PACIENTE')")
     @GetMapping("/{cuil}")
     public ResponseEntity<?> buscarPorCuil(@PathVariable String cuil) {
         try {

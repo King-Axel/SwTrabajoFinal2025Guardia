@@ -60,21 +60,27 @@ public class ModuloUrgenciasStepDefinition {
 
     private void registrarIngresos(List<Map<String, String>> datosPacientes) {
         for(var datos : datosPacientes) {
-            String apellido = datos.get("Apellido");
-            String nombre = datos.get("Nombre");
-            String cuil = datos.get("Cuil");
-
-            String informe = datos.get("Informe");
-            String nivelEmergencia = datos.get("Nivel de Emergencia");
-            String temperatura = datos.get("Temperatura");
-            String frecuenciaCardiaca = datos.get("Frecuencia Cardiaca");
-            String frecuenciaResp = datos.get("Frecuencia Respiratoria");
-            String frecuenciaSistolica = datos.get("Frecuencia Sistolica");
-            String frecuenciaDiastolica = datos.get("Frecuencia Diastolica");
-
             try {
+                String cuil = datos.get("Cuil");
+
+                if (db.findByCuil(cuil).isEmpty()) {
+                    db.save(new Paciente(
+                            datos.get("Apellido"),
+                            datos.get("Nombre"),
+                            cuil
+                    ));
+                }
+
+                String informe = datos.get("Informe");
+                String nivelEmergencia = datos.get("Nivel de Emergencia");
+                String temperatura = datos.get("Temperatura");
+                String frecuenciaCardiaca = datos.get("Frecuencia Cardiaca");
+                String frecuenciaResp = datos.get("Frecuencia Respiratoria");
+                String frecuenciaSistolica = datos.get("Frecuencia Sistolica");
+                String frecuenciaDiastolica = datos.get("Frecuencia Diastolica");
+
                 servicio.registrarIngreso(
-                        cuil, apellido, nombre, enfermera, informe,
+                        cuil, enfermera, informe,
                         nivelEmergencia, temperatura, frecuenciaCardiaca,
                         frecuenciaResp, frecuenciaSistolica, frecuenciaDiastolica
                 );

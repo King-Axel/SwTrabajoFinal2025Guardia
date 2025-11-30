@@ -39,7 +39,6 @@ public class Ingreso {
         if (paciente == null) throw new IllegalArgumentException("Paciente nulo");
         if (enfermera == null) throw new IllegalArgumentException("Enfermera nula");
         if (informe == null || informe.isBlank()) throw new IllegalArgumentException("Falta el dato Informe");
-        if (temperatura == null) throw new IllegalArgumentException("Falta el dato Temperatura");
 
         this.fechaIngreso = LocalDateTime.now();
         this.paciente = paciente;

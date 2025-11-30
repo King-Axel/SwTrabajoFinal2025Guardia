@@ -1,19 +1,20 @@
 package com.grupocinco.app.dtos;
 
-import com.grupocinco.domain.Paciente;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class IngresoDTO {
+    @NotNull(message = "Faltan los datos del paciente")
     private PacienteDTO paciente;
     private String informe;
     private String nivelEmergencia;
 
-    private Float temperatura;
-    private Float frecuenciaCardiaca;
-    private Float frecuenciaRespiratoria;
-    private Float frecuenciaSistolica;
-    private Float frecuenciaDiastolica;
+    private String temperatura;
+    private String frecuenciaCardiaca;
+    private String frecuenciaRespiratoria;
+    private String frecuenciaSistolica;
+    private String frecuenciaDiastolica;
 }

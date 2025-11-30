@@ -2,8 +2,8 @@ package com.grupocinco.app;
 
 import com.grupocinco.app.exceptions.CredencialesInvalidasException;
 import com.grupocinco.app.exceptions.CuentaExistenteException;
-import com.grupocinco.app.interfaces.RepositorioCuentas;
-import com.grupocinco.app.interfaces.RepositorioPersonal;
+import com.grupocinco.app.interfaces.IRepositorioCuentas;
+import com.grupocinco.app.interfaces.IRepositorioPersonal;
 import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.Enfermera;
@@ -22,14 +22,14 @@ import static org.mockito.Mockito.*;
 
 public class ServicioAutenticacionTest {
     private ServicioAutenticacion servicio;
-    private RepositorioCuentas repositorio;
-    private RepositorioPersonal repositorioPersonal; // Nuevo mock
+    private IRepositorioCuentas repositorio;
+    private IRepositorioPersonal repositorioPersonal; // Nuevo mock
     private PasswordEncoder encoder;
 
     @BeforeEach
     public void setUp() {
-        this.repositorio = mock(RepositorioCuentas.class);
-        this.repositorioPersonal = mock(RepositorioPersonal.class); // Inicializar mock
+        this.repositorio = mock(IRepositorioCuentas.class);
+        this.repositorioPersonal = mock(IRepositorioPersonal.class); // Inicializar mock
         this.encoder = new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
         
         // Ahora pasamos los 3 argumentos que pide el constructor real
@@ -92,15 +92,13 @@ public class ServicioAutenticacionTest {
         String email = "correo@gmail.com";
         String contrasena = "contrasenahipersegura";
         String rol = Rol.MEDICO.name();
-        String cuil = "27-41235567-6"; // Usamos String CUIL directamente
+        String cuil = "20-13298725-5";
 
-        // Simulamos que el médico YA existe en la base de datos de personal (requisito de tu servicio)
-        Medico medicoExistente = new Medico("Rivas", "Julia", cuil, "9898989898");
+        Medico medicoExistente = new Medico("Rivas", "Julia", cuil, "20-13298725-5");
         when(repositorioPersonal.findByCuil(cuil)).thenReturn(Optional.of(medicoExistente));
 
         when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
 
-        // Pasamos el CUIL en lugar del objeto PersonaDTO
         assertThatCode(
                 () -> servicio.registrar(email, contrasena, rol, cuil)
         ).doesNotThrowAnyException();

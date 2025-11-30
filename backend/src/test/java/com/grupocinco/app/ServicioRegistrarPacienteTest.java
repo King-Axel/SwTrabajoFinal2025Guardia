@@ -7,8 +7,8 @@ import com.grupocinco.app.dtos.PacienteDTO;
 import com.grupocinco.app.exceptions.DatoMandatorioOmitidoException;
 import com.grupocinco.app.exceptions.ObraSocialInexistenteException;
 import com.grupocinco.app.exceptions.PacienteNoAfiliadoException;
-import com.grupocinco.app.interfaces.RepositorioObrasSociales;
-import com.grupocinco.app.interfaces.RepositorioPacientes;
+import com.grupocinco.app.interfaces.IRepositorioObrasSociales;
+import com.grupocinco.app.interfaces.IRepositorioPacientes;
 import com.grupocinco.app.mappers.AfiliadoMapper;
 import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
@@ -24,13 +24,13 @@ import java.util.Optional;
 
 class ServicioRegistrarPacienteTest {
     private ServicioRegistrarPaciente servicioRegistrarPaciente;
-    private RepositorioPacientes repositorioPacientes;
-    private RepositorioObrasSociales repositorioObrasSociales;
+    private IRepositorioPacientes repositorioPacientes;
+    private IRepositorioObrasSociales repositorioObrasSociales;
 
     @BeforeEach
     void setUp() {
-        this.repositorioPacientes = mock(RepositorioPacientes.class);
-        this.repositorioObrasSociales = mock(RepositorioObrasSociales.class);
+        this.repositorioPacientes = mock(IRepositorioPacientes.class);
+        this.repositorioObrasSociales = mock(IRepositorioObrasSociales.class);
 
         this.servicioRegistrarPaciente = new ServicioRegistrarPaciente(this.repositorioPacientes, this.repositorioObrasSociales);
     }
@@ -136,7 +136,8 @@ class ServicioRegistrarPacienteTest {
                 .findById(dto.getAfiliado().getObraSocial().getId());
         verify(repositorioObrasSociales, never())
                 .isAfiliated(any());
-        verifyNoInteractions(repositorioPacientes);
+        verify(repositorioPacientes, times(1))
+                .findByCuil(dto.getCuil());
     }
 
     @Test
@@ -160,7 +161,8 @@ class ServicioRegistrarPacienteTest {
                 .findById(dto.getAfiliado().getObraSocial().getId());
         verify(repositorioObrasSociales, times(1))
                 .isAfiliated(any(Afiliado.class));
-        verifyNoInteractions(repositorioPacientes);
+        verify(repositorioPacientes, times(1))
+                .findByCuil(dto.getCuil());
     }
 
     @Test
@@ -172,6 +174,5 @@ class ServicioRegistrarPacienteTest {
                 .hasMessage("Los datos del paciente son obligatorios");
 
         verifyNoInteractions(repositorioObrasSociales);
-        verifyNoInteractions(repositorioPacientes);
     }
 }

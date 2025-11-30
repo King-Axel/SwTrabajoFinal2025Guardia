@@ -4,8 +4,8 @@ import com.grupocinco.app.dtos.PacienteDTO;
 import com.grupocinco.app.exceptions.DatoMandatorioOmitidoException;
 import com.grupocinco.app.exceptions.ObraSocialInexistenteException;
 import com.grupocinco.app.exceptions.PacienteNoAfiliadoException;
-import com.grupocinco.app.interfaces.RepositorioObrasSociales;
-import com.grupocinco.app.interfaces.RepositorioPacientes;
+import com.grupocinco.app.interfaces.IRepositorioObrasSociales;
+import com.grupocinco.app.interfaces.IRepositorioPacientes;
 import com.grupocinco.app.mappers.PacienteMapper;
 import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
@@ -15,10 +15,10 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ServicioRegistrarPaciente {
-    private final RepositorioPacientes repositorioPacientes;
-    private final RepositorioObrasSociales repositorioObrasSociales;
+    private final IRepositorioPacientes repositorioPacientes;
+    private final IRepositorioObrasSociales repositorioObrasSociales;
 
-    public ServicioRegistrarPaciente(RepositorioPacientes repositorioPacientes, RepositorioObrasSociales repositorioObrasSociales) {
+    public ServicioRegistrarPaciente(IRepositorioPacientes repositorioPacientes, IRepositorioObrasSociales repositorioObrasSociales) {
         this.repositorioPacientes = repositorioPacientes;
         this.repositorioObrasSociales = repositorioObrasSociales;
     }
@@ -26,38 +26,17 @@ public class ServicioRegistrarPaciente {
     public Paciente registrarPaciente(PacienteDTO dto) {
         if (dto == null) throw new DatoMandatorioOmitidoException("Los datos del paciente son obligatorios");
 
-        if (dto.getCuil() == null || dto.getCuil().isBlank())
-            throw new DatoMandatorioOmitidoException("Falta el dato CUIL");
-
         if (repositorioPacientes.findByCuil(dto.getCuil()).isPresent())
             throw new IllegalArgumentException("El paciente ya existe");
-
-        if (dto.getApellido() == null || dto.getApellido().isBlank())
-            throw new DatoMandatorioOmitidoException("Falta el dato Apellido");
-
-        if (dto.getNombre() == null || dto.getNombre().isBlank())
-            throw new DatoMandatorioOmitidoException("Falta el dato Nombre");
-
-        if (dto.getDomicilio() == null)
-            throw new DatoMandatorioOmitidoException("Falta el dato Domicilio");
-
-        if (dto.getDomicilio().getCalle() == null || dto.getDomicilio().getCalle().isBlank())
-            throw new DatoMandatorioOmitidoException("Falta el dato Calle");
-
-        if (dto.getDomicilio().getNumeroCalle() == null)
-            throw new DatoMandatorioOmitidoException("Falta el dato Número");
-
-        if (dto.getDomicilio().getLocalidad() == null || dto.getDomicilio().getLocalidad().isBlank())
-            throw new DatoMandatorioOmitidoException("Falta el dato Localidad");
 
         if (dto.getAfiliado() != null) {
             ObraSocial obraSocial = repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId())
                     .orElseThrow(() -> new ObraSocialInexistenteException("Obra social inexistente"));
 
             Afiliado afiliado = new Afiliado(obraSocial, dto.getAfiliado().getNumeroAfiliado());
-            boolean afiliacion = repositorioObrasSociales.isAfiliated(afiliado);
+            boolean tieneAfiliacion = repositorioObrasSociales.isAfiliated(afiliado);
 
-            if (!afiliacion) {
+            if (!tieneAfiliacion) {
                 throw new PacienteNoAfiliadoException("El paciente no esta afiliado a la obra social");
             }
         }

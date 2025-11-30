@@ -15,7 +15,7 @@ public class PacienteMapper {
         );
     }
 
-    /*public static PacienteDTO aDTO(Paciente paciente) {
+    public static PacienteDTO aDTO(Paciente paciente) {
         PacienteDTO dto = new PacienteDTO();
 
         dto.setApellido(paciente.getApellido());
@@ -25,5 +25,5 @@ public class PacienteMapper {
         dto.setAfiliado(AfiliadoMapper.aDTO(paciente.getAfiliado()));
 
         return dto;
-    }*/
+    }
 }

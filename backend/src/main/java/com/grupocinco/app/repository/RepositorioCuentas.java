@@ -1,7 +1,7 @@
 package com.grupocinco.app.repository;
 
 
-import com.grupocinco.app.interfaces.RepositorioCuentas;
+import com.grupocinco.app.interfaces.IRepositorioCuentas;
 import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.valueobject.Contrasena;
@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class RepositorioDeCuentas implements RepositorioCuentas {
+public class RepositorioCuentas implements IRepositorioCuentas {
     private final Map<String, Cuenta> dbCuenta = new HashMap<>();
 
-    public RepositorioDeCuentas(PasswordEncoder encoder, RepositorioDePersonal dbPersonal) {
+    public RepositorioCuentas(PasswordEncoder encoder, RepositorioPersonal dbPersonal) {
         dbCuenta.put(
                 "lopezjacinta@gmail.com",
                 new Cuenta(Email.of("lopezjacinta@gmail.com"),

@@ -1,6 +1,6 @@
 package com.grupocinco.app.repository;
 
-import com.grupocinco.app.interfaces.RepositorioPersonal;
+import com.grupocinco.app.interfaces.IRepositorioPersonal;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Medico;
 import com.grupocinco.domain.Persona;
@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class RepositorioDePersonal implements RepositorioPersonal {
+public class RepositorioPersonal implements IRepositorioPersonal {
     private final List<Persona> dbPersonal = new ArrayList<>();
 
-    public RepositorioDePersonal() {
+    public RepositorioPersonal() {
         dbPersonal.add(new Enfermera("Lopez","Jacinta Maria", "27-23589461-0"));
         dbPersonal.add(new Enfermera("Pérez","Ana Lucía", "27-24569741-0"));
         dbPersonal.add(new Medico("Gomez", "Carlos Alberto", "1212212121", "20-31223344-8"));

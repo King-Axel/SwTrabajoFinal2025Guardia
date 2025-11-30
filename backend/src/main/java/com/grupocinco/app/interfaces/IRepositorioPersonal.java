@@ -5,7 +5,7 @@ import com.grupocinco.domain.Persona;
 import java.util.List;
 import java.util.Optional;
 
-public interface RepositorioPersonal {
+public interface IRepositorioPersonal {
     List<Persona> findAll();
     Optional<Persona> findByCuil(String cuil);
 }

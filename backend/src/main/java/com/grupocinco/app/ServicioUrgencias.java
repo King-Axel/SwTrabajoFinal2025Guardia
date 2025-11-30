@@ -1,7 +1,6 @@
 package com.grupocinco.app;
 
-import com.grupocinco.app.interfaces.RepositorioPacientes;
-import com.grupocinco.domain.*;
+import com.grupocinco.app.interfaces.IRepositorioPacientes;
 import com.grupocinco.domain.*;
 import com.grupocinco.domain.valueobject.FrecuenciaArterial;
 import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
@@ -14,21 +13,19 @@ import java.util.*;
 
 @Service
 public class ServicioUrgencias {
-    private final RepositorioPacientes dbPacientes;
+    private final IRepositorioPacientes dbPacientes;
     @Getter
     private final List<Ingreso> listaEspera;
 
     // private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
 
-    public ServicioUrgencias(RepositorioPacientes repositorioPacientes) {
+    public ServicioUrgencias(IRepositorioPacientes repositorioPacientes) {
         this.dbPacientes = repositorioPacientes;
         this.listaEspera = new ArrayList<>();
     }
 
     public void registrarIngreso(
         String cuil,
-        //String apellido,
-        //String nombre,
         Enfermera enfermera,
         String informe,
         String nivelEmergencia,
@@ -38,63 +35,28 @@ public class ServicioUrgencias {
         String frecuenciaSistolica,
         String frecuenciaDiastolica
     ) throws IllegalArgumentException {
-
-        if (cuil == null || cuil.isBlank()) {
-            throw new IllegalArgumentException("Falta el dato CUIL");
-        }
-
         Paciente paciente = dbPacientes.findByCuil(cuil).orElse(null);
 
         if (paciente == null) {
             throw new IllegalArgumentException("El paciente no existe. Debe registrarlo antes de proceder al ingreso.");
         }
 
-        // Validaciones mandatorias del ingreso
-        if (enfermera == null) throw new IllegalArgumentException("Falta el dato Enfermera");
+        Ingreso ingreso = new Ingreso(
+                paciente,
+                enfermera,
+                informe,
+                NivelEmergencia.desdeString(nivelEmergencia),
+                Temperatura.of(temperatura),
+                FrecuenciaCardiaca.of(frecuenciaCardiaca),
+                FrecuenciaRespiratoria.of(frecuenciaRespiratoria),
+                FrecuenciaArterial.of(frecuenciaSistolica, frecuenciaDiastolica)
+        );
 
-        if (informe == null || informe.isBlank())
-            throw new IllegalArgumentException("Falta el dato Informe");
-
-        if (nivelEmergencia == null || nivelEmergencia.isBlank())
-            throw new IllegalArgumentException("Falta el dato Nivel de emergencia");
-
-        if (temperatura == null || temperatura.isBlank())
-            throw new IllegalArgumentException("Falta el dato Temperatura");
-
-        if (frecuenciaCardiaca == null || frecuenciaCardiaca.isBlank())
-            throw new IllegalArgumentException("Falta el dato Frecuencia cardiaca");
-
-        if (frecuenciaRespiratoria == null || frecuenciaRespiratoria.isBlank())
-            throw new IllegalArgumentException("Falta el dato Frecuencia respiratoria");
-
-        if (frecuenciaSistolica == null || frecuenciaSistolica.isBlank())
-            throw new IllegalArgumentException("Falta el dato Presion sistolica");
-
-        if (frecuenciaDiastolica == null || frecuenciaDiastolica.isBlank())
-            throw new IllegalArgumentException("Falta el dato Presion diastolica");
-
-        try {
-            Ingreso ingreso = new Ingreso(
-                    paciente,
-                    enfermera,
-                    informe,
-                    NivelEmergencia.desdeString(nivelEmergencia),
-                    Temperatura.of(temperatura),
-                    FrecuenciaCardiaca.of(frecuenciaCardiaca),
-                    FrecuenciaRespiratoria.of(frecuenciaRespiratoria),
-                    FrecuenciaArterial.of(frecuenciaSistolica, frecuenciaDiastolica)
-            );
-
-            this.listaEspera.add(ingreso);
-            this.listaEspera.sort(
-                    Comparator.comparing(Ingreso::getNivelEmergencia)
-                            .thenComparing(Ingreso::getFechaIngreso)
-            );
-        } catch (IllegalArgumentException e) {
-            // Propagamos con mensaje claro al controller
-            throw e;
-        }
-        
+        this.listaEspera.add(ingreso);
+        this.listaEspera.sort(
+                Comparator.comparing(Ingreso::getNivelEmergencia)
+                        .thenComparing(Ingreso::getFechaIngreso)
+        );
     }
 
     /*public Ingreso reclamarProximoPaciente(Medico medico) {

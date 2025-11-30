@@ -1,11 +1,11 @@
 package mock;
 
-import com.grupocinco.app.interfaces.RepositorioPacientes;
+import com.grupocinco.app.interfaces.IRepositorioPacientes;
 import com.grupocinco.domain.Paciente;
 
 import java.util.*;
 
-public class DBPruebaEnMemoria implements RepositorioPacientes {
+public class DBPruebaEnMemoria implements IRepositorioPacientes {
     private final Map<String, Paciente> pacientes;
     /*private final Map<String, Ingreso> enProceso = new HashMap<>();
 

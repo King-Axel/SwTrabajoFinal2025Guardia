@@ -1,12 +1,10 @@
 package com.grupocinco.app;
 
-import com.grupocinco.app.dtos.PersonaDTO;
 import com.grupocinco.app.exceptions.CredencialesInvalidasException;
 import com.grupocinco.app.exceptions.CuentaExistenteException;
 import com.grupocinco.app.exceptions.PersonalInexistenteException;
-import com.grupocinco.app.interfaces.RepositorioCuentas;
-import com.grupocinco.app.interfaces.RepositorioPersonal;
-import com.grupocinco.app.mappers.PersonaMapper;
+import com.grupocinco.app.interfaces.IRepositorioCuentas;
+import com.grupocinco.app.interfaces.IRepositorioPersonal;
 import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.Persona;
@@ -17,11 +15,11 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class ServicioAutenticacion {
-    private final RepositorioCuentas repositorioCuentas;
+    private final IRepositorioCuentas repositorioCuentas;
     private final PasswordEncoder encoder;
-    private final RepositorioPersonal repositorioPersonal;
+    private final IRepositorioPersonal repositorioPersonal;
 
-    public ServicioAutenticacion(RepositorioCuentas repositorioCuentas, PasswordEncoder encoder, RepositorioPersonal repositorioPersonal) {
+    public ServicioAutenticacion(IRepositorioCuentas repositorioCuentas, PasswordEncoder encoder, IRepositorioPersonal repositorioPersonal) {
         this.repositorioCuentas = repositorioCuentas;
         this.encoder = encoder;
         this.repositorioPersonal = repositorioPersonal;

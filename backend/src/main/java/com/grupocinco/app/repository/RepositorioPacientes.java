@@ -1,6 +1,6 @@
 package com.grupocinco.app.repository;
 
-import com.grupocinco.app.interfaces.RepositorioPacientes;
+import com.grupocinco.app.interfaces.IRepositorioPacientes;
 import com.grupocinco.domain.Paciente;
 import org.springframework.stereotype.Repository;
 
@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class RepositorioDePacientes implements RepositorioPacientes {
+public class RepositorioPacientes implements IRepositorioPacientes {
     List<Paciente> dbPacientes = new ArrayList<>();
 
-    public RepositorioDePacientes() {}
+    public RepositorioPacientes() {}
 
     @Override
     public void save(Paciente paciente) {
