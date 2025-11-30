@@ -48,7 +48,11 @@ export default function App() {
       {/* Ruta protegida del módulo de urgencias */}
       <Route
         path="/urgencias"
-        element={<UrgenciasLayout />}
+        element={
+          <ProtectedRoute>
+            <UrgenciasLayout />
+          </ProtectedRoute>
+        }
       />
 
       {/* Cualquier ruta desconocida → login */}

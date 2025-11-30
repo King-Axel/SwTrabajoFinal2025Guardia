@@ -42,8 +42,11 @@ const LoginForm = ({ onSubmit } = {}) => {
       });
 
       if (!response.ok) {
-        const err = await response.json().catch(() => ({ mensaje: 'Error en login' }));
-        setErrors({ server: err.mensaje || 'Error en login' });
+        const err = await response.json().catch(() => ({}));
+        setErrors((prev) => ({
+          ...prev,
+          server: err.mensaje || "Email o contraseña incorrectos",
+        }));
         return;
       }
 
@@ -129,6 +132,12 @@ const LoginForm = ({ onSubmit } = {}) => {
             <p className="mt-1 text-sm text-red-600">{errors.contrasena}</p>
           )}
         </div>
+
+        {errors.server && (
+          <p className="mt-3 p-2 bg-red-100 text-red-700 rounded">
+            {errors.server}
+          </p>
+        )}
 
         <button type="submit" className="mt-6 w-full button">
           Ingresar

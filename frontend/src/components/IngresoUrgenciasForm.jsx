@@ -81,7 +81,13 @@ export default function IngresoUrgenciasForm() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          ...formData,
+          paciente: {
+            cuil: formData.cuil.trim(),
+            apellido: formData.apellido.trim(),
+            nombre: formData.nombre.trim(),
+          },
+          informe: formData.informe,
+          nivelEmergencia: formData.nivelEmergencia,
           temperatura: parseFloat(formData.temperatura),
           frecuenciaCardiaca: parseFloat(formData.frecuenciaCardiaca),
           frecuenciaRespiratoria: parseFloat(formData.frecuenciaRespiratoria),

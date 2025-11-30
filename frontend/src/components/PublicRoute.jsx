@@ -1,10 +1,8 @@
 import { Navigate } from "react-router-dom";
-import { isAuthenticated } from "../utils/auth";
+import { getToken } from "../utils/auth";
 
 export default function PublicRoute({ children }) {
-  if (isAuthenticated()) {
-    return <Navigate to="/urgencias" replace />;
-  }
-
+  const token = getToken();
+  if (token) return <Navigate to="/urgencias" replace />;
   return children;
 }

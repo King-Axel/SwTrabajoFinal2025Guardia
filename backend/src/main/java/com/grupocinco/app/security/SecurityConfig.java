@@ -41,7 +41,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable) // Deshabilitar Token CSRF
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                    .requestMatchers("api/login", "api/register", "api/personal").permitAll()
+                    .requestMatchers("/api/login", "/api/register", "/api/personal").permitAll()
                     .anyRequest().authenticated()
             );
 

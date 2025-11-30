@@ -9,11 +9,25 @@ export default function ColaEspera() {
     setLoading(true);
     try {
       const token = getToken();
+
+      if (!token) {
+        setLista([]);
+        console.error("No hay token. Redirigí al login.");
+        return;
+      }
+
       const res = await fetch("http://localhost:8081/api/urgencias/espera", {
         headers: {
           "Authorization": `Bearer ${token}`
         }
       });
+
+      if (!res.ok) {
+        // 403 suele venir sin body JSON -> no hagas res.json()
+        const txt = await res.text().catch(() => "");
+        throw new Error(txt || `HTTP ${res.status}`);
+      }
+      
       const data = await res.json();
       setLista(data);
     } catch (err) {
@@ -59,6 +73,23 @@ function PacienteCard({ paciente }) {
     "Urgencia menor": "border-green-500",
     "Sin Urgencia": "border-blue-500"
   };
+
+  const p = paciente.paciente ?? paciente;
+  const temp = paciente.temperatura?.temperatura ?? paciente.temperatura;
+  const fc = paciente.frecuenciaCardiaca?.frecuencia ?? paciente.frecuenciaCardiaca;
+  const fr = paciente.frecuenciaRespiratoria?.frecuencia ?? paciente.frecuenciaRespiratoria;
+
+  const sist = paciente.frecuenciaArterial?.sistolica ?? paciente.frecuenciaSistolica;
+  const diast = paciente.frecuenciaArterial?.diastolica ?? paciente.frecuenciaDiastolica;
+
+  const nivelRaw = paciente.nivelEmergencia;
+  const nivel = ({
+    CRITICA: "Critica",
+    EMERGENCIA: "Emergencia",
+    URGENCIA: "Urgencia",
+    URGENCIA_MENOR: "Urgencia menor",
+    SIN_URGENCIA: "Sin Urgencia",
+  }[nivelRaw] ?? nivelRaw);
 
   return (
     <div className={`border-l-8 ${colorPorNivel[paciente.nivelEmergencia]} bg-white rounded-xl p-5 shadow`}>

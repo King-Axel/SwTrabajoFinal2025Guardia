@@ -6,7 +6,7 @@ const RegisterForm = () => {
   const [email, setEmail] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [mostrarContra, setMostrarContra] = useState(false);
-  const [rol, setRol] = useState(null);
+  const [rol, setRol] = useState("ENFERMERA");
   const [personal, setPersonal] = useState("");
   const [buscar, setBuscar] = useState("");
   const [errors, setErrors] = useState({});
@@ -109,7 +109,7 @@ const RegisterForm = () => {
         })
       });
 
-      const result = await response.json();
+      const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         setErrors({ server: result.mensaje || "Error al registrar" });
@@ -144,10 +144,7 @@ const RegisterForm = () => {
 
   return (
     <>
-      <form
-        className="form w-full p-5 xl:flex xl:flex-col lg:p-0 space-y-4"
-        onSubmit={handleSubmit}
-      >
+      <form className="form w-full p-5 xl:flex xl:flex-col lg:p-0 space-y-4 pb-8" onSubmit={handleSubmit}>
         <div className="form-block">
           <label htmlFor="email">Correo Electrónico</label>
           <div className="relative">
@@ -215,7 +212,8 @@ const RegisterForm = () => {
                 id="enfermera"
                 name="rol"
                 value="ENFERMERA"
-                onChange={() => onChangeRol("ENFERMERA")}
+                checked={rol === "ENFERMERA"}
+                onChange={(e) => onChangeRol(e.target.value)}
               />
             </label>
             <label htmlFor="medico" className="form-block-radio">
@@ -226,8 +224,9 @@ const RegisterForm = () => {
                 id="medico"
                 name="rol"
                 value="MEDICO"
-                onChange={() => onChangeRol("MEDICO")}
-              />
+                checked={rol === "MEDICO"}
+                onChange={(e) => onChangeRol(e.target.value)}
+              />         
             </label>
           </div>
           {errors.rol && (
@@ -293,9 +292,16 @@ const RegisterForm = () => {
           )}
         </div>
 
+          {errors.server && (
+            <p className="p-2 bg-red-100 text-red-700 rounded" style={{ marginBottom: 0 }}>
+              {errors.server}
+            </p>
+          )}
+
         <button
           type="submit"
-          className="mt-6 w-full button botonRegistrar"
+          className="mt-4 w-full button botonRegistrar"
+          style={{ position: "static" }}
         >
           Registrarme
         </button>
