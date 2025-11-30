@@ -10,6 +10,7 @@ import com.grupocinco.app.mappers.PacienteMapper;
 import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
 import com.grupocinco.domain.Paciente;
+import java.util.Optional;
 
 public class ServicioRegistrarPaciente {
     private final RepositorioPacientes repositorioPacientes;
@@ -22,6 +23,12 @@ public class ServicioRegistrarPaciente {
 
     public Paciente registrarPaciente(PacienteDTO dto) {
         if (dto == null) throw new DatoMandatorioOmitidoException("Los datos del paciente son obligatorios");
+
+        if (dto.getCuil() == null || dto.getCuil().isBlank())
+            throw new DatoMandatorioOmitidoException("Falta el dato CUIL");
+
+        if (repositorioPacientes.findByCuil(dto.getCuil()).isPresent())
+            throw new IllegalArgumentException("El paciente ya existe");
 
         Afiliado afiliado;
 
@@ -44,4 +51,12 @@ public class ServicioRegistrarPaciente {
 
         return paciente;
     }
+
+    public Optional<Paciente> buscarPorCuil(String cuil) {
+        if (cuil == null || cuil.isBlank()) {
+            throw new DatoMandatorioOmitidoException("Falta el dato CUIL");
+        }
+        return repositorioPacientes.findByCuil(cuil);
+    }
+
 }
