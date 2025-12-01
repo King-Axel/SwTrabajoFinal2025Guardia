@@ -27,7 +27,7 @@ export default function ColaEspera() {
         const txt = await res.text().catch(() => "");
         throw new Error(txt || `HTTP ${res.status}`);
       }
-      
+
       const data = await res.json();
       setLista(data);
     } catch (err) {
@@ -67,11 +67,11 @@ export default function ColaEspera() {
 
 function PacienteCard({ paciente }) {
   const colorPorNivel = {
-    Critica: "border-red-500",
-    Emergencia: "border-orange-500",
-    Urgencia: "border-yellow-500",
-    "Urgencia menor": "border-green-500",
-    "Sin Urgencia": "border-blue-500",
+    Critica: { border: "border-red-500", bg: "bg-red-200" },
+    Emergencia: { border: "border-orange-500", bg: "bg-orange-200" },
+    Urgencia: { border: "border-yellow-500", bg: "bg-yellow-200" },
+    "Urgencia menor": { border: "border-green-500", bg: "bg-green-200" },
+    "Sin Urgencia": { border: "border-blue-500", bg: "bg-blue-200" },
   };
 
   // Si viene un Ingreso, el paciente está en paciente.paciente
@@ -96,7 +96,7 @@ function PacienteCard({ paciente }) {
   }[nivelRaw] ?? nivelRaw);
 
   return (
-    <div className={`border-l-8 ${colorPorNivel[nivel] ?? "border-gray-300"} bg-white rounded-xl p-5 shadow`}>
+    <div className={`border-l-8 ${colorPorNivel[nivel]?.border} bg-white rounded-xl p-5 shadow`}>
       <div className="flex justify-between items-center">
         <div>
           <h3 className="font-bold text-lg">
@@ -105,7 +105,7 @@ function PacienteCard({ paciente }) {
           <p className="text-gray-500 text-sm">{p?.cuil}</p>
         </div>
 
-        <span className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 text-sm">
+        <span className={`px-3 py-1 rounded-md ${colorPorNivel[nivel]?.bg} text-gray-700 text-sm`}>
           {nivel}
         </span>
       </div>

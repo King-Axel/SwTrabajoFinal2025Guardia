@@ -37,7 +37,7 @@ export default function UrgenciasLayout() {
               <button
                 type="button"
                 onClick={() => setTab("cola")}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "cola" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "cola" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
                   }`}
               >
                 <i className="bi bi-graph-up-arrow mr-2"></i>
@@ -49,7 +49,7 @@ export default function UrgenciasLayout() {
                   <button
                     type="button"
                     onClick={() => setTab("nueva")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "nueva" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                    className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "nueva" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
                       }`}
                   >
                     <i className="bi bi-plus-lg mr-2"></i>
@@ -59,7 +59,7 @@ export default function UrgenciasLayout() {
                   <button
                     type="button"
                     onClick={() => setTab("paciente")}
-                    className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "paciente" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                    className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "paciente" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
                       }`}
                   >
                     <i className="bi bi-person-plus mr-2"></i>
@@ -72,7 +72,7 @@ export default function UrgenciasLayout() {
                 <button
                   type="button"
                   onClick={() => setTab("reclamar")}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                  className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
                     }`}
                 >
                   <i className="bi bi-clipboard2-heart mr-2"></i>
@@ -85,7 +85,7 @@ export default function UrgenciasLayout() {
             <button
               type="button"
               onClick={handleLogout}
-              className="px-4 py-2 rounded-xl text-sm font-medium transition text-gray-600 hover:text-gray-800"
+              className="cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition text-gray-600 hover:text-gray-800"
             >
               <i className="bi bi-box-arrow-right mr-2"></i>
               Salir

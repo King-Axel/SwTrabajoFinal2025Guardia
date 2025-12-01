@@ -77,6 +77,7 @@ const LoginForm = ({ onSubmit } = {}) => {
           <label htmlFor="login-email">Correo Electrónico</label>
           <div className="relative">
             <i className="bi bi-envelope form-icon absolute left-2"></i>
+            
             <input
               id="login-email"
               type="email"
@@ -87,6 +88,7 @@ const LoginForm = ({ onSubmit } = {}) => {
                 setErrors((prev) => ({ ...prev, email: undefined }));
               }}
               className="input px-3"
+              tabIndex={1}
             />
           </div>
           {errors.email && (
@@ -116,11 +118,13 @@ const LoginForm = ({ onSubmit } = {}) => {
                 setErrors((prev) => ({ ...prev, contrasena: undefined }));
               }}
               className="input"
+              tabIndex={2}
             />
             <button
               type="button"
               onClick={() => setMostrarContra((prev) => !prev)}
               className="absolute right-2 top-1/2 -translate-y-3"
+              tabIndex={3}
             >
               <i
                 className={`bi form-icon ${mostrarContra ? "bi-eye-slash" : "bi-eye"
@@ -139,16 +143,16 @@ const LoginForm = ({ onSubmit } = {}) => {
           </p>
         )}
 
-        <button type="submit" className="mt-6 w-full button">
+        <button type="submit" className="mt-6 w-full button" tabIndex={4}>
           Ingresar
         </button>
       </form>
 
       <div className="lg:hidden text-center">
-        <div className="flex justify-center gap-1">
+        <div className="flex justify-center gap-2">
           <p>O crea una cuenta con</p>
-          <Link to="/register">
-            <span className="text-sm text-blue-600 hover:underline">
+          <Link to="/register" tabIndex={5}>
+            <span className="text-blue-600 hover:underline">
               Registrarse
             </span>
           </Link>

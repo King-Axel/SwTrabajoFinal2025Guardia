@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getToken } from "../utils/auth";
 
 const RegisterForm = () => {
@@ -160,6 +160,7 @@ const RegisterForm = () => {
                 setErrors((prev) => ({ ...prev, email: undefined }));
               }}
               className="input px-3"
+              tabIndex={1}
             />
           </div>
           {errors.email && (
@@ -184,15 +185,16 @@ const RegisterForm = () => {
                 setErrors((prev) => ({ ...prev, contrasena: undefined }));
               }}
               className="input"
+              tabIndex={2}
             />
             <button
               type="button"
               onClick={() => setMostrarContra((prev) => !prev)}
-              className="absolute right-2"
-              style={{ top: '50%', transform: 'translateY(-50%)' }} // 👈 ¡Ajuste perfecto!
+              className="absolute right-2 form-icon"
+              tabIndex={3}
             >
               <i
-                className={`bi form-icon ${mostrarContra ? "bi-eye-slash" : "bi-eye"
+                className={`bi form-icon bi-eye${mostrarContra ? "-slash" : ""
                   }`}
               ></i>
             </button>
@@ -215,6 +217,7 @@ const RegisterForm = () => {
                 value="ENFERMERA"
                 checked={rol === "ENFERMERA"}
                 onChange={(e) => onChangeRol(e.target.value)}
+                tabIndex={4}
               />
             </label>
             <label htmlFor="medico" className="form-block-radio">
@@ -227,6 +230,7 @@ const RegisterForm = () => {
                 value="MEDICO"
                 checked={rol === "MEDICO"}
                 onChange={(e) => onChangeRol(e.target.value)}
+                tabIndex={5}
               />         
             </label>
           </div>
@@ -260,7 +264,11 @@ const RegisterForm = () => {
               onFocus={() => {
                 if (rol) setAbierto(true);
               }}
+              onBlur={() => {
+                if (rol) setAbierto(false);
+              }}
               disabled={!rol}
+              tabIndex={6}
             />
           </div>
 
@@ -303,10 +311,25 @@ const RegisterForm = () => {
           type="submit"
           className="mt-4 w-full button botonRegistrar"
           style={{ position: "static" }}
+          tabIndex={7}
         >
           Registrarme
         </button>
       </form>
+
+      <div className="lg:hidden text-center text-md">
+        <div className="flex flex-col justify-center gap-1">
+          <p>¿Ya tienes una cuenta?</p>
+          <div className="flex justify-center gap-2">
+            <p> Inicia sesión desde</p>
+            <Link to="/login">
+              <span className="text-md text-blue-600 hover:underline" tabIndex={8}>
+                Iniciar Sesión
+              </span>
+            </Link>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

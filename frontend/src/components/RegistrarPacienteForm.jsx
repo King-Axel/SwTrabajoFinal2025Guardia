@@ -135,23 +135,23 @@ export default function RegistrarPacienteForm() {
     <form className="form bg-white shadow rounded-xl p-6 max-w-3xl mx-auto" onSubmit={handleSubmit}>
       <h3 className="text-xl font-semibold mb-4">Registrar paciente</h3>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Field label="CUIL" name="cuil" value={formData.cuil} onChange={handleChange} error={errors.cuil} placeholder="20-00000000-0" />
-        <Field label="Apellido" name="apellido" value={formData.apellido} onChange={handleChange} error={errors.apellido} />
-        <Field label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} error={errors.nombre} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
+        <Field label="CUIL" name="cuil" value={formData.cuil} onChange={handleChange} error={errors.cuil} placeholder="20-00000000-0" icon="person-vcard" />
+        <Field label="Apellido" name="apellido" value={formData.apellido} onChange={handleChange} error={errors.apellido} placeholder="Pérez" icon="person" />
+        <Field label="Nombre" name="nombre" value={formData.nombre} onChange={handleChange} error={errors.nombre} placeholder="Juan" icon="person" />
       </div>
 
       <h4 className="font-semibold mt-6 mb-2">Domicilio</h4>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <Field label="Calle" name="calle" value={formData.calle} onChange={handleChange} error={errors.calle} />
-        <Field label="Número" name="numeroCalle" type="number" value={formData.numeroCalle} onChange={handleChange} error={errors.numeroCalle} />
-        <Field label="Localidad" name="localidad" value={formData.localidad} onChange={handleChange} error={errors.localidad} />
+      <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
+        <Field label="Calle" name="calle" value={formData.calle} onChange={handleChange} error={errors.calle} placeholder="25 de Mayo" icon="signpost-split" />
+        <Field label="Número" name="numeroCalle" type="number" value={formData.numeroCalle} onChange={handleChange} error={errors.numeroCalle} placeholder="450" icon="123" />
+        <Field label="Localidad" name="localidad" value={formData.localidad} onChange={handleChange} error={errors.localidad} placeholder="San Miguel de Tucumán" icon="geo-alt" />
       </div>
 
-      <h4 className="font-semibold mt-6 mb-2">Afiliación (opcional)</h4>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <Field label="Obra social ID" name="obraSocialId" type="number" value={formData.obraSocialId} onChange={handleChange} error={errors.obraSocialId} />
-        <Field label="Número de afiliado" name="numeroAfiliado" value={formData.numeroAfiliado} onChange={handleChange} error={errors.numeroAfiliado} />
+      <h4 className="font-semibold mt-6">Afiliación (opcional)</h4>
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:gap-4">
+        <Field label="Obra social ID" name="obraSocialId" type="number" value={formData.obraSocialId} onChange={handleChange} error={errors.obraSocialId} icon="hash" />
+        <Field label="Número de afiliado" name="numeroAfiliado" value={formData.numeroAfiliado} onChange={handleChange} error={errors.numeroAfiliado} icon="hash" />
       </div>
 
       {apiError && <p className="mt-3 p-2 bg-red-100 text-red-700 rounded">{apiError}</p>}
@@ -164,18 +164,24 @@ export default function RegistrarPacienteForm() {
   );
 }
 
-function Field({ label, name, value, onChange, error, type = "text", placeholder }) {
+function Field({ label, name, value, onChange, error, type = "text", placeholder, icon = "" }) {
   return (
     <div className="form-block">
       <label>{label}</label>
-      <input
-        name={name}
-        type={type}
-        className="input"
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-      />
+
+      <div className="relative">
+        <i className={`bi bi-${icon} form-icon absolute left-2`}></i>
+
+        <input
+          name={name}
+          type={type}
+          className="input pr-2"
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          {...(type === "number" ? {min: 1} : {})}
+        />
+      </div>
       {error && <p className="text-red-600 text-sm">{error}</p>}
     </div>
   );
