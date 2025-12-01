@@ -34,6 +34,7 @@ export default function IngresoUrgenciasForm() {
     const { name, value } = e.target;
 
     setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: undefined }));
 
     if (name === "cuil") {
       setPacienteEncontrado(null);
@@ -116,11 +117,53 @@ export default function IngresoUrgenciasForm() {
   }
 };
 
+const applyBackendFieldError = (msg) => {
+  if (!msg) return false;
+
+  const m = msg.toLowerCase();
+
+  // OJO: usamos includes para no depender del texto exacto al 100%
+  if (m.includes("temperatura")) {
+    setErrors((prev) => ({ ...prev, temperatura: msg }));
+    return true;
+  }
+  if (m.includes("frecuencia cardiaca") || m.includes("cardiaca")) {
+    setErrors((prev) => ({ ...prev, frecuenciaCardiaca: msg }));
+    return true;
+  }
+  if (m.includes("frecuencia respiratoria") || m.includes("respiratoria")) {
+    setErrors((prev) => ({ ...prev, frecuenciaRespiratoria: msg }));
+    return true;
+  }
+  if (m.includes("presion sistolica") || m.includes("presión sistólica") || m.includes("sistolica")) {
+    setErrors((prev) => ({ ...prev, frecuenciaSistolica: msg }));
+    return true;
+  }
+  if (m.includes("presion diastolica") || m.includes("presión diastólica") || m.includes("diastolica")) {
+    setErrors((prev) => ({ ...prev, frecuenciaDiastolica: msg }));
+    return true;
+  }
+  if (m.includes("nivel de emergencia")) {
+    setErrors((prev) => ({ ...prev, nivelEmergencia: msg }));
+    return true;
+  }
+  if (m.includes("informe")) {
+    setErrors((prev) => ({ ...prev, informe: msg }));
+    return true;
+  }
+  if (m.includes("cuil")) {
+    setErrors((prev) => ({ ...prev, cuil: msg }));
+    return true;
+  }
+
+  return false;
+};
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError("");
     setSuccessMessage("");
+    setErrors({});
 
     if (!validar()) return;
 
@@ -156,8 +199,15 @@ export default function IngresoUrgenciasForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setApiError(data.mensaje || "Error al registrar ingreso");
-        return;
+        const msg = data?.mensaje || "Error al registrar ingreso";
+
+          // si puede mapearse a un campo, lo mostramos abajo del input
+          const mapped = applyBackendFieldError(msg);
+
+          // si no se pudo mapear, queda como error general
+          if (!mapped) setApiError(msg);
+
+          return;
       }
 
       setSuccessMessage(data.mensaje || "Ingreso registrado correctamente");

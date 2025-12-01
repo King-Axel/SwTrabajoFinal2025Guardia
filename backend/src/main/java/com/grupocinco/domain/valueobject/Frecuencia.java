@@ -13,7 +13,7 @@ public abstract class Frecuencia {
         float valorParseado;
 
         if (valor == null) throw new FrecuenciaInvalidaException(
-                "Falta el dato Frecuencia " + tipo.substring(0, 1).toUpperCase() + tipo.substring(1).toLowerCase()
+            "Falta el dato Frecuencia " + tipo.substring(0, 1).toUpperCase() + tipo.substring(1).toLowerCase()
         );
 
         try {

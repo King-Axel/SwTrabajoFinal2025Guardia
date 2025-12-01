@@ -8,7 +8,8 @@ export default function Logout() {
   useEffect(() => {
     clearToken();
     navigate("/login", { replace: true });
-  }, [navigate]);
+  }, []);
+
 
   return null;
 }

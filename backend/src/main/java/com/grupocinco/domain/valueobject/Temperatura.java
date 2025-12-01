@@ -24,6 +24,10 @@ public class Temperatura {
 
         if (valorParseado < 0) throw new IllegalArgumentException("La temperatura no puede ser negativa");
 
+        if (valorParseado < 25 || valorParseado > 44) {
+            throw new IllegalArgumentException("La temperatura debe estar entre 25 y 44");
+        }
+
         return valorParseado;
     }
 

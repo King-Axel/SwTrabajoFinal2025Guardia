@@ -66,6 +66,15 @@ export default function App() {
         }
       />
 
+      <Route
+        path="/logout"
+        element={
+          <ProtectedRoute>
+            <Logout />
+          </ProtectedRoute>
+        }
+      />
+
       {/* Cualquier ruta desconocida → login */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>

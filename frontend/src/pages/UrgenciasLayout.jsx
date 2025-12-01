@@ -63,6 +63,15 @@ export default function UrgenciasLayout() {
               <i className="bi bi-person-plus mr-1"></i>
               Registrar paciente
             </button>
+
+            <button
+              type="button"
+              onClick={() => navigate("/logout")}
+              className="px-4 py-2 rounded-lg border bg-white hover:bg-gray-100 text-gray-700"
+            >
+              <i className="bi bi-box-arrow-right mr-2"></i>
+              Salir
+            </button>
           </div>
         </div>
       </header>
