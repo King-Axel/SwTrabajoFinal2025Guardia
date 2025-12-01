@@ -184,7 +184,7 @@ export default function IngresoUrgenciasForm() {
   };
 
   return (
-    <form className="form bg-white shadow rounded-xl p-6 max-w-3xl mx-auto" onSubmit={handleSubmit}>
+    <form className="form bg-white shadow rounded-xl p-6 max-w-4xl mx-auto" onSubmit={handleSubmit}>
       <h3 className="text-xl font-semibold mb-4">Registrar ingreso a urgencias</h3>
 
       {/* Identificación */}
