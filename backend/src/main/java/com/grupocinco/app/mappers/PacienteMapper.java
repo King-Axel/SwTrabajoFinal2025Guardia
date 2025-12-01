@@ -22,7 +22,8 @@ public class PacienteMapper {
         dto.setNombre(paciente.getNombre());
         dto.setCuil(paciente.getCuil());
         dto.setDomicilio(DomicilioMapper.aDTO(paciente.getDomicilio()));
-        dto.setAfiliado(AfiliadoMapper.aDTO(paciente.getAfiliado()));
+
+        if(paciente.getAfiliado() != null) dto.setAfiliado(AfiliadoMapper.aDTO(paciente.getAfiliado()));
 
         return dto;
     }

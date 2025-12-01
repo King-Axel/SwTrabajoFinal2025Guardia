@@ -27,7 +27,7 @@ public abstract class Frecuencia {
         return valorParseado;
     }
 
-    public Float get() {
+    public Float getFrecuencia() {
         return this.frecuencia;
     }
 }

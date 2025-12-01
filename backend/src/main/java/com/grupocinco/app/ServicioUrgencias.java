@@ -84,7 +84,7 @@ public class ServicioUrgencias {
     public List<Ingreso> obtenerIngresosEnEspera() {
         return listaEspera
         .stream()
-        .sorted(Comparator.comparing(Ingreso::getNivelEmergencia).reversed())
+        .sorted(Comparator.comparing(Ingreso::getNivelEmergencia))
         .toList();
     }
 }

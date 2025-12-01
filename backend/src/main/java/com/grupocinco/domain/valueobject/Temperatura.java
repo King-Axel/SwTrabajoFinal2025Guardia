@@ -31,7 +31,7 @@ public class Temperatura {
         return valorParseado;
     }
 
-    public Float get() {
+    public Float getTemperatura() {
         return temperatura;
     }
 }

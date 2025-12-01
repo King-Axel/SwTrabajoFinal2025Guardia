@@ -1,13 +1,22 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { clearToken, getUserRole } from "../utils/auth";
+
 import ColaEspera from "./ColaEspera";
 import NuevaAdmision from "./NuevaAdmision";
 import RegistrarPaciente from "./RegistrarPaciente";
+import ReclamarPaciente from "./ReclamarPaciente";
 
 export default function UrgenciasLayout() {
   const [tab, setTab] = useState("cola");
   const navigate = useNavigate();
+  const rol = (getUserRole() || "").toUpperCase();
+  const esMedico = rol.includes("MEDICO");
 
+  const handleLogout = () => {
+    clearToken();
+    navigate("/login", { replace: true });
+  };
 
   return (
     <div className="w-full min-h-screen bg-gray-50 p-6">
@@ -28,46 +37,55 @@ export default function UrgenciasLayout() {
               <button
                 type="button"
                 onClick={() => setTab("cola")}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
-                  tab === "cola"
-                    ? "bg-white shadow text-blue-700"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "cola" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                  }`}
               >
                 <i className="bi bi-graph-up-arrow mr-2"></i>
                 Cola de Espera
               </button>
 
-              <button
-                type="button"
-                onClick={() => setTab("nueva")}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition ${
-                  tab === "nueva"
-                    ? "bg-white shadow text-blue-700"
-                    : "text-gray-600 hover:text-gray-800"
-                }`}
-              >
-                <i className="bi bi-plus-lg mr-2"></i>
-                Nueva Admisión
-              </button>
+              {!esMedico && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setTab("nueva")}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "nueva" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                      }`}
+                  >
+                    <i className="bi bi-plus-lg mr-2"></i>
+                    Nueva Admisión
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setTab("paciente")}
+                    className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "paciente" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                      }`}
+                  >
+                    <i className="bi bi-person-plus mr-2"></i>
+                    Registrar paciente
+                  </button>
+                </>
+              )}
+
+              {esMedico && (
+                <button
+                  type="button"
+                  onClick={() => setTab("reclamar")}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                    }`}
+                >
+                  <i className="bi bi-clipboard2-heart mr-2"></i>
+                  Reclamar paciente
+                </button>
+              )}
             </div>
 
-            <button
-              className={`px-4 py-2 rounded-lg border ${
-                tab === "paciente"
-                  ? "text-blue-600 border-blue-600"
-                  : "bg-white hover:bg-gray-100 text-gray-700"
-              }`}
-              onClick={() => setTab("paciente")}
-            >
-              <i className="bi bi-person-plus mr-1"></i>
-              Registrar paciente
-            </button>
-
+            {/* SIEMPRE visible (médico y enfermera) */}
             <button
               type="button"
-              onClick={() => navigate("/logout")}
-              className="px-4 py-2 rounded-lg border bg-white hover:bg-gray-100 text-gray-700"
+              onClick={handleLogout}
+              className="px-4 py-2 rounded-xl text-sm font-medium transition text-gray-600 hover:text-gray-800"
             >
               <i className="bi bi-box-arrow-right mr-2"></i>
               Salir
@@ -78,8 +96,9 @@ export default function UrgenciasLayout() {
 
       {/* Contenido dinámico según TAB */}
       {tab === "cola" && <ColaEspera />}
-      {tab === "nueva" && <NuevaAdmision />}
-      {tab === "paciente" && <RegistrarPaciente />}
+      {tab === "nueva" && !esMedico && <NuevaAdmision />}
+      {tab === "paciente" && !esMedico && <RegistrarPaciente />}
+      {tab === "reclamar" && esMedico && <div>Reclamar paciente (pendiente)</div>}
     </div>
   );
 }

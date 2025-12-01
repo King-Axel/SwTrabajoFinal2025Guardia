@@ -3,6 +3,7 @@ package com.grupocinco.app.controllers;
 import com.grupocinco.app.dtos.IngresoDTO;
 import com.grupocinco.app.interfaces.IRepositorioPersonal;
 import com.grupocinco.app.ServicioUrgencias;
+import com.grupocinco.app.mappers.IngresoMapper;
 import com.grupocinco.app.mappers.PersonaMapper;
 import com.grupocinco.app.services.ServicioCuentas;
 import com.grupocinco.app.services.ServicioPacientes;
@@ -39,8 +40,8 @@ public class UrgenciasController {
 
     @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
     @GetMapping("/espera")
-    public ResponseEntity<List<Ingreso>> obtenerIngresosEnEspera() {
-        return ResponseEntity.ok(servicioUrgencias.obtenerIngresosEnEspera());
+    public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnEspera() {
+        return ResponseEntity.ok(servicioUrgencias.obtenerIngresosEnEspera().stream().map(IngresoMapper::aDTO).toList());
     }
 
     @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
