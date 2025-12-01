@@ -16,11 +16,15 @@ public class RepositorioPacientes implements IRepositorioPacientes {
 
     @Override
     public void save(Paciente paciente) {
+        dbPacientes.removeIf(p -> p.getCuil().equals(paciente.getCuil()));
         dbPacientes.add(paciente);
     }
 
     @Override
     public Optional<Paciente> findByCuil(String cuil) {
-        return Optional.empty();
+        return dbPacientes.stream()
+                .filter(p -> p.getCuil().equals(cuil))
+                .findFirst();
     }
+
 }

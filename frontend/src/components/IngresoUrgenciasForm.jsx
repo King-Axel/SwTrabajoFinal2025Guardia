@@ -69,38 +69,53 @@ export default function IngresoUrgenciasForm() {
   };
 
   const buscarPaciente = async (cuilValue) => {
-    const c = (cuilValue ?? "").trim();
+  const c = (cuilValue ?? "").trim();
 
-    setPacienteEncontrado(null);
-    setErrorPaciente("");
+  setPacienteEncontrado(null);
+  setErrorPaciente("");
 
-    if (!c) return;
+  if (!c) return;
 
-    setBuscandoPaciente(true);
-    try {
-      const res = await fetch(`http://localhost:8081/api/pacientes/${encodeURIComponent(c)}`, {
-        headers: { "Content-Type": "application/json" },
-      });
+  const token = getToken();
+  if (!token) {
+    setErrorPaciente("Sesión expirada. Volvé a iniciar sesión.");
+    return;
+  }
 
-      if (res.status === 404) {
-        setErrorPaciente("El paciente no existe. Debe registrarlo antes de proceder al ingreso.");
-        return;
+  setBuscandoPaciente(true);
+  try {
+    const res = await fetch(
+      `http://localhost:8081/api/pacientes/${encodeURIComponent(c)}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       }
+    );
 
-      const data = await res.json().catch(() => ({}));
-
-      if (!res.ok) {
-        setErrorPaciente(data?.mensaje || "No se pudo buscar el paciente.");
-        return;
-      }
-
-      setPacienteEncontrado(data);
-    } catch (e) {
-      setErrorPaciente("Error de red al buscar el paciente.");
-    } finally {
-      setBuscandoPaciente(false);
+    if (res.status === 404) {
+      setErrorPaciente(
+        "El paciente no existe. Debe registrarlo antes de proceder al ingreso."
+      );
+      return;
     }
-  };
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      setErrorPaciente(data?.mensaje || "No se pudo buscar el paciente.");
+      return;
+    }
+
+    setPacienteEncontrado(data);
+  } catch (e) {
+    setErrorPaciente("Error de red al buscar el paciente.");
+  } finally {
+    setBuscandoPaciente(false);
+  }
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

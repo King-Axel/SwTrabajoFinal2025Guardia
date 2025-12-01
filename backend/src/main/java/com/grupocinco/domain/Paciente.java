@@ -11,9 +11,10 @@ public class Paciente extends Persona {
         super(apellido, nombre, cuil);
     }
 
-    public Paciente(String cuil, String apellido, String nombre, Domicilio domicilio, Afiliado afiliado) {
-        super(cuil, apellido, nombre);
-        this.afiliado = afiliado;
+    public Paciente(String apellido, String nombre, String cuil,
+                    Domicilio domicilio, Afiliado afiliado) {
+        super(apellido, nombre, cuil);
         this.domicilio = domicilio;
+        this.afiliado = afiliado;
     }
 }
