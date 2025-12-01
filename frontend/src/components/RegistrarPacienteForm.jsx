@@ -31,15 +31,17 @@ export default function RegistrarPacienteForm() {
     if (!formData.apellido.trim()) newErrors.apellido = "El apellido es obligatorio";
     if (!formData.nombre.trim()) newErrors.nombre = "El nombre es obligatorio";
 
-    // Domicilio: si completa uno, exigimos todos (para no mandar cosas a medias)
-    const algunoDomicilio =
-      formData.calle.trim() || formData.numeroCalle.toString().trim() || formData.localidad.trim();
+    // Domicilio: OBLIGATORIO
+    if (!formData.calle.trim()) newErrors.calle = "La calle es obligatoria";
 
-    if (algunoDomicilio) {
-      if (!formData.calle.trim()) newErrors.calle = "La calle es obligatoria";
-      if (!formData.localidad.trim()) newErrors.localidad = "La localidad es obligatoria";
-      const n = parseInt(formData.numeroCalle, 10);
-      if (Number.isNaN(n) || n <= 0) newErrors.numeroCalle = "Número de calle inválido";
+    if (!formData.localidad.trim()) newErrors.localidad = "La localidad es obligatoria";
+
+    // numeroCalle: obligatorio y > 0
+    const n = parseInt(formData.numeroCalle, 10);
+    if (!formData.numeroCalle.toString().trim()) {
+      newErrors.numeroCalle = "El número es obligatorio";
+    } else if (Number.isNaN(n) || n <= 0) {
+      newErrors.numeroCalle = "Número de calle inválido";
     }
 
     // Afiliación: si completa uno, exigimos ambos
@@ -61,15 +63,12 @@ export default function RegistrarPacienteForm() {
       nombre: formData.nombre.trim(),
     };
 
-    const algunoDomicilio =
-      formData.calle.trim() || formData.numeroCalle.toString().trim() || formData.localidad.trim();
-    if (algunoDomicilio) {
-      payload.domicilio = {
-        calle: formData.calle.trim(),
-        numeroCalle: parseInt(formData.numeroCalle, 10),
-        localidad: formData.localidad.trim(),
-      };
-    }
+    payload.domicilio = {
+      calle: formData.calle.trim(),
+      numeroCalle: parseInt(formData.numeroCalle, 10),
+      localidad: formData.localidad.trim(),
+    };
+
 
     const algunoAfiliacion = formData.obraSocialId.toString().trim() || formData.numeroAfiliado.trim();
     if (algunoAfiliacion) {
