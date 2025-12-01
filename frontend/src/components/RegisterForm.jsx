@@ -188,7 +188,8 @@ const RegisterForm = () => {
             <button
               type="button"
               onClick={() => setMostrarContra((prev) => !prev)}
-              className="absolute right-2 top-1/2 -translate-y-3"
+              className="absolute right-2"
+              style={{ top: '50%', transform: 'translateY(-50%)' }} // 👈 ¡Ajuste perfecto!
             >
               <i
                 className={`bi form-icon ${mostrarContra ? "bi-eye-slash" : "bi-eye"

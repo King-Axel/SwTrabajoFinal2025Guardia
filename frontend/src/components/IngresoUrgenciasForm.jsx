@@ -117,12 +117,18 @@ export default function IngresoUrgenciasForm() {
   }
 };
 
+const normalizeText = (s) =>
+  (s ?? "")
+    .toString()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, ""); 
+
 const applyBackendFieldError = (msg) => {
   if (!msg) return false;
 
-  const m = msg.toLowerCase();
+  const m = normalizeText(msg);
 
-  // OJO: usamos includes para no depender del texto exacto al 100%
   if (m.includes("temperatura")) {
     setErrors((prev) => ({ ...prev, temperatura: msg }));
     return true;
@@ -135,11 +141,11 @@ const applyBackendFieldError = (msg) => {
     setErrors((prev) => ({ ...prev, frecuenciaRespiratoria: msg }));
     return true;
   }
-  if (m.includes("presion sistolica") || m.includes("presión sistólica") || m.includes("sistolica")) {
+  if (m.includes("presion sistolica") || m.includes("sistolica")) {
     setErrors((prev) => ({ ...prev, frecuenciaSistolica: msg }));
     return true;
   }
-  if (m.includes("presion diastolica") || m.includes("presión diastólica") || m.includes("diastolica")) {
+  if (m.includes("presion diastolica") || m.includes("diastolica")) {
     setErrors((prev) => ({ ...prev, frecuenciaDiastolica: msg }));
     return true;
   }
@@ -158,6 +164,7 @@ const applyBackendFieldError = (msg) => {
 
   return false;
 };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();

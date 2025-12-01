@@ -67,14 +67,17 @@ export default function ColaEspera() {
 
 function PacienteCard({ paciente }) {
   const colorPorNivel = {
-    "Critica": "border-red-500",
-    "Emergencia": "border-orange-500",
-    "Urgencia": "border-yellow-500",
+    Critica: "border-red-500",
+    Emergencia: "border-orange-500",
+    Urgencia: "border-yellow-500",
     "Urgencia menor": "border-green-500",
-    "Sin Urgencia": "border-blue-500"
+    "Sin Urgencia": "border-blue-500",
   };
 
+  // Si viene un Ingreso, el paciente está en paciente.paciente
   const p = paciente.paciente ?? paciente;
+
+  // value objects (según cómo serialice Jackson)
   const temp = paciente.temperatura?.temperatura ?? paciente.temperatura;
   const fc = paciente.frecuenciaCardiaca?.frecuencia ?? paciente.frecuenciaCardiaca;
   const fr = paciente.frecuenciaRespiratoria?.frecuencia ?? paciente.frecuenciaRespiratoria;
@@ -82,6 +85,7 @@ function PacienteCard({ paciente }) {
   const sist = paciente.frecuenciaArterial?.sistolica ?? paciente.frecuenciaSistolica;
   const diast = paciente.frecuenciaArterial?.diastolica ?? paciente.frecuenciaDiastolica;
 
+  // Enum -> label lindo
   const nivelRaw = paciente.nivelEmergencia;
   const nivel = ({
     CRITICA: "Critica",
@@ -92,25 +96,31 @@ function PacienteCard({ paciente }) {
   }[nivelRaw] ?? nivelRaw);
 
   return (
-    <div className={`border-l-8 ${colorPorNivel[paciente.nivelEmergencia]} bg-white rounded-xl p-5 shadow`}>
+    <div className={`border-l-8 ${colorPorNivel[nivel] ?? "border-gray-300"} bg-white rounded-xl p-5 shadow`}>
       <div className="flex justify-between items-center">
         <div>
-          <h3 className="font-bold text-lg">{paciente.apellido} {paciente.nombre}</h3>
-          <p className="text-gray-500 text-sm">{paciente.cuil}</p>
+          <h3 className="font-bold text-lg">
+            {p?.apellido} {p?.nombre}
+          </h3>
+          <p className="text-gray-500 text-sm">{p?.cuil}</p>
         </div>
+
         <span className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 text-sm">
-          {paciente.nivelEmergencia}
+          {nivel}
         </span>
       </div>
 
-      <p className="mt-3 p-3 bg-gray-100 rounded text-gray-600">{paciente.informe}</p>
+      <p className="mt-3 p-3 bg-gray-100 rounded text-gray-600">
+        {paciente.informe}
+      </p>
 
-      <div className="flex gap-6 mt-3 text-gray-700 text-sm">
-        <span><i className="bi bi-thermometer-sun"></i> {paciente.temperatura}°C</span>
-        <span><i className="bi bi-heart"></i> {paciente.frecuenciaCardiaca} lpm</span>
-        <span><i className="bi bi-wind"></i> {paciente.frecuenciaRespiratoria} rpm</span>
-        <span><i className="bi bi-heart-pulse"></i> {paciente.frecuenciaSistolica}/{paciente.frecuenciaDiastolica}</span>
+      <div className="flex flex-wrap gap-6 mt-3 text-gray-700 text-sm">
+        <span><i className="bi bi-thermometer-sun"></i> {temp}°C</span>
+        <span><i className="bi bi-heart"></i> {fc} lpm</span>
+        <span><i className="bi bi-wind"></i> {fr} rpm</span>
+        <span><i className="bi bi-heart-pulse"></i> {sist}/{diast}</span>
       </div>
     </div>
   );
 }
+
