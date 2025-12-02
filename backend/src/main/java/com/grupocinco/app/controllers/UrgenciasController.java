@@ -38,7 +38,7 @@ public class UrgenciasController {
         this.servicioCuentas = servicioCuentas;
     }
 
-    @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
+    @PreAuthorize("hasAuthority('PERM_IS202505_VER_COLA_ESPERA')")
     @GetMapping("/espera")
     public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnEspera() {
         return ResponseEntity.ok(servicioUrgencias.obtenerIngresosEnEspera().stream().map(IngresoMapper::aDTO).toList());

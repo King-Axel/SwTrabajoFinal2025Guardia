@@ -10,11 +10,13 @@ import java.util.*;
 public enum Rol {
     ENFERMERA(EnumSet.of(
             Permiso.IS202501_REGISTRO_ADMISION,
-            Permiso.IS202502_REGISTRO_PACIENTE
+            Permiso.IS202502_REGISTRO_PACIENTE,
+            Permiso.IS202505_VER_COLA_ESPERA
     )),
     MEDICO(EnumSet.of(
             Permiso.IS202503_RECLAMO_PACIENTE,
-            Permiso.IS202504_REGISTRO_ATENCION
+            Permiso.IS202504_REGISTRO_ATENCION,
+            Permiso.IS202505_VER_COLA_ESPERA
     ));
 
     private final EnumSet<Permiso> permisos;
