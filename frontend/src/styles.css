@@ -1,0 +1,75 @@
+@import "tailwindcss";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.form {
+  @apply text-gray-700
+}
+
+.form-block {
+  @apply my-4;
+}
+
+.form-icon {
+  @apply text-2xl top-1/2 -translate-y-3
+}
+
+.form-block-radio-options {
+  @apply flex justify-between gap-2
+}
+
+.form-block-radio {
+  @apply flex flex-row-reverse justify-end items-center gap-2 border border-gray-300 rounded-md flex-1 p-2 cursor-pointer hover:bg-gray-100
+}
+
+.input {
+  @apply border pl-10 border-gray-300 text-gray-600 rounded py-2 w-full font-normal mt-2;
+}
+
+.button {
+  @apply bg-blue-600 text-white font-bold py-2 rounded-md w-full hover:bg-blue-700 cursor-pointer;
+}
+
+.selected {
+  @apply bg-white  text-black
+}
+
+.unselected {
+  @apply hover:bg-gray-100 text-gray-800
+}
+
+.option {
+  @apply flex-1 text-center py-4 cursor-pointer my-1
+}
+
+@theme {
+  --font-roboto: "Roboto";
+  --font-elms-sans: "Elms-sans";
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("./assets/fonts/Roboto/static/Roboto-Regular.ttf");
+}
+
+@font-face {
+  font-family: 'Elms-sans';
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  src: url("./assets/fonts/Elms_Sans/static/ElmsSans-Regular.ttf");
+}
+
+.botonRegistrar {
+  padding: 10px;
+}
+
+.personalAsociado {
+  padding: 15px;
+}
