@@ -21,118 +21,112 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 public class ServicioAutenticacionTest {
-    private ServicioAutenticacion servicio;
-    private IRepositorioCuentas repositorio;
-    private IRepositorioPersonal repositorioPersonal; // Nuevo mock
-    private PasswordEncoder encoder;
+        private ServicioAutenticacion servicio;
+        private IRepositorioCuentas repositorio;
+        private IRepositorioPersonal repositorioPersonal; // Nuevo mock
+        private PasswordEncoder encoder;
 
-    @BeforeEach
-    public void setUp() {
-        this.repositorio = mock(IRepositorioCuentas.class);
-        this.repositorioPersonal = mock(IRepositorioPersonal.class); // Inicializar mock
-        this.encoder = new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
-        
-        // Ahora pasamos los 3 argumentos que pide el constructor real
-        this.servicio = new ServicioAutenticacion(repositorio, encoder, repositorioPersonal);
-    }
+        @BeforeEach
+        public void setUp() {
+                this.repositorio = mock(IRepositorioCuentas.class);
+                this.repositorioPersonal = mock(IRepositorioPersonal.class); // Inicializar mock
+                this.encoder = new Argon2PasswordEncoder(16, 32, 1, 4096, 3);
 
-    @Test
-    public void autenticacionCorrectaConCredencialesValidas() {
-        String email = "test@test.com";
-        String contrasena = "contrasena";
+                // Ahora pasamos los 3 argumentos que pide el constructor real
+                this.servicio = new ServicioAutenticacion(repositorio, encoder, repositorioPersonal);
+        }
 
-        Cuenta cuenta = new Cuenta(
-                Email.of(email),
-                Contrasena.of(encoder.encode(contrasena)),
-                Rol.ENFERMERA,
-                new Enfermera("Lopez","Juana", "27-41234567-6")
-        );
+        @Test
+        public void autenticacionCorrectaConCredencialesValidas() {
+                String email = "test@test.com";
+                String contrasena = "contrasena";
 
-        when(repositorio.findByEmail(email)).thenReturn(Optional.of(cuenta));
+                Cuenta cuenta = new Cuenta(
+                                Email.of(email),
+                                Contrasena.of(encoder.encode(contrasena)),
+                                Rol.ENFERMERA,
+                                new Enfermera("Lopez", "Juana", "27-41234567-6"));
 
-        assertThat(servicio.iniciarSesion(email, contrasena)).isEqualTo(cuenta);
-        verify(repositorio, times(1)).findByEmail(email);
-    }
+                when(repositorio.findByEmail(email)).thenReturn(Optional.of(cuenta));
 
-    @Test
-    public void autenticacionIncorrectaConEmailInvalidoDeberiaGenerarExcepcionDeCredencialesInvalidas() {
-        String email = "text@test.com";
-        String contrasena = "contrasena";
+                assertThat(servicio.iniciarSesion(email, contrasena)).isEqualTo(cuenta);
+                verify(repositorio, times(1)).findByEmail(email);
+        }
 
-        when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
+        @Test
+        public void autenticacionIncorrectaConEmailInvalidoDeberiaGenerarExcepcionDeCredencialesInvalidas() {
+                String email = "text@test.com";
+                String contrasena = "contrasena";
 
-        assertThatThrownBy(() -> servicio.iniciarSesion(email, contrasena))
-                .isExactlyInstanceOf(CredencialesInvalidasException.class)
-                .hasMessage("Usuario o contraseña inválidos"); // Nota: Verifica que este mensaje coincida con tu excepción real
-        verify(repositorio, times(1)).findByEmail(email);
-    }
+                when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
 
-    @Test
-    public void autenticacionIncorrectaConContrasenaInvalidaDeberiaGenerarExcepcionDeCredencialesInvalidas() {
-        String email = "test@test.com";
-        String contrasena = "contrasenia";
+                assertThatThrownBy(() -> servicio.iniciarSesion(email, contrasena))
+                                .isExactlyInstanceOf(CredencialesInvalidasException.class)
+                                .hasMessage("Usuario o contraseña inválidos"); // Nota: Verifica que este mensaje
+                                                                               // coincida con tu excepción real
+                verify(repositorio, times(1)).findByEmail(email);
+        }
 
-        Cuenta cuenta = new Cuenta(
-                Email.of(email),
-                Contrasena.of(encoder.encode("contrasena")),
-                Rol.ENFERMERA,
-                new Enfermera("Lopez","Juana", "27-41234567-6")
-        );
+        @Test
+        public void autenticacionIncorrectaConContrasenaInvalidaDeberiaGenerarExcepcionDeCredencialesInvalidas() {
+                String email = "test@test.com";
+                String contrasena = "contrasenia";
 
-        when(repositorio.findByEmail(email)).thenReturn(Optional.of(cuenta));
+                Cuenta cuenta = new Cuenta(
+                                Email.of(email),
+                                Contrasena.of(encoder.encode("contrasena")),
+                                Rol.ENFERMERA,
+                                new Enfermera("Lopez", "Juana", "27-41234567-6"));
 
-        assertThatThrownBy(() -> servicio.iniciarSesion(email, contrasena))
-                .isExactlyInstanceOf(CredencialesInvalidasException.class)
-                .hasMessage("Usuario o contraseña inválidos");
-        verify(repositorio, times(1)).findByEmail(email);
-    }
+                when(repositorio.findByEmail(email)).thenReturn(Optional.of(cuenta));
 
-    @Test
-    public void registroCorrectoDeNuevaCuenta() {
-        String email = "correo@gmail.com";
-        String contrasena = "contrasenahipersegura";
-        String rol = Rol.MEDICO.name();
-        String cuil = "20-13298725-5";
+                assertThatThrownBy(() -> servicio.iniciarSesion(email, contrasena))
+                                .isExactlyInstanceOf(CredencialesInvalidasException.class)
+                                .hasMessage("Usuario o contraseña inválidos");
+                verify(repositorio, times(1)).findByEmail(email);
+        }
 
-        Medico medicoExistente = new Medico("Rivas", "Julia", cuil, "20-13298725-5");
-        when(repositorioPersonal.findByCuil(cuil)).thenReturn(Optional.of(medicoExistente));
+        @Test
+        public void registroCorrectoDeNuevaCuenta() {
+                String email = "correo@gmail.com";
+                String contrasena = "contrasenahipersegura";
+                String rol = Rol.MEDICO.name();
+                String cuil = "20-13298725-5";
 
-        when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
+                Medico medicoExistente = new Medico("Rivas", "Julia", cuil, "20-13298725-5");
+                when(repositorioPersonal.findByCuil(cuil)).thenReturn(Optional.of(medicoExistente));
 
-        assertThatCode(
-                () -> servicio.registrar(email, contrasena, rol, cuil)
-        ).doesNotThrowAnyException();
+                when(repositorio.findByEmail(email)).thenReturn(Optional.empty());
 
-        verify(repositorio, times(1)).findByEmail(email);
-        verify(repositorio, times(1))
-                .save(argThat(cuenta ->
-                    cuenta.getEmail().equals(email)
-                        && encoder.matches(contrasena, cuenta.getContrasena())
-                        && cuenta.getRol() == Rol.MEDICO
-                        && cuenta.getPersona().getCuil().equals(cuil)
-                ));
-    }
+                assertThatCode(
+                                () -> servicio.registrar(email, contrasena, rol, cuil)).doesNotThrowAnyException();
 
-    @Test
-    public void tratarDeRegistrarUnaCuentaConEmailYaUtilizadoEnOtraCuentaDeberiaGenerarExcepcionDeCuentaExistente() {
-        String email= "test@test.com";
-        String contrasena = "";
-        String rol = Rol.MEDICO.name();
-        String cuil = "27-12121212-6"; // String CUIL dummy
+                verify(repositorio, times(1)).findByEmail(email);
+                verify(repositorio, times(1))
+                                .save(argThat(cuenta -> cuenta.getEmail().equals(email)
+                                                && encoder.matches(contrasena, cuenta.getContrasena())
+                                                && cuenta.getRol() == Rol.MEDICO
+                                                && cuenta.getPersona().getCuil().equals(cuil)));
+        }
 
-        when(repositorio.findByEmail(email)).thenReturn(Optional.of(
-                new Cuenta(
-                        Email.of(email),
-                        Contrasena.of(encoder.encode("contrasena")),
-                        Rol.ENFERMERA,
-                        new Enfermera("Lopez","Juana", "27-41234567-6")
-                )
-        ));
+        @Test
+        public void tratarDeRegistrarUnaCuentaConEmailYaUtilizadoEnOtraCuentaDeberiaGenerarExcepcionDeCuentaExistente() {
+                String email = "test@test.com";
+                String contrasena = "";
+                String rol = Rol.MEDICO.name();
+                String cuil = "27-12121212-6"; // String CUIL dummy
 
-        // Pasamos el CUIL string
-        assertThatThrownBy(() -> servicio.registrar(email, contrasena, rol, cuil))
-                .isExactlyInstanceOf(CuentaExistenteException.class)
-                .hasMessage("Ya existe una cuenta con el email ingresado"); // Verifica este mensaje
-        verify(repositorio, times(1)).findByEmail(email);
-    }
+                when(repositorio.findByEmail(email)).thenReturn(Optional.of(
+                                new Cuenta(
+                                                Email.of(email),
+                                                Contrasena.of(encoder.encode("contrasena")),
+                                                Rol.ENFERMERA,
+                                                new Enfermera("Lopez", "Juana", "27-41234567-6"))));
+
+                // Pasamos el CUIL string
+                assertThatThrownBy(() -> servicio.registrar(email, contrasena, rol, cuil))
+                                .isExactlyInstanceOf(CuentaExistenteException.class)
+                                .hasMessage("Ya existe una cuenta con el email ingresado"); // Verifica este mensaje
+                verify(repositorio, times(1)).findByEmail(email);
+        }
 }
