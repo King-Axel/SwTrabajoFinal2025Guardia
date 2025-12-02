@@ -33,4 +33,10 @@ jobs:
             ${{ runner.os }}-m2-
 
       - name: Run Maven tests
-        run: mvn -B test
+        run: mvn -f backend/pom.xml test
+
+      - name: Upload test reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-reports
+          path: backend/target/surefire-reports/
