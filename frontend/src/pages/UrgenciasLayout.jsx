@@ -77,7 +77,7 @@ export default function UrgenciasLayout() {
                     className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
                       }`}
                   >
-                    <i className="bi bi-clipboard2-heart mr-2"></i>
+                    <i className="bi bi-exclamation-circle-fill mr-2"></i>
                     Reclamar paciente
                   </button>
                 <button
@@ -86,7 +86,8 @@ export default function UrgenciasLayout() {
                     className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "atencion" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
                       }`}
                   >
-                    <i className="bi bi-clipboard2-heart mr-2"></i>
+                      {/* bi-clipboard2-heart */}
+                    <i className="bi bi-clipboard-pulse mr-2"></i>
                     Registrar Atención
                   </button>
                 </>
