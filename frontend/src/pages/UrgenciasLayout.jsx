@@ -6,6 +6,7 @@ import ColaEspera from "./ColaEspera";
 import NuevaAdmision from "./NuevaAdmision";
 import RegistrarPaciente from "./RegistrarPaciente";
 import ReclamarPaciente from "./ReclamarPaciente";
+import RegistrarAtencion from "./RegistrarAtencion";
 
 export default function UrgenciasLayout() {
   const [tab, setTab] = useState("cola");
@@ -69,15 +70,26 @@ export default function UrgenciasLayout() {
               )}
 
               {esMedico && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setTab("reclamar")}
+                    className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                      }`}
+                  >
+                    <i className="bi bi-clipboard2-heart mr-2"></i>
+                    Reclamar paciente
+                  </button>
                 <button
-                  type="button"
-                  onClick={() => setTab("reclamar")}
-                  className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
-                    }`}
-                >
-                  <i className="bi bi-clipboard2-heart mr-2"></i>
-                  Reclamar paciente
-                </button>
+                    type="button"
+                    onClick={() => setTab("atencion")}
+                    className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "atencion" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
+                      }`}
+                  >
+                    <i className="bi bi-clipboard2-heart mr-2"></i>
+                    Registrar Atención
+                  </button>
+                </>
               )}
             </div>
 
@@ -99,6 +111,7 @@ export default function UrgenciasLayout() {
       {tab === "nueva" && !esMedico && <NuevaAdmision />}
       {tab === "paciente" && !esMedico && <RegistrarPaciente />}
       {tab === "reclamar" && esMedico && <div>Reclamar paciente (pendiente)</div>}
+      {tab === "atencion" && esMedico && <RegistrarAtencion/>}
     </div>
   );
 }
