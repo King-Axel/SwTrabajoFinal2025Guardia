@@ -41,7 +41,6 @@ public class AuthenticationController {
             claims.put("persona", cuenta.getPersona());
             String token = jwtUtil.generateToken(cuenta.getEmail(), claims);
             respuesta.put("token", token);
-            respuesta.put("rol", cuenta.getRol());
             respuesta.put("mensaje", "Inicio de sesión exitoso");
             return ResponseEntity.ok(respuesta);
         } catch (Exception e) {
