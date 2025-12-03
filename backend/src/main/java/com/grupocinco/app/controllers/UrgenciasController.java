@@ -109,6 +109,16 @@ public class UrgenciasController {
         }
     }
 
+    @PreAuthorize("hasAuthority('PERM_IS202503_RECLAMO_PACIENTE')") 
+    @GetMapping("/en-proceso")
+    public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnProceso() {
+        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnProceso()
+                .stream()
+                .map(IngresoMapper::aDTO)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+    
     static class Mensaje {
         public String mensaje;
 
