@@ -16,7 +16,7 @@ public class Ingreso {
     private final String informe;
     private final NivelEmergencia nivelEmergencia;
 
-    private final EstadoIngreso estado;
+    private EstadoIngreso estado;
 
     private final Temperatura temperatura;
     private final FrecuenciaCardiaca frecuenciaCardiaca;
@@ -24,7 +24,7 @@ public class Ingreso {
     private final FrecuenciaArterial frecuenciaArterial;
 
     // médico asignado cuando se reclama el ingreso
-    // private Medico medico;
+    private Medico medico;
 
     public Ingreso(
             Paciente paciente,
@@ -34,11 +34,13 @@ public class Ingreso {
             Temperatura temperatura,
             FrecuenciaCardiaca frecuenciaCardiaca,
             FrecuenciaRespiratoria frecuenciaRespiratoria,
-            FrecuenciaArterial frecuenciaArteial
-    ) {
-        if (paciente == null) throw new IllegalArgumentException("Paciente nulo");
-        if (enfermera == null) throw new IllegalArgumentException("Enfermera nula");
-        if (informe == null || informe.isBlank()) throw new IllegalArgumentException("Falta el dato Informe");
+            FrecuenciaArterial frecuenciaArteial) {
+        if (paciente == null)
+            throw new IllegalArgumentException("Paciente nulo");
+        if (enfermera == null)
+            throw new IllegalArgumentException("Enfermera nula");
+        if (informe == null || informe.isBlank())
+            throw new IllegalArgumentException("Falta el dato Informe");
 
         this.fechaIngreso = LocalDateTime.now();
         this.paciente = paciente;
@@ -52,7 +54,19 @@ public class Ingreso {
         this.frecuenciaArterial = frecuenciaArteial;
     }
 
-    /*public void setMedico(Medico medico) {
+    public void reclamarPor(Medico medico) {
+        if (medico == null)
+            throw new IllegalArgumentException("Medico nulo");
+        if (this.estado != EstadoIngreso.PENDIENTE) {
+            throw new IllegalStateException("El ingreso no está en estado PENDIENTE");
+        }
         this.medico = medico;
-    }*/
+        this.estado = EstadoIngreso.EN_PROCESO;
+    }
+
+    /*
+     * public void setMedico(Medico medico) {
+     * this.medico = medico;
+     * }
+     */
 }

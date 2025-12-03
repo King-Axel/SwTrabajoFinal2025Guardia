@@ -12,7 +12,7 @@ import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Ingreso;
-
+import com.grupocinco.domain.Medico;
 import com.grupocinco.domain.Paciente;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -31,8 +31,7 @@ public class UrgenciasController {
     private final ServicioCuentas servicioCuentas;
 
     public UrgenciasController(
-            ServicioUrgencias servicioUrgencias, ServicioPersonal servicioPersonal, ServicioCuentas servicioCuentas
-    ) {
+            ServicioUrgencias servicioUrgencias, ServicioPersonal servicioPersonal, ServicioCuentas servicioCuentas) {
         this.servicioUrgencias = servicioUrgencias;
         this.servicioPersonal = servicioPersonal;
         this.servicioCuentas = servicioCuentas;
@@ -41,7 +40,8 @@ public class UrgenciasController {
     @PreAuthorize("hasAuthority('PERM_IS202505_VER_COLA_ESPERA')")
     @GetMapping("/espera")
     public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnEspera() {
-        return ResponseEntity.ok(servicioUrgencias.obtenerIngresosEnEspera().stream().map(IngresoMapper::aDTO).toList());
+        return ResponseEntity
+                .ok(servicioUrgencias.obtenerIngresosEnEspera().stream().map(IngresoMapper::aDTO).toList());
     }
 
     @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
@@ -51,7 +51,8 @@ public class UrgenciasController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emaillUsuario = auth.getName();
 
-            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario).orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
             String cuilUsuario = cuenta.getPersona().getCuil();
 
             Enfermera enfermera = servicioPersonal.listarPersonal().stream()
@@ -70,18 +71,49 @@ public class UrgenciasController {
                     req.getFrecuenciaCardiaca(),
                     req.getFrecuenciaRespiratoria(),
                     req.getFrecuenciaSistolica(),
-                    req.getFrecuenciaDiastolica()
-            );
+                    req.getFrecuenciaDiastolica());
 
             return ResponseEntity.ok(new Mensaje("Ingreso registrado correctamente"));
         } catch (Exception e) {
-            String msg = (e.getMessage() == null || e.getMessage().isBlank()) ? "Error al registrar ingreso" : e.getMessage();
+            String msg = (e.getMessage() == null || e.getMessage().isBlank()) ? "Error al registrar ingreso"
+                    : e.getMessage();
+            return ResponseEntity.badRequest().body(new Mensaje(msg));
+        }
+    }
+
+    @PreAuthorize("hasAuthority('PERM_IS202503_RECLAMO_PACIENTE')")
+    @PostMapping("/reclamos/proximo")
+    public ResponseEntity<?> reclamarProximo() {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String emailUsuario = auth.getName();
+
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emailUsuario)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            String cuilUsuario = cuenta.getPersona().getCuil();
+
+            Medico medico = servicioPersonal.listarPersonal().stream()
+                    .filter(p -> p.getRol().equals(Rol.MEDICO.name()))
+                    .map(p -> (Medico) PersonaMapper.desdeDTO(p))
+                    .filter(m -> m.getCuil().equals(cuilUsuario))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No se encontró el médico logueado"));
+
+            Ingreso reclamado = servicioUrgencias.reclamarProximoIngreso(medico);
+            return ResponseEntity.ok(IngresoMapper.aDTO(reclamado));
+        } catch (Exception e) {
+            String msg = (e.getMessage() == null || e.getMessage().isBlank())
+                    ? "Error al reclamar próximo ingreso"
+                    : e.getMessage();
             return ResponseEntity.badRequest().body(new Mensaje(msg));
         }
     }
 
     static class Mensaje {
         public String mensaje;
-        public Mensaje(String mensaje) { this.mensaje = mensaje; }
+
+        public Mensaje(String mensaje) {
+            this.mensaje = mensaje;
+        }
     }
 }

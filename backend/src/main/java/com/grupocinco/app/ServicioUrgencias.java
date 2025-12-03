@@ -16,25 +16,25 @@ public class ServicioUrgencias {
     private final IRepositorioPacientes dbPacientes;
     @Getter
     private final List<Ingreso> listaEspera;
-
-    // private final Map<String, Ingreso> ingresosEnProceso = new HashMap<>();
+    @Getter
+    private final List<Ingreso> ingresosEnProceso;
 
     public ServicioUrgencias(IRepositorioPacientes repositorioPacientes) {
         this.dbPacientes = repositorioPacientes;
         this.listaEspera = new ArrayList<>();
+        this.ingresosEnProceso = new ArrayList<>();
     }
 
     public void registrarIngreso(
-        String cuil,
-        Enfermera enfermera,
-        String informe,
-        String nivelEmergencia,
-        String temperatura,
-        String frecuenciaCardiaca,
-        String frecuenciaRespiratoria,
-        String frecuenciaSistolica,
-        String frecuenciaDiastolica
-    ) throws IllegalArgumentException {
+            String cuil,
+            Enfermera enfermera,
+            String informe,
+            String nivelEmergencia,
+            String temperatura,
+            String frecuenciaCardiaca,
+            String frecuenciaRespiratoria,
+            String frecuenciaSistolica,
+            String frecuenciaDiastolica) throws IllegalArgumentException {
         Paciente paciente = dbPacientes.findByCuil(cuil).orElse(null);
 
         if (paciente == null) {
@@ -49,42 +49,60 @@ public class ServicioUrgencias {
                 Temperatura.of(temperatura),
                 FrecuenciaCardiaca.of(frecuenciaCardiaca),
                 FrecuenciaRespiratoria.of(frecuenciaRespiratoria),
-                FrecuenciaArterial.of(frecuenciaSistolica, frecuenciaDiastolica)
-        );
+                FrecuenciaArterial.of(frecuenciaSistolica, frecuenciaDiastolica));
 
         this.listaEspera.add(ingreso);
         this.listaEspera.sort(
                 Comparator.comparing(Ingreso::getNivelEmergencia)
-                        .thenComparing(Ingreso::getFechaIngreso)
-        );
+                        .thenComparing(Ingreso::getFechaIngreso));
     }
 
-    /*public Ingreso reclamarProximoPaciente(Medico medico) {
+    /*
+     * public Ingreso reclamarProximoPaciente(Medico medico) {
+     * if (listaEspera.isEmpty()) {
+     * throw new IllegalStateException("No hay ingresos en lista de espera");
+     * }
+     * 
+     * // sale de la cola (ya viene ordenada por criticidad y hora)
+     * Ingreso proximo = listaEspera.remove(0);
+     * 
+     * // cambia estado y se asigna el médico
+     * proximo.setEstado(EstadoIngreso.EN_PROCESO);
+     * proximo.setMedico(medico);
+     * 
+     * // persistimos en la estructura de "en proceso"
+     * ingresosEnProceso.put(proximo.getCuilPaciente(), proximo);
+     * 
+     * return proximo;
+     * }
+     * 
+     * public Optional<Ingreso> obtenerIngresoEnProcesoPorCuil(String cuil) {
+     * return Optional.ofNullable(ingresosEnProceso.get(cuil));
+     * }
+     */
+
+    public Ingreso reclamarProximoIngreso(Medico medico) {
         if (listaEspera.isEmpty()) {
             throw new IllegalStateException("No hay ingresos en lista de espera");
         }
 
-        // sale de la cola (ya viene ordenada por criticidad y hora)
         Ingreso proximo = listaEspera.remove(0);
-
-        // cambia estado y se asigna el médico
-        proximo.setEstado(EstadoIngreso.EN_PROCESO);
-        proximo.setMedico(medico);
-
-        // persistimos en la estructura de "en proceso"
-        ingresosEnProceso.put(proximo.getCuilPaciente(), proximo);
-
+        proximo.reclamarPor(medico);
+        ingresosEnProceso.add(proximo);
         return proximo;
     }
 
-    public Optional<Ingreso> obtenerIngresoEnProcesoPorCuil(String cuil) {
-        return Optional.ofNullable(ingresosEnProceso.get(cuil));
-    }*/
+    public List<Ingreso> obtenerIngresosEnProceso() {
+        return ingresosEnProceso.stream()
+                .sorted(Comparator.comparing(Ingreso::getFechaIngreso))
+                .toList();
+    }
 
     public List<Ingreso> obtenerIngresosEnEspera() {
         return listaEspera
-        .stream()
-        .sorted(Comparator.comparing(Ingreso::getNivelEmergencia))
-        .toList();
+                .stream()
+                .sorted(Comparator.comparing(Ingreso::getNivelEmergencia))
+                .toList();
     }
+
 }
