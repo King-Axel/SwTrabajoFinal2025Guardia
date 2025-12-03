@@ -52,12 +52,10 @@ const LoginForm = ({ onSubmit } = {}) => {
 
       const body = await response.json();
       const token = body.token;
-
       if (!token) {
         setErrors({ server: 'Token no recibido' });
         return;
       }
-
       saveToken(token);
       navigate('/urgencias');
     } catch (error) {
