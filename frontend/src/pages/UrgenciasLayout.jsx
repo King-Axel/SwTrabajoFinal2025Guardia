@@ -1,11 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { clearToken, getUserRole } from "../utils/auth";
-
 import ColaEspera from "./ColaEspera";
 import NuevaAdmision from "./NuevaAdmision";
 import RegistrarPaciente from "./RegistrarPaciente";
-import ReclamarPaciente from "./ReclamarPaciente";
 import RegistrarAtencion from "./RegistrarAtencion";
 
 export default function UrgenciasLayout() {
@@ -71,15 +69,7 @@ export default function UrgenciasLayout() {
 
               {esMedico && (
                 <>
-                  <button
-                    type="button"
-                    onClick={() => setTab("reclamar")}
-                    className={`cursor-pointer hover:shadow px-4 py-2 rounded-xl text-sm font-medium transition ${tab === "reclamar" ? "bg-white shadow text-blue-700" : "text-gray-600 hover:text-gray-800"
-                      }`}
-                  >
-                    <i className="bi bi-exclamation-circle-fill mr-2"></i>
-                    Reclamar paciente
-                  </button>
+                
                   <button
                     type="button"
                     onClick={() => setTab("atencion")}
@@ -110,7 +100,6 @@ export default function UrgenciasLayout() {
       {tab === "cola" && <ColaEspera />}
       {tab === "nueva" && !esMedico && <NuevaAdmision />}
       {tab === "paciente" && !esMedico && <RegistrarPaciente />}
-      {tab === "reclamar" && esMedico && <div>Reclamar paciente (pendiente)</div>}
       {tab === "atencion" && esMedico && <RegistrarAtencion/> }
 
     </div>

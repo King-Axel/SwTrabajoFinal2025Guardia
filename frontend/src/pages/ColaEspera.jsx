@@ -1,15 +1,22 @@
 import { useEffect, useState } from "react";
-import { getToken } from "../utils/auth";
+import { getToken, getUserRole } from "../utils/auth";
+import BotonesGuardia from "../components/BotonesGuardia";
+import PacienteCard from "../components/PacienteCard";
+import PacientesAtendidos from "../components/PacientesAtendidos";
 
 export default function ColaEspera() {
+  const [tab, setTab] = useState("cola");
   const [lista, setLista] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
+
+  const rol = (getUserRole() || "").toUpperCase();
+  const esMedico = rol.includes("MEDICO");
 
   const cargarDatos = async () => {
     setLoading(true);
     try {
       const token = getToken();
-
       if (!token) {
         setLista([]);
         console.error("No hay token. Redirigí al login.");
@@ -18,109 +25,147 @@ export default function ColaEspera() {
 
       const res = await fetch("http://localhost:8081/api/urgencias/espera", {
         headers: {
-          "Authorization": `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`, // ✅ FIX
+        },
       });
 
       if (!res.ok) {
-        // 403 suele venir sin body JSON -> no hagas res.json()
         const txt = await res.text().catch(() => "");
-        throw new Error(txt || `HTTP ${res.status}`);
+        throw new Error(txt || `HTTP ${res.status}`); // ✅ FIX
       }
 
       const data = await res.json();
       setLista(data);
+
+      // Seleccionar automáticamente el primero
+      if (data.length > 0) setPacienteSeleccionado(data[0]);
+      else setPacienteSeleccionado(null);
     } catch (err) {
       console.error("Error cargando cola", err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
+  };
+
+  const handleReclamarPaciente = async () => {
+    // En tu back, reclamar toma SIEMPRE el próximo, no el seleccionado.
+    // Igual mantenemos tu UX: si no hay nada seleccionado, no deja reclamar.
+    if (!pacienteSeleccionado) {
+      alert("No hay pacientes para reclamar");
+      return;
+    }
+
+    try {
+      const token = getToken();
+      if (!token) {
+        alert("No hay sesión activa");
+        return;
+      }
+
+      const res = await fetch("http://localhost:8081/api/urgencias/reclamos/proximo", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`, // ✅ FIX
+        },
+        // ✅ NO body, el back decide el próximo
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        // tu back manda {mensaje:"..."} en errores
+        throw new Error(data?.mensaje || `Error HTTP ${res.status}`);
+      }
+
+      alert("¡Ingreso reclamado exitosamente!");
+      // refrescar cola: el reclamado ya no debe aparecer
+      cargarDatos();
+    } catch (error) {
+      console.error("Error reclamando paciente:", error);
+      alert(error?.message || "Error al reclamar el paciente.");
+    }
+  };
+
+  const handleSeleccionarPaciente = (paciente) => {
+    setPacienteSeleccionado(paciente);
   };
 
   useEffect(() => {
-    cargarDatos();
-  }, []);
+    if (tab === "cola") cargarDatos();
+  }, [tab]);
 
-  if (loading) return <p>Cargando...</p>;
+  if (loading && tab === "cola") return <p>Cargando...</p>;
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-3">Cola de Espera</h2>
-      <p className="text-gray-500 mb-5">
-        Pacientes pendientes de atención ordenados por prioridad
-      </p>
+      <div className="flex justify-between items-center mb-3">
+        <div>
+          <h2 className="text-2xl font-bold">
+            {tab === "cola" ? "Cola de Espera" : "Pacientes Atendidos"}
+          </h2>
+          <p className="text-gray-500">
+            {tab === "cola"
+              ? "Ingresos pendientes de atención ordenados por prioridad"
+              : "Historial de ingresos ya atendidos"}
+          </p>
+        </div>
 
-      {lista.length === 0 ? (
-        <div className="text-center p-10 text-gray-400">
-          <i className="bi bi-person text-5xl"></i>
-          <p className="mt-2">No hay pacientes en espera</p>
-        </div>
+        {tab === "cola" && esMedico && lista.length > 0 && (
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleReclamarPaciente}
+                className={`
+                  flex items-center gap-3 px-6 py-3
+                  rounded-lg border
+                  shadow-md transition hover:shadow-lg
+                  ${pacienteSeleccionado
+                    ? "border-green-500 bg-green-500 text-white hover:bg-green-600"
+                    : "border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed"
+                  }
+                `}
+                disabled={!pacienteSeleccionado}
+              >
+                <i className="bi bi-person-check text-xl"></i>
+                <span className="font-semibold">Reclamar Paciente</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {esMedico && <BotonesGuardia vistaActiva={tab} onCambiarVista={setTab} />}
+
+      {tab === "cola" ? (
+        lista.length === 0 ? (
+          <div className="text-center p-10 text-gray-400">
+            <i className="bi bi-person text-5xl"></i>
+            <p className="mt-2">No hay pacientes en espera</p>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {lista.map((p, index) => (
+              <div key={p?.id ?? index} className="relative">
+                {index === 0 && (
+                  <div className="absolute -left-2 -top-2 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-md">
+                    PRÓXIMO
+                  </div>
+                )}
+
+                <PacienteCard
+                  paciente={p}
+                  seleccionado={pacienteSeleccionado?.id === p.id}
+                  onSeleccionar={() => handleSeleccionarPaciente(p)}
+                  posicion={index + 1}
+                  esProximo={index === 0}
+                />
+              </div>
+            ))}
+          </div>
+        )
       ) : (
-        <div className="space-y-4">
-          {lista.map((p, index) => (
-            <PacienteCard key={index} paciente={p} />
-          ))}
-        </div>
+        <PacientesAtendidos />
       )}
     </div>
   );
 }
-
-function PacienteCard({ paciente }) {
-  const colorPorNivel = {
-    Critica: { border: "border-red-500", bg: "bg-red-200" },
-    Emergencia: { border: "border-orange-500", bg: "bg-orange-200" },
-    Urgencia: { border: "border-yellow-500", bg: "bg-yellow-200" },
-    "Urgencia menor": { border: "border-green-500", bg: "bg-green-200" },
-    "Sin Urgencia": { border: "border-blue-500", bg: "bg-blue-200" },
-  };
-
-  // Si viene un Ingreso, el paciente está en paciente.paciente
-  const p = paciente.paciente ?? paciente;
-
-  // value objects (según cómo serialice Jackson)
-  const temp = paciente.temperatura?.temperatura ?? paciente.temperatura;
-  const fc = paciente.frecuenciaCardiaca?.frecuencia ?? paciente.frecuenciaCardiaca;
-  const fr = paciente.frecuenciaRespiratoria?.frecuencia ?? paciente.frecuenciaRespiratoria;
-
-  const sist = paciente.frecuenciaArterial?.sistolica ?? paciente.frecuenciaSistolica;
-  const diast = paciente.frecuenciaArterial?.diastolica ?? paciente.frecuenciaDiastolica;
-
-  // Enum -> label lindo
-  const nivelRaw = paciente.nivelEmergencia;
-  const nivel = ({
-    CRITICA: "Critica",
-    EMERGENCIA: "Emergencia",
-    URGENCIA: "Urgencia",
-    URGENCIA_MENOR: "Urgencia menor",
-    SIN_URGENCIA: "Sin Urgencia",
-  }[nivelRaw] ?? nivelRaw);
-
-  return (
-    <div className={`border-l-8 ${colorPorNivel[nivel]?.border} bg-white rounded-xl p-5 shadow`}>
-      <div className="flex justify-between items-center">
-        <div>
-          <h3 className="font-bold text-lg">
-            {p?.apellido} {p?.nombre}
-          </h3>
-          <p className="text-gray-500 text-sm">{p?.cuil}</p>
-        </div>
-
-        <span className={`px-3 py-1 rounded-md ${colorPorNivel[nivel]?.bg} text-gray-700 text-sm`}>
-          {nivel}
-        </span>
-      </div>
-
-      <p className="mt-3 p-3 bg-gray-100 rounded text-gray-600">
-        {paciente.informe}
-      </p>
-
-      <div className="flex flex-wrap gap-6 mt-3 text-gray-700 text-sm">
-        <span><i className="bi bi-thermometer-sun"></i> {temp}°C</span>
-        <span><i className="bi bi-heart"></i> {fc} lpm</span>
-        <span><i className="bi bi-wind"></i> {fr} rpm</span>
-        <span><i className="bi bi-heart-pulse"></i> {sist}/{diast}</span>
-      </div>
-    </div>
-  );
-}
-
