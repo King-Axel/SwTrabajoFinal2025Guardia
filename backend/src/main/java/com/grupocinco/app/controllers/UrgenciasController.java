@@ -1,5 +1,6 @@
 package com.grupocinco.app.controllers;
 
+import com.grupocinco.app.dtos.AtencionDTO;
 import com.grupocinco.app.dtos.IngresoDTO;
 import com.grupocinco.app.interfaces.IRepositorioPersonal;
 import com.grupocinco.app.ServicioUrgencias;
@@ -112,13 +113,54 @@ public class UrgenciasController {
     @PreAuthorize("hasAuthority('PERM_IS202503_RECLAMO_PACIENTE')") 
     @GetMapping("/en-proceso")
     public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnProceso() {
-        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnProceso()
+        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnAtencion()
                 .stream()
                 .map(IngresoMapper::aDTO)
                 .toList();
         return ResponseEntity.ok(dtos);
     }
-    
+
+    @PreAuthorize("hasAuthority('PERM_IS202503_RECLAMO_PACIENTE')")
+    @GetMapping("/atencion/historial")
+    public ResponseEntity<List<IngresoDTO>> obtenerHistorialAtencion() {
+        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnAtencion()
+                .stream()
+                .map(IngresoMapper::aDTO)
+                .toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+    @PreAuthorize("hasAuthority('PERM_IS202504_REGISTRO_ATENCION')")
+    @PostMapping("/atencion")
+    public ResponseEntity<?> registrarAtencion(@Valid @RequestBody AtencionDTO req) {
+        try {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            String emaillUsuario = auth.getName();
+
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            String cuilUsuario = cuenta.getPersona().getCuil();
+
+            Medico medico = servicioPersonal.listarPersonal().stream()
+                    .filter(p -> p.getRol().equals(Rol.MEDICO.name()))
+                    .map(p -> (Medico) PersonaMapper.desdeDTO(p))
+                    .filter(m -> m.getCuil().equals(cuilUsuario))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("No se encontró el médico logueado"));
+
+            servicioUrgencias.registrarAtencion(
+                    req.getIngreso().getId(),
+                    medico,
+                    req.getInforme());
+
+            return ResponseEntity.ok(new Mensaje("Atencion registrada correctamente"));
+        } catch (Exception e) {
+            String msg = (e.getMessage() == null || e.getMessage().isBlank()) ? "Error al registrar la atencion"
+                    : e.getMessage();
+            return ResponseEntity.badRequest().body(new Mensaje(msg));
+        }
+    }
+
     static class Mensaje {
         public String mensaje;
 

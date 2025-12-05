@@ -7,7 +7,7 @@ export default function PacientesAtendidos() {
   const [loading, setLoading] = useState(true);
   const [apiError, setApiError] = useState("");
 
-  const cargarEnProceso = async () => {
+  const cargarHistorial = async () => {
     setLoading(true);
     setApiError("");
 
@@ -19,7 +19,7 @@ export default function PacientesAtendidos() {
         return;
       }
 
-      const res = await fetch("http://localhost:8081/api/urgencias/en-proceso", {
+      const res = await fetch("http://localhost:8081/api/urgencias/atencion/historial", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -43,7 +43,7 @@ export default function PacientesAtendidos() {
   };
 
   useEffect(() => {
-    cargarEnProceso();
+    cargarHistorial();
   }, []);
 
   if (loading) return <p>Cargando...</p>;
@@ -51,37 +51,49 @@ export default function PacientesAtendidos() {
   return (
     <div>
       <div className="flex items-center justify-between mb-3">
-        <button className="button" onClick={cargarEnProceso}>
+        <button className="button" onClick={cargarHistorial}>
           Actualizar
         </button>
       </div>
 
-      {apiError && <p className="mt-3 p-2 bg-red-100 text-red-700 rounded">{apiError}</p>}
+      {apiError && (
+        <p className="mt-3 p-2 bg-red-100 text-red-700 rounded">
+          {apiError}
+        </p>
+      )}
 
       {lista.length === 0 ? (
         <div className="text-center p-10 text-gray-400">
           <i className="bi bi-clipboard2-check text-5xl"></i>
-          <p className="mt-2">No hay pacientes en proceso</p>
+          <p className="mt-2">No hay pacientes en atención</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {lista.map((ingreso, index) => (
-            <div key={ingreso?.id ?? index} className="relative">
-              {/* Badge visual EN_PROCESO */}
-              <div className="absolute -left-2 -top-2 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-md">
-                EN PROCESO
-              </div>
+          {lista.map((ingreso, index) => {
+            const estado = ingreso.estado || ingreso.estadoIngreso; // según cómo lo llames
+            const esFinalizado = estado === "FINALIZADO";
 
-              {/* Reutilizamos la misma card de cola */}
-              <PacienteCard
-                paciente={ingreso}
-                seleccionado={false}
-                onSeleccionar={() => {}}
-                posicion={index + 1}
-                esProximo={false}
-              />
-            </div>
-          ))}
+            return (
+              <div key={ingreso?.id ?? index} className="relative">
+                {/* Badge según estado */}
+                <div
+                  className={`absolute -left-2 -top-2 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-md ${
+                    esFinalizado ? "bg-green-500" : "bg-blue-500"
+                  }`}
+                >
+                  {esFinalizado ? "FINALIZADO" : "EN PROCESO"}
+                </div>
+
+                <PacienteCard
+                  paciente={ingreso}
+                  seleccionado={false}
+                  onSeleccionar={() => {}}
+                  posicion={index + 1}
+                  esProximo={false}
+                />
+              </div>
+            );
+          })}
         </div>
       )}
     </div>

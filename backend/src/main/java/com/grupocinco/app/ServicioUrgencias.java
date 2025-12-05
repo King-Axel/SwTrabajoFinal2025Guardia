@@ -17,12 +17,12 @@ public class ServicioUrgencias {
     @Getter
     private final List<Ingreso> listaEspera;
     @Getter
-    private final List<Ingreso> ingresosEnProceso;
+    private final List<Ingreso> ingresosEnAtencion;
 
     public ServicioUrgencias(IRepositorioPacientes repositorioPacientes) {
         this.dbPacientes = repositorioPacientes;
         this.listaEspera = new ArrayList<>();
-        this.ingresosEnProceso = new ArrayList<>();
+        this.ingresosEnAtencion = new ArrayList<>();
     }
 
     public void registrarIngreso(
@@ -88,12 +88,19 @@ public class ServicioUrgencias {
 
         Ingreso proximo = listaEspera.remove(0);
         proximo.reclamarPor(medico);
-        ingresosEnProceso.add(proximo);
+        ingresosEnAtencion.add(proximo);
         return proximo;
     }
 
+    public List<Ingreso> obtenerIngresosEnAtencion() {
+        return ingresosEnAtencion.stream()
+                .sorted(Comparator.comparing(Ingreso::getFechaIngreso))
+                .toList();
+    }
+
     public List<Ingreso> obtenerIngresosEnProceso() {
-        return ingresosEnProceso.stream()
+        return ingresosEnAtencion.stream()
+                .filter(i -> i.getEstado() == EstadoIngreso.EN_PROCESO)
                 .sorted(Comparator.comparing(Ingreso::getFechaIngreso))
                 .toList();
     }
@@ -103,6 +110,26 @@ public class ServicioUrgencias {
                 .stream()
                 .sorted(Comparator.comparing(Ingreso::getNivelEmergencia))
                 .toList();
+    }
+
+    public void registrarAtencion(UUID idIngreso, Medico medico, String informe) {
+        Ingreso ingresoAtendido = buscarIngresoAtendido(idIngreso);
+
+        if (ingresoAtendido == null) {
+            throw new IllegalArgumentException("El ingreso no existe. Debe registrarlo antes de proceder a la atencion.");
+        }
+
+        Atencion atencion = new Atencion(medico, informe);
+        ingresoAtendido.registrarAtencion(atencion);
+    }
+
+    public Ingreso buscarIngresoAtendido(UUID idIngreso) {
+        for (Ingreso ingreso : ingresosEnAtencion) {
+            if (ingreso.getId().equals(idIngreso)) {
+                return ingreso;
+            }
+        }
+        return null;
     }
 
 }

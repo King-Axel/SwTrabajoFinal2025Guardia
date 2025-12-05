@@ -56,26 +56,25 @@ export default function RegistrarAtencionForm() {
   }, []);
 
   const validar = () => {
-    const newErrors = {};
-    const id = parseInt(formData.ingresoId, 10);
+  const newErrors = {};
 
-    if (!formData.ingresoId.toString().trim()) {
-      newErrors.ingresoId = "Seleccioná un ingreso";
-    } else if (Number.isNaN(id) || id <= 0) {
-      newErrors.ingresoId = "Ingreso inválido";
-    }
+  if (!formData.ingresoId || !formData.ingresoId.toString().trim()) {
+    newErrors.ingresoId = "Seleccioná un ingreso";
+  }
 
-    if (!formData.informeAtencion.trim()) {
-      newErrors.informeAtencion = "El informe de atención es obligatorio";
-    }
+  if (!formData.informeAtencion.trim()) {
+    newErrors.informeAtencion = "El informe de atención es obligatorio";
+  }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
   };
 
   const buildPayload = () => ({
-    ingresoId: parseInt(formData.ingresoId, 10),
-    informeAtencion: formData.informeAtencion.trim(),
+    ingreso: {
+      id: formData.ingresoId,                   
+    },
+    informe: formData.informeAtencion.trim(),   
   });
 
   const handleSubmit = async (e) => {
@@ -94,7 +93,7 @@ export default function RegistrarAtencionForm() {
     setLoading(true);
     try {
       // Ajustá la URL al endpoint real de registrar atención
-      const res = await fetch("http://localhost:8081/api/urgencias/atenciones", {
+      const res = await fetch("http://localhost:8081/api/urgencias/atencion", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -138,7 +137,7 @@ export default function RegistrarAtencionForm() {
       {/* Select de ingreso */}
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
         <SelectField
-          label="Paciente"
+          label="Ingreso"
           name="ingresoId"
           value={formData.ingresoId}
           onChange={handleChange}
@@ -155,11 +154,12 @@ export default function RegistrarAtencionForm() {
                 : "Seleccionar...",
             },
             ...ingresos.map((ing) => ({
-              value: ing.id,
-              label: buildIngresoLabel(ing),
+              value: ing.id,                   
+              label: buildIngresoLabel(ing),   
             })),
           ]}
         />
+
       </div>
 
       {/* Informe */}
