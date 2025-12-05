@@ -31,7 +31,7 @@ export default function BotonesGuardia({ vistaActiva, onCambiarVista }) {
           rounded-r-lg border border-gray-300 border-l-0
           shadow-sm transition-all duration-200 cursor-pointer
           ${vistaActiva === "atendidos" 
-            ? "bg-green-500 text-white border-green-500" 
+            ? "bg-blue-500 text-white border-blue-500" 
             : "bg-white text-gray-700 hover:bg-gray-50"
           }
         `}
@@ -40,7 +40,7 @@ export default function BotonesGuardia({ vistaActiva, onCambiarVista }) {
           className={vistaActiva === "atendidos" ? "text-white" : "text-gray-700"} 
           size={17} 
         />
-        Pacientes Atendidos
+        Pacientes en Atención
       </button>
     </div>
   );

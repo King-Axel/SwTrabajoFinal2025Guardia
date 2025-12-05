@@ -48,26 +48,31 @@ export default function PacientesAtendidos() {
 
   // Ordenar: primero EN_PROCESO, luego FINALIZADO, manteniendo el orden original dentro de cada grupo
   const listaOrdenada = [...lista].sort((a, b) => {
-  const ea = (a.estado || a.estadoIngreso || "").toString();
-  const eb = (b.estado || b.estadoIngreso || "").toString();
+    const ea = (a.estado || a.estadoIngreso || "").toString();
+    const eb = (b.estado || b.estadoIngreso || "").toString();
 
-  // Si los dos tienen el mismo estado, conservar orden original (no devolvemos nada especial)
-  if (ea === eb) return 0;
+    // Si los dos tienen el mismo estado, conservar orden original (no devolvemos nada especial)
+    if (ea === eb) return 0;
 
-  // EN_PROCESO siempre va primero
-  if (ea === "EN_PROCESO") return -1;
-  if (eb === "EN_PROCESO") return 1;
+    // EN_PROCESO siempre va primero
+    if (ea === "EN_PROCESO") return -1;
+    if (eb === "EN_PROCESO") return 1;
 
-  // Cualquier otro estado (FINALIZADO, etc.) va después
-  return 0;
+    // Cualquier otro estado (FINALIZADO, etc.) va después
+    return 0;
   });
 
   if (loading) return <p>Cargando...</p>;
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
-        <button className="button" onClick={cargarHistorial}>
+      <div className="flex items-center justify-end mb-3">
+        <button
+          type="button"
+          onClick={cargarHistorial}
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 active:scale-[0.99] w-fit"
+        >
+          <i className="bi bi-arrow-clockwise" />
           Actualizar
         </button>
       </div>
@@ -93,9 +98,8 @@ export default function PacientesAtendidos() {
               <div key={ingreso?.id ?? index} className="relative">
                 {/* Badge según estado */}
                 <div
-                  className={`absolute -left-2 -top-2 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-md ${
-                    esFinalizado ? "bg-green-500" : "bg-blue-500"
-                  }`}
+                  className={`absolute -left-2 -top-2 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-md ${esFinalizado ? "bg-green-500" : "bg-blue-500"
+                    }`}
                 >
                   {esFinalizado ? "FINALIZADO" : "EN PROCESO"}
                 </div>
@@ -103,7 +107,7 @@ export default function PacientesAtendidos() {
                 <PacienteCard
                   paciente={ingreso}
                   seleccionado={false}
-                  onSeleccionar={() => {}}
+                  onSeleccionar={() => { }}
                   posicion={index + 1}
                   esProximo={false}
                 />

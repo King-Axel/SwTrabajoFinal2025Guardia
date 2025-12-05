@@ -101,12 +101,12 @@ export default function ColaEspera() {
       <div className="flex justify-between items-center mb-3">
         <div>
           <h2 className="text-2xl font-bold">
-            {tab === "cola" ? "Cola de Espera" : "Pacientes Atendidos"}
+            {tab === "cola" ? "Cola de Espera" : "Pacientes en Atención"}
           </h2>
           <p className="text-gray-500">
             {tab === "cola"
               ? "Ingresos pendientes de atención ordenados por prioridad"
-              : "Historial de ingresos ya atendidos"}
+              : "Ingresos que se encuentran en proceso de atención"}
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export default function ColaEspera() {
                   rounded-lg border
                   shadow-md transition hover:shadow-lg
                   ${pacienteSeleccionado
-                    ? "border-green-500 bg-green-500 text-white hover:bg-green-600"
+                    ? "border-blue-500 bg-blue-500 text-white hover:bg-blue-600"
                     : "border-gray-300 bg-gray-100 text-gray-400 cursor-not-allowed"
                   }
                 `}

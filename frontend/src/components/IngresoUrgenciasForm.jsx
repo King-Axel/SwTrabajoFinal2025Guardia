@@ -242,14 +242,14 @@ export default function IngresoUrgenciasForm() {
 
   return (
     <form className="form bg-white shadow rounded-xl p-6 max-w-4xl mx-auto" onSubmit={handleSubmit}>
-      <h3 className="text-xl font-semibold">Registrar ingreso a urgencias</h3>
+      <h3 className="text-xl font-semibold">Datos del ingreso</h3>
 
       {/* Identificación */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* CUIL */}
         <div className="form-block">
           <label>CUIL</label>
-          <div className="relative">
+          <div className="relative w-2/3">
             <i className="bi bi-person-vcard form-icon absolute left-2"></i>
             <input
               name="cuil"
@@ -266,8 +266,10 @@ export default function IngresoUrgenciasForm() {
           )}
 
           {pacienteEncontrado && (
-            <p className="text-green-700 bg-green-50 border border-green-200 rounded p-2 mt-2 text-sm">
-              Paciente encontrado: <b>{pacienteEncontrado.apellido}</b>, {pacienteEncontrado.nombre}
+            <p className="text-green-700 bg-green-50 border border-green-200 rounded p-2 mt-2 text-sm w-2/3">
+              Paciente encontrado:
+              <br />
+              <b>{pacienteEncontrado.apellido}</b>, {pacienteEncontrado.nombre}
             </p>
           )}
 

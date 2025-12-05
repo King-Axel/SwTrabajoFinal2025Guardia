@@ -132,8 +132,8 @@ export default function RegistrarPacienteForm() {
   };
 
   return (
-    <form className="form bg-white shadow rounded-xl p-6 max-w-3xl mx-auto" onSubmit={handleSubmit}>
-      <h3 className="text-xl font-semibold mb-4">Registrar paciente</h3>
+    <form className="form bg-white shadow rounded-xl p-6 max-w-4xl mx-auto" onSubmit={handleSubmit}>
+      <h3 className="text-xl font-semibold mb-4">Datos del paciente</h3>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 lg:gap-4">
         <Field label="CUIL" name="cuil" value={formData.cuil} onChange={handleChange} error={errors.cuil} placeholder="20-00000000-0" icon="person-vcard" />
