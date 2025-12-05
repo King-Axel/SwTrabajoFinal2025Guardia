@@ -17,6 +17,23 @@
   @apply text-2xl top-1/2 -translate-y-3
 }
 
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input[type="password"]::-webkit-textfield-decoration-container,
+input[type="password"]::-webkit-clear-button,
+input[type="password"]::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-textfield-decoration {
+  display: none !important;
+}
+
+input[type="password"] {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
 .form-block-radio-options {
   @apply flex justify-between gap-2
 }

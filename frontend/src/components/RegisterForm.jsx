@@ -190,12 +190,11 @@ const RegisterForm = () => {
             <button
               type="button"
               onClick={() => setMostrarContra((prev) => !prev)}
-              className="absolute right-2 form-icon"
+              className="absolute right-2 top-1/2 -translate-y-3"
               tabIndex={3}
             >
               <i
-                className={`bi form-icon bi-eye${mostrarContra ? "-slash" : ""
-                  }`}
+                className={`bi form-icon bi-eye${mostrarContra ? "-slash" : ""}`}
               ></i>
             </button>
           </div>
@@ -208,7 +207,7 @@ const RegisterForm = () => {
           <label>Seleccione su rol</label>
           <div className="form-block-radio-options">
             <label htmlFor="enfermera" className="form-block-radio">
-              <span>Enfermera</span>
+              <span>Enfermera/o</span>
               <input
                 className="cursor-pointer"
                 type="radio"
