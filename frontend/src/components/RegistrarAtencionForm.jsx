@@ -30,8 +30,6 @@ export default function RegistrarAtencionForm() {
       setLoadingIngresos(true);
       setApiError("");
       try {
-        // 🔧 Ajustá esta URL al endpoint real que tengas para listar "en proceso"
-        // Sugerencia: GET /api/urgencias/en-proceso
         const res = await fetch("http://localhost:8081/api/urgencias/en-proceso", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -43,7 +41,13 @@ export default function RegistrarAtencionForm() {
           return;
         }
 
-        setIngresos(Array.isArray(data) ? data : []);
+        const lista = Array.isArray(data) ? data : [];
+        const soloEnProceso = lista.filter(
+          (ing) => (ing.estado || ing.estadoIngreso) === "EN_PROCESO"
+        );
+
+        setIngresos(soloEnProceso);
+
       } catch {
         setIngresos([]);
         setApiError("No se pudo conectar con el servidor");

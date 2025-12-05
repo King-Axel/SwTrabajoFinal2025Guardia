@@ -46,6 +46,22 @@ export default function PacientesAtendidos() {
     cargarHistorial();
   }, []);
 
+  // Ordenar: primero EN_PROCESO, luego FINALIZADO, manteniendo el orden original dentro de cada grupo
+  const listaOrdenada = [...lista].sort((a, b) => {
+  const ea = (a.estado || a.estadoIngreso || "").toString();
+  const eb = (b.estado || b.estadoIngreso || "").toString();
+
+  // Si los dos tienen el mismo estado, conservar orden original (no devolvemos nada especial)
+  if (ea === eb) return 0;
+
+  // EN_PROCESO siempre va primero
+  if (ea === "EN_PROCESO") return -1;
+  if (eb === "EN_PROCESO") return 1;
+
+  // Cualquier otro estado (FINALIZADO, etc.) va después
+  return 0;
+  });
+
   if (loading) return <p>Cargando...</p>;
 
   return (
@@ -69,8 +85,8 @@ export default function PacientesAtendidos() {
         </div>
       ) : (
         <div className="space-y-4">
-          {lista.map((ingreso, index) => {
-            const estado = ingreso.estado || ingreso.estadoIngreso; // según cómo lo llames
+          {listaOrdenada.map((ingreso, index) => {
+            const estado = ingreso.estado || ingreso.estadoIngreso;
             const esFinalizado = estado === "FINALIZADO";
 
             return (
