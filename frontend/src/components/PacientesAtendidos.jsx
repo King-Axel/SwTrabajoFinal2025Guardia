@@ -66,17 +66,6 @@ export default function PacientesAtendidos() {
 
   return (
     <div>
-      <div className="flex items-center justify-end mb-3">
-        <button
-          type="button"
-          onClick={cargarHistorial}
-          className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white font-medium shadow-sm hover:bg-blue-700 active:scale-[0.99] w-fit"
-        >
-          <i className="bi bi-arrow-clockwise" />
-          Actualizar
-        </button>
-      </div>
-
       {apiError && (
         <p className="mt-3 p-2 bg-red-100 text-red-700 rounded">
           {apiError}

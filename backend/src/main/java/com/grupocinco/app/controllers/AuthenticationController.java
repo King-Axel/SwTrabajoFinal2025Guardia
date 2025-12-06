@@ -20,14 +20,18 @@ public class AuthenticationController {
     private final ServicioPersonal servicioPersonal;
     private final JwtUtil jwtUtil;
 
-    public AuthenticationController(ServicioAutenticacion servicioAutenticacion, ServicioPersonal servicioPersonal, JwtUtil jwtUtil) {
+    public AuthenticationController(ServicioAutenticacion servicioAutenticacion, ServicioPersonal servicioPersonal,
+            JwtUtil jwtUtil) {
         this.servicioAutenticacion = servicioAutenticacion;
         this.servicioPersonal = servicioPersonal;
         this.jwtUtil = jwtUtil;
     }
 
-    public record LoginRequest(String email, String password) {}
-    public record RegisterRequest(String email, String password, String rol, String cuil) {}
+    public record LoginRequest(String email, String password) {
+    }
+
+    public record RegisterRequest(String email, String password, String rol, String cuil) {
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest credentials) {
@@ -37,7 +41,7 @@ public class AuthenticationController {
             Cuenta cuenta = servicioAutenticacion.iniciarSesion(credentials.email(), credentials.password());
 
             Map<String, Object> claims = new HashMap<>();
-            claims.put("rol", cuenta.getRol());
+            claims.put("rol", cuenta.getRol().name());
             claims.put("persona", cuenta.getPersona());
             String token = jwtUtil.generateToken(cuenta.getEmail(), claims);
             respuesta.put("token", token);
@@ -55,7 +59,8 @@ public class AuthenticationController {
         Map<String, Object> respuesta = new HashMap<>();
 
         try {
-            servicioAutenticacion.registrar(registerRequest.email(), registerRequest.password(), registerRequest.rol(), registerRequest.cuil());
+            servicioAutenticacion.registrar(registerRequest.email(), registerRequest.password(), registerRequest.rol(),
+                    registerRequest.cuil());
             respuesta.put("mensaje", "Registrado exitosamente");
 
             return ResponseEntity.status(HttpStatus.CREATED).body(respuesta);

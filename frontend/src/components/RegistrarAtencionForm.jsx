@@ -81,12 +81,16 @@ export default function RegistrarAtencionForm() {
       newErrors.ingresoId = "Seleccione un paciente";
     }
 
+    if (!formData.informeAtencion || !formData.informeAtencion.trim()) {
+      newErrors.informeAtencion = "Falta el dato Informe";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const buildPayload = () => ({
-    ingreso: { id: parseInt(formData.ingresoId, 10) },
+    ingreso: { id: String(formData.ingresoId).trim() },
     informe: formData.informeAtencion.trim(),
   });
 
@@ -157,7 +161,7 @@ export default function RegistrarAtencionForm() {
                   : "Seleccionar...",
             },
             ...ingresos.map((ing) => ({
-              value: ing.id,
+              value: String(ing.id),
               label: buildIngresoLabel(ing),
             })),
           ]}
@@ -306,7 +310,7 @@ function TextAreaField({
         <textarea
           name={name}
           rows={rows}
-          className="input pl-10 pr-2"   // 👈 clave para que no se pise con el icono
+          className="input pl-10 pr-2"
           value={value}
           onChange={onChange}
           placeholder={placeholder}

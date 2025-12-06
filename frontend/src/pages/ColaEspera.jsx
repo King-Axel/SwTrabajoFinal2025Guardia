@@ -77,7 +77,7 @@ export default function ColaEspera() {
         throw new Error(data?.mensaje || `Error HTTP ${res.status}`);
       }
 
-      alert("¡Ingreso reclamado exitosamente!");
+      //alert("¡Ingreso reclamado exitosamente!");
       // refrescar cola: el reclamado ya no debe aparecer
       cargarDatos();
     } catch (error) {

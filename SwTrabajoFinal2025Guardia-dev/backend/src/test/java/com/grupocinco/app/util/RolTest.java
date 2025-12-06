@@ -51,8 +51,7 @@ class RolTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "IS202503_RECLAMO_PACIENTE",
-            "IS202504_REGISTRO_ATENCION",
-            "IS202505_VER_COLA_ESPERA"
+            "IS202504_REGISTRO_ATENCION"
     })
     public void rolEnfermeraNoTienePermisosReclamoPacienteRegistroAtencion(String permisoReq) {
         Rol rol = Rol.ENFERMERA;
@@ -77,8 +76,7 @@ class RolTest {
     @ParameterizedTest
     @ValueSource(strings = {
             "IS202501_REGISTRO_ADMISION",
-            "IS202502_REGISTRO_PACIENTE",
-            "IS202505_VER_COLA_ESPERA"
+            "IS202502_REGISTRO_PACIENTE"
     })
     public void rolMedicoNoTienePermisosRegistroAdmisionRegistroPaciente(String permisoReq) {
         Rol rol = Rol.MEDICO;
