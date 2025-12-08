@@ -5,17 +5,17 @@ import com.grupocinco.app.exceptions.FrecuenciaInvalidaException;
 import lombok.Getter;
 
 @Getter
-public class FrecuenciaArterial extends Frecuencia {
+public class TensionArterial extends Frecuencia {
     private final Float sistolica;
     private final Float diastolica;
 
-    private FrecuenciaArterial(Float sistolica, Float diastolica) {
+    private TensionArterial(Float sistolica, Float diastolica) {
         super(null);
         this.sistolica = sistolica;
         this.diastolica = diastolica;
     }
 
-    public static FrecuenciaArterial of(String sistolica, String diastolica) {
+    public static TensionArterial of(String sistolica, String diastolica) {
         float sis = validar(sistolica, "Sistolica");
         float dia = validar(diastolica, "Diastolica");
 
@@ -27,6 +27,6 @@ public class FrecuenciaArterial extends Frecuencia {
             throw new FrecuenciaInvalidaException("La presión diastólica debe estar entre 20 y 150");
         }
 
-        return new FrecuenciaArterial(sis, dia);
+        return new TensionArterial(sis, dia);
     }
 }

@@ -1,7 +1,7 @@
 package com.grupocinco.domain;
 
 import com.grupocinco.app.exceptions.DatoMandatorioOmitidoException;
-import com.grupocinco.domain.valueobject.FrecuenciaArterial;
+import com.grupocinco.domain.valueobject.TensionArterial;
 import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
 import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
 import com.grupocinco.domain.valueobject.Temperatura;
@@ -13,24 +13,19 @@ import java.util.UUID;
 @Getter
 public class Ingreso {
     private final UUID id;
-    private final LocalDateTime fechaIngreso;
+    private Atencion atencion;
     private final Paciente paciente;
     private final Enfermera enfermera;
-    private final String informe;
     private final NivelEmergencia nivelEmergencia;
-
     private EstadoIngreso estado;
-
+    private final String informe;
+    private final LocalDateTime fechaIngreso;
     private final Temperatura temperatura;
+    private final TensionArterial tensionArterial;
     private final FrecuenciaCardiaca frecuenciaCardiaca;
     private final FrecuenciaRespiratoria frecuenciaRespiratoria;
-    private final FrecuenciaArterial frecuenciaArterial;
 
-    // médico asignado cuando se reclama el ingreso
     private Medico medico;
-
-    // atencion asignada cuando se registra la atencion
-    private Atencion atencion;
 
     public Ingreso(
             Paciente paciente,
@@ -40,7 +35,7 @@ public class Ingreso {
             Temperatura temperatura,
             FrecuenciaCardiaca frecuenciaCardiaca,
             FrecuenciaRespiratoria frecuenciaRespiratoria,
-            FrecuenciaArterial frecuenciaArteial) {
+            TensionArterial tensionArterial) {
         if (paciente == null)
             throw new IllegalArgumentException("Paciente nulo");
         if (enfermera == null)
@@ -58,7 +53,7 @@ public class Ingreso {
         this.temperatura = temperatura;
         this.frecuenciaCardiaca = frecuenciaCardiaca;
         this.frecuenciaRespiratoria = frecuenciaRespiratoria;
-        this.frecuenciaArterial = frecuenciaArteial;
+        this.tensionArterial = tensionArterial;
     }
 
     public void reclamarPor(Medico medico) {

@@ -2,7 +2,7 @@ package com.grupocinco.app;
 
 import com.grupocinco.app.interfaces.IRepositorioPacientes;
 import com.grupocinco.domain.*;
-import com.grupocinco.domain.valueobject.FrecuenciaArterial;
+import com.grupocinco.domain.valueobject.TensionArterial;
 import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
 import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
 import com.grupocinco.domain.valueobject.Temperatura;
@@ -49,7 +49,7 @@ public class ServicioUrgencias {
                 Temperatura.of(temperatura),
                 FrecuenciaCardiaca.of(frecuenciaCardiaca),
                 FrecuenciaRespiratoria.of(frecuenciaRespiratoria),
-                FrecuenciaArterial.of(frecuenciaSistolica, frecuenciaDiastolica));
+                TensionArterial.of(frecuenciaSistolica, frecuenciaDiastolica));
 
         this.listaEspera.add(ingreso);
         this.listaEspera.sort(
