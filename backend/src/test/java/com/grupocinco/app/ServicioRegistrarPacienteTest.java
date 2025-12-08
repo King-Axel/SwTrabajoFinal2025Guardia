@@ -21,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 class ServicioRegistrarPacienteTest {
     private ServicioRegistrarPaciente servicioRegistrarPaciente;
@@ -53,14 +54,13 @@ class ServicioRegistrarPacienteTest {
     public void registroCorrectoConObraSocialExistenteYAfiliacionValida() {
         PacienteDTO dto = crearDTO();
 
-        Long idObraSocial = 1L;
         ObraSocial obraSocial = new ObraSocial("Boreal");
-        obraSocial.setId(idObraSocial);
+        UUID idObraSocial = obraSocial.getId();
         Afiliado afiliado = new Afiliado(obraSocial,"123456789");
 
         dto.setAfiliado(AfiliadoMapper.aDTO(afiliado));
 
-        when(repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId()))
+        when(repositorioObrasSociales.findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId())))
                 .thenReturn(Optional.of(obraSocial));
 
         when(repositorioObrasSociales.isAfiliated(any(Afiliado.class))).thenReturn(true);
@@ -86,7 +86,7 @@ class ServicioRegistrarPacienteTest {
                 .isEqualTo(paciente.getAfiliado().getNumeroAfiliado());
 
         verify(repositorioObrasSociales, times(1))
-                .findById(dto.getAfiliado().getObraSocial().getId());
+                .findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId()));
         verify(repositorioObrasSociales, times(1))
                 .isAfiliated(any(Afiliado.class));
 
@@ -125,15 +125,17 @@ class ServicioRegistrarPacienteTest {
         PacienteDTO dto = crearDTO();
 
         // el id -1 representa un id inexistente, podria ser un id 100 si no se cuenta con obra social con id = 100
-        ObraSocialDTO obraSocial = new ObraSocialDTO(-1L, "hola");
+        ObraSocialDTO obraSocial = new ObraSocialDTO(String.valueOf(UUID.randomUUID()), "hola");
         dto.setAfiliado(new AfiliadoDTO(obraSocial, "123456789"));
+
+        when(repositorioObrasSociales.findById(any())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> servicioRegistrarPaciente.registrarPaciente(dto))
                 .isExactlyInstanceOf(ObraSocialInexistenteException.class)
                 .hasMessage("Obra social inexistente");
 
         verify(repositorioObrasSociales, times(1))
-                .findById(dto.getAfiliado().getObraSocial().getId());
+                .findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId()));
         verify(repositorioObrasSociales, never())
                 .isAfiliated(any());
         verify(repositorioPacientes, times(1))
@@ -145,12 +147,11 @@ class ServicioRegistrarPacienteTest {
         PacienteDTO dto = crearDTO();
 
         ObraSocial obraSocial = new ObraSocial("PAMI");
-        obraSocial.setId(2L);
         Afiliado afiliado = new Afiliado(obraSocial, "123456780");
 
         dto.setAfiliado(AfiliadoMapper.aDTO(afiliado));
 
-        when(repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId())).thenReturn(Optional.of(obraSocial));
+        when(repositorioObrasSociales.findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId()))).thenReturn(Optional.of(obraSocial));
         when(repositorioObrasSociales.isAfiliated(any(Afiliado.class))).thenReturn(false);
 
         assertThatThrownBy(() -> servicioRegistrarPaciente.registrarPaciente(dto))
@@ -158,7 +159,7 @@ class ServicioRegistrarPacienteTest {
                 .hasMessage("El paciente no esta afiliado a la obra social");
 
         verify(repositorioObrasSociales, times(1))
-                .findById(dto.getAfiliado().getObraSocial().getId());
+                .findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId()));
         verify(repositorioObrasSociales, times(1))
                 .isAfiliated(any(Afiliado.class));
         verify(repositorioPacientes, times(1))

@@ -11,6 +11,8 @@ import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
 import com.grupocinco.domain.Paciente;
 import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -30,7 +32,7 @@ public class ServicioRegistrarPaciente {
             throw new IllegalArgumentException("El paciente ya existe");
 
         if (dto.getAfiliado() != null) {
-            ObraSocial obraSocial = repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId())
+            ObraSocial obraSocial = repositorioObrasSociales.findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId()))
                     .orElseThrow(() -> new ObraSocialInexistenteException("Obra social inexistente"));
 
             Afiliado afiliado = new Afiliado(obraSocial, dto.getAfiliado().getNumeroAfiliado());

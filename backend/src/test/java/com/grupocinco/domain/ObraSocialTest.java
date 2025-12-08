@@ -12,13 +12,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class ObraSocialTest {
     @Test
     public void crearObraSocial(){
-        Long id = 1L;
         String nombre = "Boreal";
 
         ObraSocial obraSocial = new ObraSocial(nombre);
-        obraSocial.setId(id);
 
-        assertEquals(id, obraSocial.getId());
         assertEquals(nombre, obraSocial.getNombre());
     }
 
@@ -34,11 +31,8 @@ class ObraSocialTest {
     @ParameterizedTest
     @ValueSource(strings = { "B0r3al", "B'oreal" })
     public void crearObraSocialConNombreConCaracteresNumericosYCaracteresEspeciales(String nombreReq) {
-        Long id = 1L;
         ObraSocial obraSocial = new ObraSocial(nombreReq);
-        obraSocial.setId(id);
 
-        assertEquals(id, obraSocial.getId());
         assertEquals(nombreReq, obraSocial.getNombre());
     }
 }

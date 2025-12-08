@@ -5,18 +5,24 @@ import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class RepositorioObrasSociales implements IRepositorioObrasSociales {
+    private final Map<UUID, ObraSocial> obrasSociales = new HashMap<>();
+
     @Override
-    public Optional<ObraSocial> findById(Long id) {
-        return Optional.empty();
+    public Optional<ObraSocial> findById(UUID id) {
+        return Optional.ofNullable(obrasSociales.get(id));
     }
 
     @Override
     public Optional<ObraSocial> findByName(String nombreObraSocial) {
-        return Optional.empty();
+        return obrasSociales.values()
+                        .stream()
+                        .filter(os -> os.getNombre().equalsIgnoreCase(nombreObraSocial))
+                        .findFirst()
+        ;
     }
 
     @Override
@@ -24,4 +30,13 @@ public class RepositorioObrasSociales implements IRepositorioObrasSociales {
         return false;
     }
 
+    @Override
+    public void save(ObraSocial obraSocial) {
+        obrasSociales.put(obraSocial.getId(), obraSocial);
+    }
+
+    @Override
+    public List<ObraSocial> findAll() {
+        return new ArrayList<>(obrasSociales.values());
+    }
 }

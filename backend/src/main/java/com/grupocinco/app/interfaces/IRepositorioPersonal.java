@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface IRepositorioPersonal {
     List<Persona> findAll();
     Optional<Persona> findByCuil(String cuil);
+    void save(Persona persona);
 }

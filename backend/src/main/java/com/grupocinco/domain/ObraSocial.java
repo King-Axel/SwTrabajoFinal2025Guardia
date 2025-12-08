@@ -2,14 +2,12 @@ package com.grupocinco.domain;
 
 import com.grupocinco.app.exceptions.DatoMandatorioOmitidoException;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.UUID;
 
 @Getter
 public class ObraSocial {
-    @Setter
-    private UUID id;
+    private final UUID id;
     private final String nombre;
 
     public ObraSocial(String nombre) {

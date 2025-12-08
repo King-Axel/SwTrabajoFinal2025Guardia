@@ -27,4 +27,8 @@ public class RepositorioPacientes implements IRepositorioPacientes {
                 .findFirst();
     }
 
+    @Override
+    public List<Paciente> findAll() {
+        return dbPacientes;
+    }
 }

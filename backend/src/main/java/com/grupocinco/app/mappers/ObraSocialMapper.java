@@ -12,7 +12,7 @@ public class ObraSocialMapper {
     public static ObraSocialDTO aDTO(ObraSocial obraSocial) {
         ObraSocialDTO dto = new ObraSocialDTO();
 
-        dto.setId(obraSocial.getId());
+        dto.setId(String.valueOf(obraSocial.getId()));
         dto.setNombre(obraSocial.getNombre());
 
         return dto;
