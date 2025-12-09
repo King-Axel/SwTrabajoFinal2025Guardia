@@ -1,5 +1,6 @@
 import com.grupocinco.app.ServicioUrgencias;
 import com.grupocinco.app.exceptions.PacienteInexistenteException;
+import com.grupocinco.app.repository.RepositorioIngresos;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Paciente;
 import io.cucumber.java.es.Cuando;
@@ -21,7 +22,8 @@ public class ModuloUrgenciasStepDefinition {
 
     public ModuloUrgenciasStepDefinition() {
         db = new DBPruebaEnMemoria();
-        servicio = new ServicioUrgencias(db);
+        RepositorioIngresos ri = new RepositorioIngresos();
+        servicio = new ServicioUrgencias(db, ri);
     }
 
     @Dado("que la siguiente enfermera esta registrada y autenticada:")

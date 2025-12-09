@@ -30,4 +30,9 @@ public class DBPruebaEnMemoria implements IRepositorioPacientes {
     public Optional<Paciente> findByCuil(String cuil) {
         return Optional.ofNullable(pacientes.get(cuil));
     }
+
+    @Override
+    public List<Paciente> findAll() {
+        return List.of();
+    }
 }
