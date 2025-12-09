@@ -127,10 +127,14 @@ public class DataLoader implements CommandLineRunner {
 
     private void cargarPersonal() {
         repositorioPersonal.save(new Enfermera("Lopez","Jacinta Maria", "27-23589461-0"));
+        repositorioPersonal.save(new Enfermera("Álvarez","Marta Romina", "27-23589460-0"));
         repositorioPersonal.save(new Medico("Gomez", "Carlos Alberto", "1212212121", "20-31223344-8"));
+        repositorioPersonal.save(new Medico("Martínez", "Fernando Javier", "4545332211", "20-29876543-2"));
+        repositorioPersonal.save(new Medico("Soria", "Valentina Belén", "7766123499", "27-35671249-7"));
     }
 
     private void cargarCuentas() {
+        // Enfermera: Jacinta López
         repositorioCuentas.save(
                 new Cuenta(Email.of("lopezjacinta@gmail.com"),
                         Contrasena.of(encoder.encode("contrasena")),
@@ -139,11 +143,32 @@ public class DataLoader implements CommandLineRunner {
                 )
         );
 
+        // Médico: Carlos Alberto Gomez
         repositorioCuentas.save(
                 new Cuenta(Email.of("gomezcarlos@gmail.com"),
                         Contrasena.of(encoder.encode("contrasena")),
                         Rol.MEDICO,
-                        repositorioPersonal.findByCuil("27-40991234-6").orElseThrow()
+                        repositorioPersonal.findByCuil("20-31223344-8").orElseThrow()
+                )
+        );
+
+        // Médico: Fernando Javier Martínez
+        repositorioCuentas.save(
+                new Cuenta(
+                        Email.of("fernandomartinez@gmail.com"),
+                        Contrasena.of(encoder.encode("contrasena")),
+                        Rol.MEDICO,
+                        repositorioPersonal.findByCuil("20-29876543-2").orElseThrow()
+                )
+        );
+
+        // Médico: Valentina Belén Soria
+        repositorioCuentas.save(
+                new Cuenta(
+                        Email.of("valentinasoria@gmail.com"),
+                        Contrasena.of(encoder.encode("contrasena")),
+                        Rol.MEDICO,
+                        repositorioPersonal.findByCuil("27-35671249-7").orElseThrow()
                 )
         );
     }
@@ -155,7 +180,6 @@ public class DataLoader implements CommandLineRunner {
         Paciente p4 = repositorioPacientes.findByCuil("23-12345678-9").orElseThrow();
 
         Enfermera e1 = (Enfermera) repositorioPersonal.findByCuil("27-23589461-0").orElseThrow();
-        Enfermera e2 = (Enfermera) repositorioPersonal.findByCuil("27-24569741-0").orElseThrow();
 
         Ingreso i1 = new Ingreso(
                 p1,
@@ -170,7 +194,7 @@ public class DataLoader implements CommandLineRunner {
 
         Ingreso i2 = new Ingreso(
                 p2,
-                e2,
+                e1,
                 "Dolor en pecho desde hace 20 minutos.",
                 NivelEmergencia.CRITICA,
                 Temperatura.of("36.8"),
@@ -192,7 +216,7 @@ public class DataLoader implements CommandLineRunner {
 
         Ingreso i4 = new Ingreso(
                 p4,
-                e2,
+                e1,
                 "Golpe en el brazo izquierdo, posible contusión.",
                 NivelEmergencia.URGENCIA_MENOR,
                 Temperatura.of("36.5"),

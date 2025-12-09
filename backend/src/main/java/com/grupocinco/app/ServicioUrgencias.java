@@ -10,7 +10,6 @@ import com.grupocinco.domain.valueobject.TensionArterial;
 import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
 import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
 import com.grupocinco.domain.valueobject.Temperatura;
-import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +52,9 @@ public class ServicioUrgencias {
                         "El paciente no existe. Debe registrarlo antes de proceder al ingreso."
                 )
         );
+
+        if (!dbIngresos.findAllByEstadoPendienteAndPaciente_Cuil(cuil).isEmpty())
+            throw new RuntimeException("Un paciente no puede tener mas de un ingreso pendiente a la vez");
 
         Ingreso ingreso = new Ingreso(
                 paciente,

@@ -44,4 +44,13 @@ public class RepositorioIngresos implements IRepositorioIngresos {
                         .thenComparing(Ingreso::getFechaIngreso))
                 .toList();
     }
+
+    @Override
+    public List<Ingreso> findAllByEstadoPendienteAndPaciente_Cuil(String cuil) {
+        return dbIngresos.values()
+                .stream()
+                .filter(
+                        i -> i.getPaciente().getCuil().equals(cuil) && i.getEstado().equals(EstadoIngreso.PENDIENTE)
+                ).toList();
+    }
 }

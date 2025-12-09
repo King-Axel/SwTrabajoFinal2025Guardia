@@ -14,4 +14,5 @@ public interface IRepositorioIngresos {
     Optional<Ingreso> findById(UUID id);
     List<Ingreso> findAllByEstadoIngreso(EstadoIngreso estado);
     List<Ingreso> findAllByEstadoPendienteOrderByNivelEmergenciaAndFechaIngreso();
+    List<Ingreso> findAllByEstadoPendienteAndPaciente_Cuil(String cuil);
 }
