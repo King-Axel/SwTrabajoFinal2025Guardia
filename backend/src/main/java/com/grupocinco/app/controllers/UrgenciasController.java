@@ -2,19 +2,16 @@ package com.grupocinco.app.controllers;
 
 import com.grupocinco.app.dtos.AtencionDTO;
 import com.grupocinco.app.dtos.IngresoDTO;
-import com.grupocinco.app.interfaces.IRepositorioPersonal;
 import com.grupocinco.app.ServicioUrgencias;
 import com.grupocinco.app.mappers.IngresoMapper;
 import com.grupocinco.app.mappers.PersonaMapper;
 import com.grupocinco.app.services.ServicioCuentas;
-import com.grupocinco.app.services.ServicioPacientes;
 import com.grupocinco.app.services.ServicioPersonal;
 import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.Cuenta;
 import com.grupocinco.domain.Enfermera;
 import com.grupocinco.domain.Ingreso;
 import com.grupocinco.domain.Medico;
-import com.grupocinco.domain.Paciente;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,7 +19,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/urgencias")
@@ -42,7 +41,7 @@ public class UrgenciasController {
     @GetMapping("/espera")
     public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnEspera() {
         return ResponseEntity
-                .ok(servicioUrgencias.obtenerIngresosEnEspera().stream().map(IngresoMapper::aDTO).toList());
+                .ok(servicioUrgencias.obtenerIngresosEnEspera());
     }
 
     @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
@@ -52,16 +51,11 @@ public class UrgenciasController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emaillUsuario = auth.getName();
 
-            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario);
             String cuilUsuario = cuenta.getPersona().getCuil();
 
-            Enfermera enfermera = servicioPersonal.listarPersonal().stream()
-                    .filter(p -> p.getRol().equals(Rol.ENFERMERA.name()))
-                    .map(p -> (Enfermera) PersonaMapper.desdeDTO(p))
-                    .filter(e -> e.getCuil().equals(cuilUsuario))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No se encontró la enfermera logueada"));
+            Enfermera enfermera = servicioPersonal
+                    .buscarPersonalPorCuilYRol(cuilUsuario, Enfermera.class);
 
             servicioUrgencias.registrarIngreso(
                     req.getPaciente().getCuil(),
@@ -89,16 +83,11 @@ public class UrgenciasController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emailUsuario = auth.getName();
 
-            Cuenta cuenta = servicioCuentas.buscarPorEmail(emailUsuario)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emailUsuario);
             String cuilUsuario = cuenta.getPersona().getCuil();
 
-            Medico medico = servicioPersonal.listarPersonal().stream()
-                    .filter(p -> p.getRol().equals(Rol.MEDICO.name()))
-                    .map(p -> (Medico) PersonaMapper.desdeDTO(p))
-                    .filter(m -> m.getCuil().equals(cuilUsuario))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No se encontró el médico logueado"));
+            Medico medico = servicioPersonal
+                    .buscarPersonalPorCuilYRol(cuilUsuario, Medico.class);
 
             Ingreso reclamado = servicioUrgencias.reclamarProximoIngreso(medico);
             return ResponseEntity.ok(IngresoMapper.aDTO(reclamado));
@@ -113,21 +102,19 @@ public class UrgenciasController {
     @PreAuthorize("hasAuthority('PERM_IS202503_RECLAMO_PACIENTE')") 
     @GetMapping("/en-proceso")
     public ResponseEntity<List<IngresoDTO>> obtenerIngresosEnProceso() {
-        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnAtencion()
-                .stream()
-                .map(IngresoMapper::aDTO)
-                .toList();
+        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnAtencion();
         return ResponseEntity.ok(dtos);
     }
 
     @PreAuthorize("hasAuthority('PERM_IS202503_RECLAMO_PACIENTE')")
     @GetMapping("/atencion/historial")
-    public ResponseEntity<List<IngresoDTO>> obtenerHistorialAtencion() {
-        List<IngresoDTO> dtos = servicioUrgencias.obtenerIngresosEnAtencion()
-                .stream()
-                .map(IngresoMapper::aDTO)
-                .toList();
-        return ResponseEntity.ok(dtos);
+    public ResponseEntity<?> obtenerHistorialAtencion() {
+        try {
+            List<IngresoDTO> dtos = servicioUrgencias.obtenerTodosNoPendientes();
+            return ResponseEntity.ok(dtos);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("Mensaje", e.getMessage()));
+        }
     }
 
     @PreAuthorize("hasAuthority('PERM_IS202504_REGISTRO_ATENCION')")
@@ -137,16 +124,10 @@ public class UrgenciasController {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             String emaillUsuario = auth.getName();
 
-            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario)
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            Cuenta cuenta = servicioCuentas.buscarPorEmail(emaillUsuario);
             String cuilUsuario = cuenta.getPersona().getCuil();
 
-            Medico medico = servicioPersonal.listarPersonal().stream()
-                    .filter(p -> p.getRol().equals(Rol.MEDICO.name()))
-                    .map(p -> (Medico) PersonaMapper.desdeDTO(p))
-                    .filter(m -> m.getCuil().equals(cuilUsuario))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("No se encontró el médico logueado"));
+            Medico medico = servicioPersonal.buscarPersonalPorCuilYRol(cuilUsuario, Medico.class);
 
             servicioUrgencias.registrarAtencion(
                     req.getIngreso().getId(),

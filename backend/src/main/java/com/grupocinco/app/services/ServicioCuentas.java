@@ -14,7 +14,8 @@ public class ServicioCuentas {
         this.IRepositorioCuentas = IRepositorioCuentas;
     }
 
-    public Optional<Cuenta> buscarPorEmail(String email) {
-        return IRepositorioCuentas.findByEmail(email);
+    public Cuenta buscarPorEmail(String email) {
+        return IRepositorioCuentas.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }
 }

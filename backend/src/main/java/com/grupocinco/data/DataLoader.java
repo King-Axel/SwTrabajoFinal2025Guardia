@@ -1,5 +1,6 @@
 package com.grupocinco.data;
 
+import com.grupocinco.app.ServicioUrgencias;
 import com.grupocinco.app.repository.*;
 import com.grupocinco.app.util.Rol;
 import com.grupocinco.domain.*;
@@ -15,6 +16,7 @@ public class DataLoader implements CommandLineRunner {
     private final RepositorioPacientes repositorioPacientes;
     private final RepositorioPersonal repositorioPersonal;
     private final RepositorioIngresos repositorioIngresos;
+    private final ServicioUrgencias servicioUrgencias;
 
     private final PasswordEncoder encoder;
 
@@ -24,7 +26,8 @@ public class DataLoader implements CommandLineRunner {
             RepositorioPacientes repositorioPacientes,
             RepositorioCuentas repositorioCuentas,
             RepositorioIngresos repositorioIngresos,
-            PasswordEncoder encoder
+            PasswordEncoder encoder,
+            ServicioUrgencias servicioUrgencias
     ) {
         this.repositorioObrasSociales = repositorioObrasSociales;
         this.repositorioPacientes = repositorioPacientes;
@@ -32,10 +35,11 @@ public class DataLoader implements CommandLineRunner {
         this.repositorioCuentas = repositorioCuentas;
         this.repositorioIngresos = repositorioIngresos;
         this.encoder = encoder;
+        this.servicioUrgencias = servicioUrgencias;
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         cargarObrasSociales();
         cargarPacientes();
         cargarPersonal();
@@ -133,7 +137,7 @@ public class DataLoader implements CommandLineRunner {
                 new Cuenta(Email.of("lopezjacinta@gmail.com"),
                         Contrasena.of(encoder.encode("contrasena")),
                         Rol.ENFERMERA,
-                        repositorioPersonal.findByCuil("27-23589461-0").get()
+                        repositorioPersonal.findByCuil("27-23589461-0").orElseThrow()
                 )
         );
 
@@ -141,7 +145,7 @@ public class DataLoader implements CommandLineRunner {
                 new Cuenta(Email.of("gomezcarlos@gmail.com"),
                         Contrasena.of(encoder.encode("contrasena")),
                         Rol.MEDICO,
-                        repositorioPersonal.findByCuil("27-40991234-6").get()
+                        repositorioPersonal.findByCuil("27-40991234-6").orElseThrow()
                 )
         );
     }
@@ -203,5 +207,7 @@ public class DataLoader implements CommandLineRunner {
         repositorioIngresos.save(i2);
         repositorioIngresos.save(i3);
         repositorioIngresos.save(i4);
+
+        servicioUrgencias.actualizarColaEspera();
     }
 }

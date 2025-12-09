@@ -25,11 +25,10 @@ public class PersonaMapper {
     }
 
     public static Persona desdeDTO(PersonaDTO dto) {
-        Persona persona;
-
-        if (dto.getMatricula() != null) persona = new Medico(dto.getApellido(), dto.getNombre(), dto.getMatricula(), dto.getCuil());
-        else persona = new Enfermera(dto.getApellido(), dto.getNombre(), dto.getCuil());
-
-        return persona;
+        return switch (dto.getRol().toUpperCase()) {
+            case "ENFERMERA" -> new Enfermera(dto.getApellido(), dto.getNombre(), dto.getCuil());
+            case "MEDICO" -> new Medico(dto.getApellido(), dto.getNombre(), dto.getMatricula(), dto.getCuil());
+            default -> throw new IllegalArgumentException("Rol invalido en el dto");
+        };
     }
 }

@@ -1,11 +1,16 @@
 package com.grupocinco.app;
 
+import com.grupocinco.app.dtos.IngresoDTO;
+import com.grupocinco.app.exceptions.PacienteInexistenteException;
+import com.grupocinco.app.interfaces.IRepositorioIngresos;
 import com.grupocinco.app.interfaces.IRepositorioPacientes;
+import com.grupocinco.app.mappers.IngresoMapper;
 import com.grupocinco.domain.*;
 import com.grupocinco.domain.valueobject.TensionArterial;
 import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
 import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
 import com.grupocinco.domain.valueobject.Temperatura;
+import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
@@ -14,15 +19,26 @@ import java.util.*;
 @Service
 public class ServicioUrgencias {
     private final IRepositorioPacientes dbPacientes;
+    private final IRepositorioIngresos dbIngresos;
     @Getter
-    private final List<Ingreso> listaEspera;
-    @Getter
-    private final List<Ingreso> ingresosEnAtencion;
+    private List<Ingreso> listaEspera;
+    //@Getter
+    //private final List<Ingreso> ingresosEnAtencion;
 
-    public ServicioUrgencias(IRepositorioPacientes repositorioPacientes) {
+    public ServicioUrgencias(IRepositorioPacientes repositorioPacientes, IRepositorioIngresos repositorioIngresos) {
         this.dbPacientes = repositorioPacientes;
+        this.dbIngresos = repositorioIngresos;
         this.listaEspera = new ArrayList<>();
-        this.ingresosEnAtencion = new ArrayList<>();
+        //this.ingresosEnAtencion = new ArrayList<>();
+    }
+
+    // Metodo llamado desde el DataLoader para cargar la listaEspera
+    public void actualizarColaEspera() {
+        this.listaEspera = dbIngresos.findAllByEstadoPendienteOrderByNivelEmergenciaAndFechaIngreso();
+
+        for (Ingreso ingreso : this.listaEspera) {
+            System.out.println(ingreso.getPaciente().getCuil());
+        }
     }
 
     public void registrarIngreso(
@@ -34,12 +50,13 @@ public class ServicioUrgencias {
             String frecuenciaCardiaca,
             String frecuenciaRespiratoria,
             String frecuenciaSistolica,
-            String frecuenciaDiastolica) throws IllegalArgumentException {
-        Paciente paciente = dbPacientes.findByCuil(cuil).orElse(null);
-
-        if (paciente == null) {
-            throw new IllegalArgumentException("El paciente no existe. Debe registrarlo antes de proceder al ingreso.");
-        }
+            String frecuenciaDiastolica
+    ) throws IllegalArgumentException {
+        Paciente paciente = dbPacientes.findByCuil(cuil).orElseThrow(
+                () -> new PacienteInexistenteException(
+                        "El paciente no existe. Debe registrarlo antes de proceder al ingreso."
+                )
+        );
 
         Ingreso ingreso = new Ingreso(
                 paciente,
@@ -51,85 +68,57 @@ public class ServicioUrgencias {
                 FrecuenciaRespiratoria.of(frecuenciaRespiratoria),
                 TensionArterial.of(frecuenciaSistolica, frecuenciaDiastolica));
 
-        this.listaEspera.add(ingreso);
-        this.listaEspera.sort(
-                Comparator.comparing(Ingreso::getNivelEmergencia)
-                        .thenComparing(Ingreso::getFechaIngreso));
+        dbIngresos.save(ingreso);
+        actualizarColaEspera();
     }
-
-    /*
-     * public Ingreso reclamarProximoPaciente(Medico medico) {
-     * if (listaEspera.isEmpty()) {
-     * throw new IllegalStateException("No hay ingresos en lista de espera");
-     * }
-     * 
-     * // sale de la cola (ya viene ordenada por criticidad y hora)
-     * Ingreso proximo = listaEspera.remove(0);
-     * 
-     * // cambia estado y se asigna el médico
-     * proximo.setEstado(EstadoIngreso.EN_PROCESO);
-     * proximo.setMedico(medico);
-     * 
-     * // persistimos en la estructura de "en proceso"
-     * ingresosEnProceso.put(proximo.getCuilPaciente(), proximo);
-     * 
-     * return proximo;
-     * }
-     * 
-     * public Optional<Ingreso> obtenerIngresoEnProcesoPorCuil(String cuil) {
-     * return Optional.ofNullable(ingresosEnProceso.get(cuil));
-     * }
-     */
 
     public Ingreso reclamarProximoIngreso(Medico medico) {
         if (listaEspera.isEmpty()) {
             throw new IllegalStateException("No hay ingresos en lista de espera");
         }
 
-        Ingreso proximo = listaEspera.remove(0);
-        proximo.reclamarPor(medico);
-        ingresosEnAtencion.add(proximo);
+        Ingreso proximo = listaEspera.get(0);
+        proximo.actualizarEstado();
+        dbIngresos.save(proximo);
+        actualizarColaEspera();
+        //ingresosEnAtencion.add(proximo);
         return proximo;
     }
 
-    public List<Ingreso> obtenerIngresosEnAtencion() {
-        return ingresosEnAtencion.stream()
-                .sorted(Comparator.comparing(Ingreso::getFechaIngreso))
-                .toList();
+    public List<IngresoDTO> obtenerIngresosEnAtencion() {
+        return dbIngresos.findAllByEstadoIngreso(EstadoIngreso.EN_PROCESO)
+                .stream().map(IngresoMapper::aDTO).toList();
     }
 
-    public List<Ingreso> obtenerIngresosEnProceso() {
-        return ingresosEnAtencion.stream()
-                .filter(i -> i.getEstado() == EstadoIngreso.EN_PROCESO)
-                .sorted(Comparator.comparing(Ingreso::getFechaIngreso))
-                .toList();
-    }
-
-    public List<Ingreso> obtenerIngresosEnEspera() {
-        return listaEspera
-                .stream()
-                .sorted(Comparator.comparing(Ingreso::getNivelEmergencia))
-                .toList();
+    public List<IngresoDTO> obtenerIngresosEnEspera() {
+        return listaEspera.stream().map(IngresoMapper::aDTO).toList();
     }
 
     public void registrarAtencion(UUID idIngreso, Medico medico, String informe) {
         Ingreso ingresoAtendido = buscarIngresoAtendido(idIngreso);
 
-        if (ingresoAtendido == null) {
-            throw new IllegalArgumentException("El ingreso no existe. Debe registrarlo antes de proceder a la atencion.");
-        }
-
         Atencion atencion = new Atencion(medico, informe);
         ingresoAtendido.registrarAtencion(atencion);
+        dbIngresos.save(ingresoAtendido);
     }
 
     public Ingreso buscarIngresoAtendido(UUID idIngreso) {
-        for (Ingreso ingreso : ingresosEnAtencion) {
+        /*for (Ingreso ingreso : ingresosEnAtencion) {
             if (ingreso.getId().equals(idIngreso)) {
                 return ingreso;
             }
-        }
-        return null;
+        }*/
+        return dbIngresos.findById(idIngreso).orElseThrow(
+                () -> new IllegalArgumentException("El ingreso no existe. Debe registrarlo antes de proceder a la atencion.")
+        );
     }
 
+    public List<IngresoDTO> obtenerTodosNoPendientes() {
+        List<Ingreso> ingresos = new ArrayList<>();
+
+        ingresos.addAll(dbIngresos.findAllByEstadoIngreso(EstadoIngreso.EN_PROCESO));
+        ingresos.addAll(dbIngresos.findAllByEstadoIngreso(EstadoIngreso.FINALIZADO));
+
+        return ingresos.stream().map(IngresoMapper::aDTO).toList();
+    }
 }

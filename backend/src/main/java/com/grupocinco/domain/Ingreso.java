@@ -6,11 +6,13 @@ import com.grupocinco.domain.valueobject.FrecuenciaCardiaca;
 import com.grupocinco.domain.valueobject.FrecuenciaRespiratoria;
 import com.grupocinco.domain.valueobject.Temperatura;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
+@ToString
 public class Ingreso {
     private final UUID id;
     private Atencion atencion;
@@ -25,7 +27,7 @@ public class Ingreso {
     private final FrecuenciaCardiaca frecuenciaCardiaca;
     private final FrecuenciaRespiratoria frecuenciaRespiratoria;
 
-    private Medico medico;
+    //private Medico medico;
 
     public Ingreso(
             Paciente paciente,
@@ -56,15 +58,15 @@ public class Ingreso {
         this.tensionArterial = tensionArterial;
     }
 
-    public void reclamarPor(Medico medico) {
+    /*public void setMedico(Medico medico) {
         if (medico == null)
             throw new IllegalArgumentException("Medico nulo");
         if (this.estado != EstadoIngreso.PENDIENTE) {
             throw new IllegalStateException("El ingreso no está en estado PENDIENTE");
         }
         this.medico = medico;
-        this.estado = EstadoIngreso.EN_PROCESO;
-    }
+        //this.estado = EstadoIngreso.EN_PROCESO;
+    }*/
 
     public void registrarAtencion(Atencion atencion) {
         if (this.atencion != null) {
@@ -72,6 +74,19 @@ public class Ingreso {
         }
         this.atencion = atencion;
         this.estado = EstadoIngreso.FINALIZADO;
+    }
+
+    public void actualizarEstado() {
+        switch (this.estado) {
+            case PENDIENTE:
+                this.estado = EstadoIngreso.EN_PROCESO;
+                break;
+            case EN_PROCESO:
+                this.estado = EstadoIngreso.FINALIZADO;
+                break;
+            case FINALIZADO:
+                break;
+        }
     }
 
     /*
