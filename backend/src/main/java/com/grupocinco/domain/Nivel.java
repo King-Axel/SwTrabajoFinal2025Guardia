@@ -5,10 +5,10 @@ import lombok.Getter;
 import java.time.Duration;
 
 public class Nivel {
-    private Integer nivel;
+    private final Integer nivel;
     @Getter
-    private String nombre;
-    private Duration duracionMaxEspera;
+    private final String nombre;
+    private final Duration duracionMaxEspera;
 
     public Nivel(Integer nivel, String nombre, Duration duracionMaxEspera) {
         this.nivel = nivel;

@@ -1,8 +1,6 @@
 package com.grupocinco.app.repository;
 
 import com.grupocinco.app.interfaces.IRepositorioPersonal;
-import com.grupocinco.domain.Enfermera;
-import com.grupocinco.domain.Medico;
 import com.grupocinco.domain.Persona;
 import org.springframework.stereotype.Repository;
 

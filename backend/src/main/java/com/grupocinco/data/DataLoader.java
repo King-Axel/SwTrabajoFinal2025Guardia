@@ -127,9 +127,7 @@ public class DataLoader implements CommandLineRunner {
 
     private void cargarPersonal() {
         repositorioPersonal.save(new Enfermera("Lopez","Jacinta Maria", "27-23589461-0"));
-        repositorioPersonal.save(new Enfermera("Pérez","Ana Lucía", "27-24569741-0"));
         repositorioPersonal.save(new Medico("Gomez", "Carlos Alberto", "1212212121", "20-31223344-8"));
-        repositorioPersonal.save(new Medico("Rivas", "Julia", "9898989898", "27-40991234-6"));
     }
 
     private void cargarCuentas() {

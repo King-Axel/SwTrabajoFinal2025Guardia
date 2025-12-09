@@ -27,8 +27,6 @@ public class Ingreso {
     private final FrecuenciaCardiaca frecuenciaCardiaca;
     private final FrecuenciaRespiratoria frecuenciaRespiratoria;
 
-    //private Medico medico;
-
     public Ingreso(
             Paciente paciente,
             Enfermera enfermera,
@@ -58,16 +56,6 @@ public class Ingreso {
         this.tensionArterial = tensionArterial;
     }
 
-    /*public void setMedico(Medico medico) {
-        if (medico == null)
-            throw new IllegalArgumentException("Medico nulo");
-        if (this.estado != EstadoIngreso.PENDIENTE) {
-            throw new IllegalStateException("El ingreso no está en estado PENDIENTE");
-        }
-        this.medico = medico;
-        //this.estado = EstadoIngreso.EN_PROCESO;
-    }*/
-
     public void registrarAtencion(Atencion atencion) {
         if (this.atencion != null) {
             throw new IllegalStateException("El ingreso ya tiene una atencion registrada");
@@ -88,10 +76,4 @@ public class Ingreso {
                 break;
         }
     }
-
-    /*
-     * public void setMedico(Medico medico) {
-     * this.medico = medico;
-     * }
-     */
 }

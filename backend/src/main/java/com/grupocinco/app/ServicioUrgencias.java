@@ -22,17 +22,13 @@ public class ServicioUrgencias {
     private final IRepositorioIngresos dbIngresos;
     @Getter
     private List<Ingreso> listaEspera;
-    //@Getter
-    //private final List<Ingreso> ingresosEnAtencion;
 
     public ServicioUrgencias(IRepositorioPacientes repositorioPacientes, IRepositorioIngresos repositorioIngresos) {
         this.dbPacientes = repositorioPacientes;
         this.dbIngresos = repositorioIngresos;
         this.listaEspera = new ArrayList<>();
-        //this.ingresosEnAtencion = new ArrayList<>();
     }
 
-    // Metodo llamado desde el DataLoader para cargar la listaEspera
     public void actualizarColaEspera() {
         this.listaEspera = dbIngresos.findAllByEstadoPendienteOrderByNivelEmergenciaAndFechaIngreso();
 
@@ -72,7 +68,7 @@ public class ServicioUrgencias {
         actualizarColaEspera();
     }
 
-    public Ingreso reclamarProximoIngreso(Medico medico) {
+    public Ingreso reclamarProximoIngreso() {
         if (listaEspera.isEmpty()) {
             throw new IllegalStateException("No hay ingresos en lista de espera");
         }
@@ -81,7 +77,6 @@ public class ServicioUrgencias {
         proximo.actualizarEstado();
         dbIngresos.save(proximo);
         actualizarColaEspera();
-        //ingresosEnAtencion.add(proximo);
         return proximo;
     }
 
@@ -103,11 +98,6 @@ public class ServicioUrgencias {
     }
 
     public Ingreso buscarIngresoAtendido(UUID idIngreso) {
-        /*for (Ingreso ingreso : ingresosEnAtencion) {
-            if (ingreso.getId().equals(idIngreso)) {
-                return ingreso;
-            }
-        }*/
         return dbIngresos.findById(idIngreso).orElseThrow(
                 () -> new IllegalArgumentException("El ingreso no existe. Debe registrarlo antes de proceder a la atencion.")
         );

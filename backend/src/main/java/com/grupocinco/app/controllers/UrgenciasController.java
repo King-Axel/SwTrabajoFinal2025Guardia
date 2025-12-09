@@ -89,7 +89,7 @@ public class UrgenciasController {
             Medico medico = servicioPersonal
                     .buscarPersonalPorCuilYRol(cuilUsuario, Medico.class);
 
-            Ingreso reclamado = servicioUrgencias.reclamarProximoIngreso(medico);
+            Ingreso reclamado = servicioUrgencias.reclamarProximoIngreso();
             return ResponseEntity.ok(IngresoMapper.aDTO(reclamado));
         } catch (Exception e) {
             String msg = (e.getMessage() == null || e.getMessage().isBlank())
