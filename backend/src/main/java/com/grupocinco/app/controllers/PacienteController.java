@@ -2,6 +2,7 @@ package com.grupocinco.app.controllers;
 
 import com.grupocinco.app.dtos.PacienteDTO;
 import com.grupocinco.app.ServicioRegistrarPaciente;
+import com.grupocinco.app.services.ServicioObrasSociales;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,18 +14,30 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/pacientes")
 public class PacienteController {
-
     private final ServicioRegistrarPaciente servicioRegistrarPaciente;
+    private final ServicioObrasSociales servicioObrasSociales;
 
-    public PacienteController(ServicioRegistrarPaciente servicioRegistrarPaciente) {
+    public PacienteController(ServicioRegistrarPaciente servicioRegistrarPaciente, ServicioObrasSociales servicioObrasSociales) {
         this.servicioRegistrarPaciente = servicioRegistrarPaciente;
+        this.servicioObrasSociales = servicioObrasSociales;
+    }
+
+    @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
+    @GetMapping("/")
+    public ResponseEntity<?> obtenerTodos() {
+        try {
+            return ResponseEntity.ok(servicioRegistrarPaciente.obtenerTodos());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
+        }
     }
 
     @PreAuthorize("hasAuthority('PERM_IS202502_REGISTRO_PACIENTE')")
     @PostMapping
     public ResponseEntity<?> crear(@Valid @RequestBody PacienteDTO dto) {
         try {
-            servicioRegistrarPaciente.registrarPaciente(dto); // <- ajustamos firma abajo
+            System.out.println("Recibido: " + dto.toString());
+            servicioRegistrarPaciente.registrarPaciente(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("mensaje", "Paciente creado"));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
@@ -44,11 +57,11 @@ public class PacienteController {
         }
     }
 
-    @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
-    @GetMapping("/")
-    public ResponseEntity<?> obtenerTodos() {
+    @PreAuthorize("hasAuthority('PERM_IS202502_REGISTRO_PACIENTE')")
+    @GetMapping("/obrassociales")
+    public ResponseEntity<?> obtenerTodasObrassociales() {
         try {
-            return ResponseEntity.ok(servicioRegistrarPaciente.obtenerTodos());
+            return ResponseEntity.ok(servicioObrasSociales.obtenerTodas());
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
         }

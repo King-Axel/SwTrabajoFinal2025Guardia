@@ -10,6 +10,7 @@ import java.util.*;
 @Repository
 public class RepositorioObrasSociales implements IRepositorioObrasSociales {
     private final Map<UUID, ObraSocial> obrasSociales = new HashMap<>();
+    private final Map<String, Afiliado> afiliaciones = new HashMap<>();
 
     @Override
     public Optional<ObraSocial> findById(UUID id) {
@@ -26,17 +27,31 @@ public class RepositorioObrasSociales implements IRepositorioObrasSociales {
     }
 
     @Override
-    public boolean isAfiliated(Afiliado afiliado) {
-        return false;
-    }
-
-    @Override
     public void save(ObraSocial obraSocial) {
         obrasSociales.put(obraSocial.getId(), obraSocial);
     }
 
     @Override
     public List<ObraSocial> findAll() {
-        return new ArrayList<>(obrasSociales.values());
+        return obrasSociales.values().stream().toList();
+    }
+
+    // Afiliaciones
+    @Override
+    public void saveAfiliado(Afiliado afiliado) {
+        afiliaciones.put(afiliado.getNumeroAfiliado(), afiliado);
+    }
+
+    @Override
+    public Optional<Afiliado> findAfiliadoByNumeroAfiliado(String numero) {
+        return Optional.ofNullable(afiliaciones.get(numero));
+    }
+
+    @Override
+    public boolean isAfiliated(Afiliado afiliado) {
+        Afiliado encontrado = afiliaciones.get(afiliado.getNumeroAfiliado());
+
+        return encontrado != null &&
+                encontrado.getObraSocial().getId().equals(afiliado.getObraSocial().getId());
     }
 }

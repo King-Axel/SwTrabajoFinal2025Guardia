@@ -34,7 +34,7 @@ public class ServicioRegistrarPaciente {
             throw new IllegalArgumentException("El paciente ya existe");
 
         if (dto.getAfiliado() != null) {
-            ObraSocial obraSocial = repositorioObrasSociales.findById(UUID.fromString(dto.getAfiliado().getObraSocial().getId()))
+            ObraSocial obraSocial = repositorioObrasSociales.findByName(dto.getAfiliado().getObraSocial().getNombre())
                     .orElseThrow(() -> new ObraSocialInexistenteException("Obra social inexistente"));
 
             Afiliado afiliado = new Afiliado(obraSocial, dto.getAfiliado().getNumeroAfiliado());

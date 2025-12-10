@@ -14,4 +14,6 @@ public interface IRepositorioObrasSociales {
     boolean isAfiliated(Afiliado afiliado);
     void save(ObraSocial obrasSocial);
     List<ObraSocial> findAll();
+    void saveAfiliado(Afiliado afiliado);
+    Optional<Afiliado> findAfiliadoByNumeroAfiliado(String numeroAfiliado);
 }

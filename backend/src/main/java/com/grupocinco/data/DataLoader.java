@@ -41,6 +41,7 @@ public class DataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) {
         cargarObrasSociales();
+        cargarAfiliaciones();
         cargarPacientes();
         cargarPersonal();
         cargarCuentas();
@@ -231,5 +232,28 @@ public class DataLoader implements CommandLineRunner {
         repositorioIngresos.save(i4);
 
         servicioUrgencias.actualizarColaEspera();
+    }
+
+    private void cargarAfiliaciones() {
+        ObraSocial osep   = repositorioObrasSociales.findByName("OSEP Tucumán").orElseThrow();
+        ObraSocial pami   = repositorioObrasSociales.findByName("PAMI").orElseThrow();
+        ObraSocial osde   = repositorioObrasSociales.findByName("OSDE").orElseThrow();
+        ObraSocial galeno = repositorioObrasSociales.findByName("Galeno").orElseThrow();
+        ObraSocial medife = repositorioObrasSociales.findByName("Medifé").orElseThrow();
+        ObraSocial swiss  = repositorioObrasSociales.findByName("Swiss Medical").orElseThrow();
+
+        Afiliado a1 = new Afiliado(osep, "OSEP-000111");
+        Afiliado a2 = new Afiliado(pami, "PAMI-002233");
+        Afiliado a3 = new Afiliado(osde, "OSDE-554433");
+        Afiliado a4 = new Afiliado(galeno, "GAL-778899");
+        Afiliado a5 = new Afiliado(medife, "MED-445566");
+        Afiliado a6 = new Afiliado(swiss, "SWISS-889900");
+
+        repositorioObrasSociales.saveAfiliado(a1);
+        repositorioObrasSociales.saveAfiliado(a2);
+        repositorioObrasSociales.saveAfiliado(a3);
+        repositorioObrasSociales.saveAfiliado(a4);
+        repositorioObrasSociales.saveAfiliado(a5);
+        repositorioObrasSociales.saveAfiliado(a6);
     }
 }
