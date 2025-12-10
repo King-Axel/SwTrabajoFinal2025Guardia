@@ -166,6 +166,7 @@ export default function RegistrarPacienteForm() {
         calle: "",
         numeroCalle: "",
         localidad: "",
+        obraSocialNombre: "",
         obraSocialId: "",
         numeroAfiliado: "",
       });
@@ -176,6 +177,29 @@ export default function RegistrarPacienteForm() {
       setLoading(false);
     }
   };
+
+  const termino = (formData.obraSocialNombre || "").toLowerCase();
+
+  {obrasSociales
+    .filter((os) =>
+      os.nombre.toLowerCase().includes(termino)
+    )
+    .map((os) => (
+      <li
+        key={os.id}
+        className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+        onMouseDown={() => {
+          setFormData((prev) => ({
+            ...prev,
+            obraSocialNombre: os.nombre,
+            obraSocialId: os.id,
+          }));
+          setDropdownOpen(false);
+        }}
+      >
+        {os.nombre}
+      </li>
+    ))}
 
   return (
     <form
