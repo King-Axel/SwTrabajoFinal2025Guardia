@@ -10,6 +10,8 @@ import com.grupocinco.app.mappers.PacienteMapper;
 import com.grupocinco.domain.Afiliado;
 import com.grupocinco.domain.ObraSocial;
 import com.grupocinco.domain.Paciente;
+
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,4 +59,7 @@ public class ServicioRegistrarPaciente {
         return repositorioPacientes.findByCuil(cuil);
     }
 
+    public List<PacienteDTO> obtenerTodos() {
+        return repositorioPacientes.findAll().stream().map(PacienteMapper::aDTO).toList();
+    }
 }

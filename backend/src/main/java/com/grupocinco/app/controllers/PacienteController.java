@@ -44,5 +44,14 @@ public class PacienteController {
         }
     }
 
+    @PreAuthorize("hasAuthority('PERM_IS202501_REGISTRO_ADMISION')")
+    @GetMapping("/")
+    public ResponseEntity<?> obtenerTodos() {
+        try {
+            return ResponseEntity.ok(servicioRegistrarPaciente.obtenerTodos());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("mensaje", e.getMessage()));
+        }
+    }
 }
 

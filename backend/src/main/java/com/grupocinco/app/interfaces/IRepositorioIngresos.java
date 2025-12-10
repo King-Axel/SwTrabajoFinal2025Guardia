@@ -2,7 +2,6 @@ package com.grupocinco.app.interfaces;
 
 import com.grupocinco.domain.EstadoIngreso;
 import com.grupocinco.domain.Ingreso;
-import com.grupocinco.domain.Medico;
 
 import java.util.List;
 import java.util.Optional;
