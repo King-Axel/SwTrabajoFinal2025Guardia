@@ -15,6 +15,7 @@ public class Domicilio {
         if(calle == null || calle.isBlank()) throw new DatoMandatorioOmitidoException("Falta el dato Calle");
         if(localidad == null || localidad.isBlank()) throw new DatoMandatorioOmitidoException("Falta el dato Localidad");
         if(numero == null) throw new DatoMandatorioOmitidoException("Falta el dato Numero de Calle");
+        if(numero < 0) throw new DatoMandatorioOmitidoException("El Numero de Calle no puede ser negativo");
 
         this.calle = calle;
         this.numero = numero;
