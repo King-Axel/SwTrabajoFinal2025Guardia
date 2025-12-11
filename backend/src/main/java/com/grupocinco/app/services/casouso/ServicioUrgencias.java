@@ -31,9 +31,11 @@ public class ServicioUrgencias {
     public void actualizarColaEspera() {
         this.listaEspera = dbIngresos.findAllByEstadoPendienteOrderByNivelEmergenciaAndFechaIngreso();
 
+        System.out.println("//////////////////////////////////////////////////");
         for (Ingreso ingreso : this.listaEspera) {
             System.out.println(ingreso.getPaciente().getCuil());
         }
+        System.out.println("//////////////////////////////////////////////////");
     }
 
     public void registrarIngreso(

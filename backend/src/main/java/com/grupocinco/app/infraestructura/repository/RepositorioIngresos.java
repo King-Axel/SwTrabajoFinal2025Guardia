@@ -17,6 +17,13 @@ public class RepositorioIngresos implements IRepositorioIngresos {
         System.out.println("Cambio en ingreso registrado: " + ingreso.toString());
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
+        for(int i = 0; i < dbIngresos.size(); i++) {
+            if (dbIngresos.get(i).getId().equals(ingreso.getId())) {
+                dbIngresos.set(i, ingreso);
+                return;
+            }
+        }
+
         dbIngresos.add(ingreso);
     }
 
