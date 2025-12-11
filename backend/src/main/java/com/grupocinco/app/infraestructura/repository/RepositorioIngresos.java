@@ -9,7 +9,7 @@ import java.util.*;
 
 @Repository
 public class RepositorioIngresos implements IRepositorioIngresos {
-    private final Map<UUID, Ingreso> dbIngresos = new HashMap<>();
+    private final List<Ingreso> dbIngresos = new ArrayList<>();
 
     @Override
     public void save(Ingreso ingreso) {
@@ -17,28 +17,27 @@ public class RepositorioIngresos implements IRepositorioIngresos {
         System.out.println("Cambio en ingreso registrado: " + ingreso.toString());
         System.out.println("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++");
 
-        dbIngresos.put(ingreso.getId(), ingreso);
+        dbIngresos.add(ingreso);
     }
 
     @Override
     public List<Ingreso> findAll() {
-        return dbIngresos.values().stream().toList();
+        return dbIngresos;
     }
 
     @Override
     public Optional<Ingreso> findById(UUID id) {
-        return Optional.ofNullable(dbIngresos.get(id));
+        return dbIngresos.stream().filter(ingreso -> ingreso.getId().equals(id)).findFirst();
     }
 
     @Override
     public List<Ingreso> findAllByEstadoIngreso(EstadoIngreso estado) {
-        return dbIngresos.values().stream().filter(i -> i.getEstado().equals(estado)).toList();
+        return dbIngresos.stream().filter(i -> i.getEstado().equals(estado)).toList();
     }
 
     @Override
     public List<Ingreso> findAllByEstadoPendienteOrderByNivelEmergenciaAndFechaIngreso() {
-        return dbIngresos.values()
-                .stream()
+        return dbIngresos.stream()
                 .filter(i -> i.getEstado().equals(EstadoIngreso.PENDIENTE))
                 .sorted(Comparator.comparing(Ingreso::getNivelEmergencia)
                         .thenComparing(Ingreso::getFechaIngreso))
@@ -47,8 +46,7 @@ public class RepositorioIngresos implements IRepositorioIngresos {
 
     @Override
     public List<Ingreso> findAllByEstadoPendienteAndPaciente_Cuil(String cuil) {
-        return dbIngresos.values()
-                .stream()
+        return dbIngresos.stream()
                 .filter(
                         i -> i.getPaciente().getCuil().equals(cuil) && i.getEstado().equals(EstadoIngreso.PENDIENTE)
                 ).toList();
