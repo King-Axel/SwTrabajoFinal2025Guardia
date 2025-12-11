@@ -60,7 +60,7 @@ export default function App() {
       <Route
         path="/pacientes"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={["ENFERMERA"]}>
             <RegistrarPaciente />
           </ProtectedRoute>
         }

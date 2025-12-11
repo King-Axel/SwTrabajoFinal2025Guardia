@@ -1,15 +1,16 @@
 package com.grupocinco.app;
 
-import com.grupocinco.app.exceptions.CredencialesInvalidasException;
-import com.grupocinco.app.exceptions.CuentaExistenteException;
-import com.grupocinco.app.interfaces.IRepositorioCuentas;
-import com.grupocinco.app.interfaces.IRepositorioPersonal;
-import com.grupocinco.app.util.Rol;
-import com.grupocinco.domain.Cuenta;
-import com.grupocinco.domain.Enfermera;
-import com.grupocinco.domain.Medico;
-import com.grupocinco.domain.valueobject.Contrasena;
-import com.grupocinco.domain.valueobject.Email;
+import com.grupocinco.dominio.exceptions.CredencialesInvalidasException;
+import com.grupocinco.dominio.exceptions.CuentaExistenteException;
+import com.grupocinco.dominio.interfaces.IRepositorioCuentas;
+import com.grupocinco.dominio.interfaces.IRepositorioPersonal;
+import com.grupocinco.app.services.casouso.ServicioAutenticacion;
+import com.grupocinco.app.infraestructura.util.Rol;
+import com.grupocinco.dominio.Cuenta;
+import com.grupocinco.dominio.Enfermera;
+import com.grupocinco.dominio.Medico;
+import com.grupocinco.dominio.valueobject.Contrasena;
+import com.grupocinco.dominio.valueobject.Email;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;

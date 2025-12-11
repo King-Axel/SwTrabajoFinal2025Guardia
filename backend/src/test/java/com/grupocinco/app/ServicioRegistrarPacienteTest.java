@@ -1,18 +1,19 @@
 package com.grupocinco.app;
 
-import com.grupocinco.app.dtos.AfiliadoDTO;
-import com.grupocinco.app.dtos.DomicilioDTO;
-import com.grupocinco.app.dtos.ObraSocialDTO;
-import com.grupocinco.app.dtos.PacienteDTO;
-import com.grupocinco.app.exceptions.DatoMandatorioOmitidoException;
-import com.grupocinco.app.exceptions.ObraSocialInexistenteException;
-import com.grupocinco.app.exceptions.PacienteNoAfiliadoException;
-import com.grupocinco.app.interfaces.IRepositorioObrasSociales;
-import com.grupocinco.app.interfaces.IRepositorioPacientes;
-import com.grupocinco.app.mappers.AfiliadoMapper;
-import com.grupocinco.domain.Afiliado;
-import com.grupocinco.domain.ObraSocial;
-import com.grupocinco.domain.Paciente;
+import com.grupocinco.app.infraestructura.dtos.AfiliadoDTO;
+import com.grupocinco.app.infraestructura.dtos.DomicilioDTO;
+import com.grupocinco.app.infraestructura.dtos.ObraSocialDTO;
+import com.grupocinco.app.infraestructura.dtos.PacienteDTO;
+import com.grupocinco.dominio.exceptions.DatoMandatorioOmitidoException;
+import com.grupocinco.dominio.exceptions.ObraSocialInexistenteException;
+import com.grupocinco.dominio.exceptions.PacienteNoAfiliadoException;
+import com.grupocinco.dominio.interfaces.IRepositorioObrasSociales;
+import com.grupocinco.dominio.interfaces.IRepositorioPacientes;
+import com.grupocinco.app.infraestructura.mappers.AfiliadoMapper;
+import com.grupocinco.app.services.casouso.ServicioRegistrarPaciente;
+import com.grupocinco.dominio.Afiliado;
+import com.grupocinco.dominio.ObraSocial;
+import com.grupocinco.dominio.Paciente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 import java.util.Optional;
+import java.util.UUID;
 
 class ServicioRegistrarPacienteTest {
     private ServicioRegistrarPaciente servicioRegistrarPaciente;
@@ -53,14 +55,12 @@ class ServicioRegistrarPacienteTest {
     public void registroCorrectoConObraSocialExistenteYAfiliacionValida() {
         PacienteDTO dto = crearDTO();
 
-        Long idObraSocial = 1L;
-        ObraSocial obraSocial = new ObraSocial("Boreal");
-        obraSocial.setId(idObraSocial);
-        Afiliado afiliado = new Afiliado(obraSocial,"123456789");
+        ObraSocial obraSocial = new ObraSocial("PAMI");
+        Afiliado afiliado = new Afiliado(obraSocial,"PAMI-002233");
 
         dto.setAfiliado(AfiliadoMapper.aDTO(afiliado));
 
-        when(repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId()))
+        when(repositorioObrasSociales.findByName(obraSocial.getNombre()))
                 .thenReturn(Optional.of(obraSocial));
 
         when(repositorioObrasSociales.isAfiliated(any(Afiliado.class))).thenReturn(true);
@@ -86,7 +86,7 @@ class ServicioRegistrarPacienteTest {
                 .isEqualTo(paciente.getAfiliado().getNumeroAfiliado());
 
         verify(repositorioObrasSociales, times(1))
-                .findById(dto.getAfiliado().getObraSocial().getId());
+                .findByName(obraSocial.getNombre());
         verify(repositorioObrasSociales, times(1))
                 .isAfiliated(any(Afiliado.class));
 
@@ -124,16 +124,17 @@ class ServicioRegistrarPacienteTest {
     public void registroConObraSocialInexistenteDeberiaLanzarExcepcion() {
         PacienteDTO dto = crearDTO();
 
-        // el id -1 representa un id inexistente, podria ser un id 100 si no se cuenta con obra social con id = 100
-        ObraSocialDTO obraSocial = new ObraSocialDTO(-1L, "hola");
+        ObraSocialDTO obraSocial = new ObraSocialDTO(String.valueOf(UUID.randomUUID()), "hola");
         dto.setAfiliado(new AfiliadoDTO(obraSocial, "123456789"));
+
+        when(repositorioObrasSociales.findByName(obraSocial.getNombre())).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> servicioRegistrarPaciente.registrarPaciente(dto))
                 .isExactlyInstanceOf(ObraSocialInexistenteException.class)
                 .hasMessage("Obra social inexistente");
 
         verify(repositorioObrasSociales, times(1))
-                .findById(dto.getAfiliado().getObraSocial().getId());
+                .findByName(obraSocial.getNombre());
         verify(repositorioObrasSociales, never())
                 .isAfiliated(any());
         verify(repositorioPacientes, times(1))
@@ -145,12 +146,11 @@ class ServicioRegistrarPacienteTest {
         PacienteDTO dto = crearDTO();
 
         ObraSocial obraSocial = new ObraSocial("PAMI");
-        obraSocial.setId(2L);
         Afiliado afiliado = new Afiliado(obraSocial, "123456780");
 
         dto.setAfiliado(AfiliadoMapper.aDTO(afiliado));
 
-        when(repositorioObrasSociales.findById(dto.getAfiliado().getObraSocial().getId())).thenReturn(Optional.of(obraSocial));
+        when(repositorioObrasSociales.findByName(obraSocial.getNombre())).thenReturn(Optional.of(obraSocial));
         when(repositorioObrasSociales.isAfiliated(any(Afiliado.class))).thenReturn(false);
 
         assertThatThrownBy(() -> servicioRegistrarPaciente.registrarPaciente(dto))
@@ -158,7 +158,7 @@ class ServicioRegistrarPacienteTest {
                 .hasMessage("El paciente no esta afiliado a la obra social");
 
         verify(repositorioObrasSociales, times(1))
-                .findById(dto.getAfiliado().getObraSocial().getId());
+                .findByName(obraSocial.getNombre());
         verify(repositorioObrasSociales, times(1))
                 .isAfiliated(any(Afiliado.class));
         verify(repositorioPacientes, times(1))

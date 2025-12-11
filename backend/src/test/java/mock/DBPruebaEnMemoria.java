@@ -1,7 +1,7 @@
 package mock;
 
-import com.grupocinco.app.interfaces.IRepositorioPacientes;
-import com.grupocinco.domain.Paciente;
+import com.grupocinco.dominio.interfaces.IRepositorioPacientes;
+import com.grupocinco.dominio.Paciente;
 
 import java.util.*;
 
@@ -29,5 +29,10 @@ public class DBPruebaEnMemoria implements IRepositorioPacientes {
     @Override
     public Optional<Paciente> findByCuil(String cuil) {
         return Optional.ofNullable(pacientes.get(cuil));
+    }
+
+    @Override
+    public List<Paciente> findAll() {
+        return List.of();
     }
 }
