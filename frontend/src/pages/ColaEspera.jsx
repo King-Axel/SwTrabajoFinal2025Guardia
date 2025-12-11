@@ -36,6 +36,7 @@ export default function ColaEspera() {
       }
 
       const data = await res.json();
+      console.log("Datos de cola cargados:", data);
       setLista(data);
 
       // Seleccionar automáticamente el primero
