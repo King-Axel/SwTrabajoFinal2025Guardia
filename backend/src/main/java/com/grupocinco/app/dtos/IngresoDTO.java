@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -21,4 +22,5 @@ public class IngresoDTO {
     private String frecuenciaRespiratoria;
     private String frecuenciaSistolica;
     private String frecuenciaDiastolica;
+    private LocalDateTime fechaIngreso;
 }

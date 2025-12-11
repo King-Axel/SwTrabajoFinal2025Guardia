@@ -17,6 +17,7 @@ public class IngresoMapper {
         ingresoDTO.setFrecuenciaRespiratoria(String.valueOf(ingreso.getFrecuenciaRespiratoria().getFrecuencia()));
         ingresoDTO.setFrecuenciaSistolica(String.valueOf(ingreso.getTensionArterial().getSistolica()));
         ingresoDTO.setFrecuenciaDiastolica(String.valueOf(ingreso.getTensionArterial().getDiastolica()));
+        ingresoDTO.setFechaIngreso(ingreso.getFechaIngreso());
 
         return ingresoDTO;
     }

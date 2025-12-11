@@ -9,6 +9,7 @@ export default function ColaEspera() {
   const [lista, setLista] = useState([]);
   const [loading, setLoading] = useState(true);
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
+  const [now, setNow] = useState(Date.now());
 
   const rol = (getUserRole() || "").toUpperCase();
   const esMedico = rol.includes("MEDICO");
@@ -94,6 +95,18 @@ export default function ColaEspera() {
     if (tab === "cola") cargarDatos();
   }, [tab]);
 
+  useEffect(() => {
+    if (tab !== "cola") return;
+
+    // actualiza cada 60 segundos
+    const id = setInterval(() => {
+      setNow(Date.now());
+    }, 60_000);
+
+    return () => clearInterval(id);
+  }, [tab]);
+
+
   if (loading && tab === "cola") return <p>Cargando...</p>;
 
   return (
@@ -154,6 +167,7 @@ export default function ColaEspera() {
 
                 <PacienteCard
                   paciente={p}
+                  now={now}
                   seleccionado={pacienteSeleccionado?.id === p.id}
                   onSeleccionar={() => handleSeleccionarPaciente(p)}
                   posicion={index + 1}

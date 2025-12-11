@@ -54,9 +54,9 @@ class ServicioRegistrarPacienteTest {
     public void registroCorrectoConObraSocialExistenteYAfiliacionValida() {
         PacienteDTO dto = crearDTO();
 
-        ObraSocial obraSocial = new ObraSocial("Boreal");
+        ObraSocial obraSocial = new ObraSocial("PAMI");
         UUID idObraSocial = obraSocial.getId();
-        Afiliado afiliado = new Afiliado(obraSocial,"123456789");
+        Afiliado afiliado = new Afiliado(obraSocial,"PAMI-002233");
 
         dto.setAfiliado(AfiliadoMapper.aDTO(afiliado));
 

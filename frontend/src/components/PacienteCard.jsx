@@ -1,6 +1,4 @@
-
-
-const PacienteCard = ({paciente}) => {
+const PacienteCard = ({paciente, now}) => {
   const colorPorNivel = {
     Critica: { border: "border-red-500", bg: "bg-red-200" },
     Emergencia: { border: "border-orange-500", bg: "bg-orange-200" },
@@ -19,6 +17,27 @@ const PacienteCard = ({paciente}) => {
 
   const sist = paciente.frecuenciaArterial?.sistolica ?? paciente.frecuenciaSistolica;
   const diast = paciente.frecuenciaArterial?.diastolica ?? paciente.frecuenciaDiastolica;
+
+    const calcularEspera = () => {
+
+    if (!paciente.fechaIngreso) return null;
+
+    const fecha = new Date(paciente.fechaIngreso);
+    if (isNaN(fecha.getTime())) return null;
+
+    const ahoraMs = now ?? Date.now();
+    const diffMin = Math.floor((ahoraMs - fecha.getTime()) / 60000);
+
+    if (diffMin < 1) return "menos de 1 min";
+    if (diffMin < 60) return `${diffMin} min`;
+
+    const horas = Math.floor(diffMin / 60);
+    const minutos = diffMin % 60;
+    if (minutos === 0) return `${horas} h`;
+    return `${horas} h ${minutos} min`;
+  };
+
+  const tiempoEspera = calcularEspera();
 
   // Enum -> label lindo
   const nivelRaw = paciente.nivelEmergencia;
@@ -50,6 +69,11 @@ const PacienteCard = ({paciente}) => {
       </p>
 
       <div className="flex flex-wrap gap-6 mt-3 text-gray-700 text-sm">
+        {tiempoEspera && (
+          <span>
+            <i className="bi bi-clock-history"></i> Espera: {tiempoEspera}
+          </span>
+        )}
         <span><i className="bi bi-thermometer-sun"></i> {temp}°C</span>
         <span><i className="bi bi-heart"></i> {fc} lpm</span>
         <span><i className="bi bi-wind"></i> {fr} rpm</span>
