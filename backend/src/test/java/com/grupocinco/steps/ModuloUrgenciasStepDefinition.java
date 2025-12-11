@@ -1,3 +1,5 @@
+package com.grupocinco.steps;
+
 import com.grupocinco.app.services.casouso.ServicioUrgencias;
 import com.grupocinco.dominio.exceptions.PacienteInexistenteException;
 import com.grupocinco.app.infraestructura.repository.RepositorioIngresos;

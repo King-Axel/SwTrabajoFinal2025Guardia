@@ -41,7 +41,7 @@ public class Ingreso {
         if (enfermera == null)
             throw new IllegalArgumentException("Enfermera nula");
         if (informe == null || informe.isBlank())
-            throw new DatoMandatorioOmitidoException("Falta el dato Informes");
+            throw new DatoMandatorioOmitidoException("Falta el dato Informe");
 
         this.id = UUID.randomUUID();
         this.fechaIngreso = LocalDateTime.now();
