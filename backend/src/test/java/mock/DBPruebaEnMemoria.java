@@ -1,7 +1,7 @@
 package mock;
 
-import com.grupocinco.app.interfaces.IRepositorioPacientes;
-import com.grupocinco.domain.Paciente;
+import com.grupocinco.dominio.interfaces.IRepositorioPacientes;
+import com.grupocinco.dominio.Paciente;
 
 import java.util.*;
 

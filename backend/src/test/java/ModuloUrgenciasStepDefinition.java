@@ -1,8 +1,8 @@
-import com.grupocinco.app.ServicioUrgencias;
-import com.grupocinco.app.exceptions.PacienteInexistenteException;
-import com.grupocinco.app.repository.RepositorioIngresos;
-import com.grupocinco.domain.Enfermera;
-import com.grupocinco.domain.Paciente;
+import com.grupocinco.app.services.casouso.ServicioUrgencias;
+import com.grupocinco.dominio.exceptions.PacienteInexistenteException;
+import com.grupocinco.app.infraestructura.repository.RepositorioIngresos;
+import com.grupocinco.dominio.Enfermera;
+import com.grupocinco.dominio.Paciente;
 import io.cucumber.java.es.Cuando;
 import io.cucumber.java.es.Dado;
 import io.cucumber.java.es.Entonces;

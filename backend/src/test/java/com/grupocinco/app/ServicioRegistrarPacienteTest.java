@@ -1,18 +1,19 @@
 package com.grupocinco.app;
 
-import com.grupocinco.app.dtos.AfiliadoDTO;
-import com.grupocinco.app.dtos.DomicilioDTO;
-import com.grupocinco.app.dtos.ObraSocialDTO;
-import com.grupocinco.app.dtos.PacienteDTO;
-import com.grupocinco.app.exceptions.DatoMandatorioOmitidoException;
-import com.grupocinco.app.exceptions.ObraSocialInexistenteException;
-import com.grupocinco.app.exceptions.PacienteNoAfiliadoException;
-import com.grupocinco.app.interfaces.IRepositorioObrasSociales;
-import com.grupocinco.app.interfaces.IRepositorioPacientes;
-import com.grupocinco.app.mappers.AfiliadoMapper;
-import com.grupocinco.domain.Afiliado;
-import com.grupocinco.domain.ObraSocial;
-import com.grupocinco.domain.Paciente;
+import com.grupocinco.app.infraestructura.dtos.AfiliadoDTO;
+import com.grupocinco.app.infraestructura.dtos.DomicilioDTO;
+import com.grupocinco.app.infraestructura.dtos.ObraSocialDTO;
+import com.grupocinco.app.infraestructura.dtos.PacienteDTO;
+import com.grupocinco.dominio.exceptions.DatoMandatorioOmitidoException;
+import com.grupocinco.dominio.exceptions.ObraSocialInexistenteException;
+import com.grupocinco.dominio.exceptions.PacienteNoAfiliadoException;
+import com.grupocinco.dominio.interfaces.IRepositorioObrasSociales;
+import com.grupocinco.dominio.interfaces.IRepositorioPacientes;
+import com.grupocinco.app.infraestructura.mappers.AfiliadoMapper;
+import com.grupocinco.app.services.casouso.ServicioRegistrarPaciente;
+import com.grupocinco.dominio.Afiliado;
+import com.grupocinco.dominio.ObraSocial;
+import com.grupocinco.dominio.Paciente;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

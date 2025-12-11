@@ -1,11 +1,12 @@
 package com.grupocinco.app.util;
 
-import com.grupocinco.app.exceptions.RolInvalidoException;
+import com.grupocinco.app.infraestructura.util.Rol;
+import com.grupocinco.dominio.exceptions.RolInvalidoException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static com.grupocinco.app.util.Permiso.*;
+import static com.grupocinco.app.infraestructura.util.Permiso.*;
 import static org.assertj.core.api.Assertions.*;
 
 class RolTest {
