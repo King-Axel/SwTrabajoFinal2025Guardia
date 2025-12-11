@@ -1,3 +1,4 @@
+
 const PacienteCard = ({paciente, now}) => {
   const colorPorNivel = {
     Critica: { border: "border-red-500", bg: "bg-red-200" },
@@ -6,6 +7,13 @@ const PacienteCard = ({paciente, now}) => {
     "Urgencia menor": { border: "border-green-500", bg: "bg-green-200" },
     "Sin Urgencia": { border: "border-blue-500", bg: "bg-blue-200" },
   };
+
+  const estadoIngreso =
+  typeof paciente.estado === "string"
+    ? paciente.estado
+    : paciente.estado?.name;
+
+  const estaFinalizado = estadoIngreso === "FINALIZADO";
 
   // Si viene un Ingreso, el paciente está en paciente.paciente
   const p = paciente.paciente ?? paciente;
@@ -19,13 +27,14 @@ const PacienteCard = ({paciente, now}) => {
   const diast = paciente.frecuenciaArterial?.diastolica ?? paciente.frecuenciaDiastolica;
 
     const calcularEspera = () => {
+    if (estaFinalizado) return null;
 
     if (!paciente.fechaIngreso) return null;
 
     const fecha = new Date(paciente.fechaIngreso);
     if (isNaN(fecha.getTime())) return null;
 
-    const ahoraMs = now ?? Date.now();
+    const ahoraMs = typeof now === "number" ? now : Date.now();
     const diffMin = Math.floor((ahoraMs - fecha.getTime()) / 60000);
 
     if (diffMin < 1) return "menos de 1 min";
